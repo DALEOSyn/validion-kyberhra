@@ -11,6 +11,7 @@ summary: Tomáš v chate pýta kód, ktorý práve prišiel na tvoj mobil.
 # usual number" and "turn on two-step login". Its id contains a real messenger name, which the red-line denylist
 # rejects in case files, so it is cited here in a comment until the fraud-researcher renames the id.
 sources:
+  - sk-skcert-whatsapp-vote-2026
   - sk-skcert-nova-vlna-2025
   - sk-minv-pk-podvod-leaflet
   - sk-skcert-report-incident
