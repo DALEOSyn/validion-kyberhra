@@ -122,6 +122,9 @@ export function lintValue(value: unknown, matchers: DenyMatcher[], realNamesAllo
   const hits: Hit[] = [];
   for (const [path, text] of strings(value)) {
     const p = path.join('.');
+    // A case's top-level `sources:` list holds citation ids, never shown to the player and checked against
+    // content/sources.yaml by the validator; ids may name the real body or app a source is about.
+    if (!realNamesAllowed && path.length === 2 && path[0] === 'sources' && typeof path[1] === 'number') continue;
     if (!realNamesAllowed) {
       for (const m of domainIssues(text)) hits.push({ rule: 'domains', path: p, message: m });
       for (const m of denylistIssues(text, matchers)) hits.push({ rule: 'denylist', path: p, message: m });
