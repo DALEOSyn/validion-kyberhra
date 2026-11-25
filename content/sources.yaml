@@ -137,7 +137,84 @@ sources:
     used_for: [HELP]
     notes: "Opened 2026-11-25. Confirms the SIC structure above; helpline Viac ako NI(c)K offers free chat and email (email replies within 24 h); hotline described as the only national hotline against child sexual abuse material and other potentially illegal content. Does not name Stopline."
 
+  - id: eu-bik-sextortion-teachers
+    publisher: Better Internet for Kids (European Commission / Insafe)
+    title: "Sextortion (learning corner for teachers and educators)"
+    url: https://better-internet-for-kids.europa.eu/en/learning-corner/teachers-and-educators/sextortion
+    published: n/d
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). 'Paying an offender to stop them from sharing an image doesn't guarantee they won't share it anyway' (paying may lead to more demands); 'stopping the chat is the best way to prevent further attempts to exploit them'; 'Encourage students to save as much evidence as they can, if possible.'; support from 'a parent/carer or other trusted adult'; report to the platform and inform local law enforcement; 'Remind students that it is never their fault if this happens to them'. Does NOT say 'block' or 'do not forward'. Backs the vydieranie help card."
+
+  - id: eu-bik-sextortion-parents-2025
+    publisher: Better Internet for Kids (article by the Belgian Safer Internet Centre, Child Focus)
+    title: "What can parents do if their child is a victim of sextortion?"
+    url: https://better-internet-for-kids.europa.eu/en/news/what-can-parents-do-if-their-child-victim-sextortion
+    published: 2025-02-04
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). 'So never pay!'; 'Gather all the evidence you can (such as pictures or discussions)'; 'Report the profile on the social network and block the person'; sextortion is an offence 'for which you can lodge a complaint with the police'; 'your child is not guilty'. Belgian-authored: its contacts are NOT for Slovak players. No 'do not forward' advice."
+
+  - id: eu-bik-sexual-extortion-2025
+    publisher: Better Internet for Kids (BIK Team)
+    title: "Sexual extortion"
+    url: https://better-internet-for-kids.europa.eu/en/news/sexual-extortion
+    published: 2025-09-24
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). Victims 'may also feel that it is their own fault ... This is not the case; sexual extortion is a crime'; Safer Internet Centre helplines are free by phone, email or chat. No step list."
+
+  - id: ie-garda-say-no-2017
+    publisher: An Garda Síochána (Irish national police), Europol "Say No!" campaign
+    title: "Say No! - Awareness Campaign on online child sexual coercion and extortion"
+    url: https://www.garda.ie/en/about-us/our-departments/office-of-corporate-communications/press-releases/2017/june/say-no!-awareness-campaign-on-online-child-sexual-coercion-and-extortion-19-6-17-.html
+    published: 2017-06-19
+    accessed: 2026-11-25
+    region: IE
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). OLDER (2017). EU national police relaying the Europol 'Say No!' campaign advice (the Europol campaign page did not render): 'Don't share more'; 'don't pay anything'; 'Look for help. You are not alone.'; 'Preserve evidence. Don't delete anything.'; 'Stop the communication. Block the person.'; report to the police (Irish route: NOT for Slovak players). Backs neplať, nič ďalšie neposielaj, nemaž, zablokuj. No 'do not forward' advice."
+
+  - id: lu-police-sextorsion-2021
+    publisher: Police grand-ducale (Luxembourg national police)
+    title: "Sextortion"
+    url: https://police.public.lu/en/aide-aux-victimes/sextorsion.html
+    published: "last update 2021-08-13"
+    accessed: 2026-11-25
+    region: LU
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). Supporting: 'do not pay a single penny'; 'stop sharing photos or videos'; 'collect evidence such as text messages, screenshots'; 'cease communication and block the perpetrator'; 'tell someone, for example a family member or friend'; file a complaint with the police. Adult audience."
+
+  - id: si-policija-say-no
+    publisher: Policija (Slovenian national police) with SI-CERT, Europol "Say No!" campaign
+    title: "Don't become a target of online sexual coercion and extortion"
+    url: https://www.policija.si/eng/prevention/internet-security/don-t-become-a-target-of-online-sexual-coercion-and-extortion
+    published: n/d
+    accessed: 2026-11-25
+    region: SI
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). Supporting: do not send money (demands escalate); 'block all contacts'; 'do not keep it to yourself, but immediately seek the help of parents, guardians, relatives, friends, educators'; report to police. Slovenian routes are NOT for Slovak players."
+
   # =============================================================== Slovakia: national CERTs (tier 2)
+  - id: sk-skcert-cyberbullying-2018
+    publisher: SK-CERT (NBÚ)
+    title: "Cyberbullying and Harassment"
+    url: https://www.sk-cert.sk/en/tips-and-tricks/security-recommendations/identity-theft-fraud-and-cybercrime/cyberbullying-and-harassment/index.html
+    published: "2018-03-05 (updated 2018-03-16)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). OLDER (2018), English page. 'Responding with hostility is likely to provoke a bully'; 'Save any of the related e-mails, text messages or other correspondence as evidence'; 'Block the person on social networks and in e-mail'; 'If you're a child or teen, tell a trusted adult about what's going on'; report to the site; police when threats grow. No 'not your fault', no sextortion."
+
   - id: sk-skcert-online-games-2020
     publisher: SK-CERT (Národné centrum kybernetickej bezpečnosti, NBÚ)
     title: "The National Cyber Security Centre SK-CERT recommends to pay attention to security when playing online games"
@@ -392,7 +469,51 @@ sources:
     used_for: [HELP]
     notes: "Opened 2026-11-25. 'pre všetky deti a mladých ľudí'; separate chats for under 12 ('Kedykoľvek', day and night every day) and over 12 ('Sme tu 24 hodín denne, 7 dní v týždni', 'Zadarmo a nonstop'); 'Chat je anonymný' (nickname; phone optional); written message form; app. NO voice phone line. Logs IP address; must inform authorities if a child's safety is at risk. Covers violence incl. 'zosmiešňovanie na internete, vydieranie'; scams and account theft NOT mentioned."
 
+  - id: sk-minv-kybersikanovanie-brochure
+    publisher: MV SR, Odbor prevencie kriminality (Kancelária ministra vnútra SR), with Linka detskej istoty
+    title: "Kyberšikanovanie (informačná brožúra)"
+    url: https://www.minv.sk/swift_data/source/mvsr/kyber_sikanovanie.pdf
+    published: n/d (ESF-supported project)
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). UNDATED. Advice to children: 'neodpovedaj na správy, ktoré ťa obťažujú, jednoducho ich odignoruj'; 'Zabezpeč dôkazy: ukladaj si všetok obsah (formou snímky obrazovky)' (the attacker may delete messages); 'Zachovaj pokoj a zablokuj tých, ktorí ťa obťažujú'; 'obráť sa na niekoho, kto ti môže pomôcť, napr. na svojich rodičov, učiteľov alebo priateľov'; Linka detskej istoty '116 111, 24/7 NON-STOP, bezplatne a anonymne'; 'Kontaktuj políciu'. No 'not your fault' line. The core Slovak source for the kybersikana card."
+
+  - id: sk-vudpap-kybersikanovanie-2024
+    publisher: Výskumný ústav detskej psychológie a patopsychológie (VÚDPaP), published via NKS
+    title: "Odporúčania pre rodičov, ako predchádzať kyberšikanovaniu (metodický materiál)"
+    url: https://nks.gov.sk/wp-content/uploads/2025/04/Odporucania-pre-rodicov-ako-predchadzat-kybersikanovaniu-metodicky-material-1.pdf
+    published: 2024-12-01
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). For parents: do not answer insulting messages (a reaction can make it worse); keep messages and screenshots; 'Zablokujte šikanujúceho'; the child talks to someone they trust; 'Linka detskej istoty - bezplatná nonstop linka 116 111'; repeated harassment: school, platform or police."
+
   # =============================================================== Slovakia: operators, NGOs, industry (tier 4)
+  - id: sk-zodpovedne-kybersikanovanie
+    publisher: Zodpovedne.sk (eSlovensko o. z.)
+    title: "Kyberšikanovanie"
+    url: https://www.zodpovedne.sk/index.php/sk/ohrozenia/kybersikanovanie
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). UNDATED. 'Tipy pre deti a tínedžerov': 'Nespravil si nič zlé a nie je dôvod na to, aby si sa za to hanbil'; 'všetky dôkazy (SMS správy, emaily, stránky, čet) si ukladaj'; 'Na internete môžeš agresora zablokovať alebo ho nahlásiť administrátorovi stránky'; 'Povedz o kyberšikanovaní niekomu dospelému – rodičovi, učiteľovi, psychológovi, polícii, kontaktuj linku Pomoc.sk (116 111)'. Supporting; the only Slovak source found for 'nie je to tvoja chyba' in cyberbullying (gendered wording: never quote it on screen)."
+
+  - id: sk-ochranma-ibsa
+    publisher: Ochráň ma (national hotline, INHOPE)
+    title: "Iný obsah alebo obsah, ktorý nie je nezákonný (sexuálne zneužívanie prostredníctvom snímok, IBSA)"
+    url: https://ochranma.sk/nevhodny_obsah/iny-obsah-alebo-obsah-ktory-nie-je-nezakonny/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (re-review). 'nie ste na vine – za tento trestný čin je zodpovedný iba páchateľ'; important to report to the police despite shame; report link 'Chcem nahlásiť nevhodný obsah'. No pay/evidence/block steps. The grooming page (ochranma.sk/nevhodny_obsah/detsky-grooming/) only defines grooming and links to the report form. No Slovak official page with step-by-step sextortion advice for children was found in this session."
+
   - id: sk-ldi-home
     publisher: Linka detskej istoty, n. o. (operator of 116 111)
     title: "Linka detskej istoty (home page)"

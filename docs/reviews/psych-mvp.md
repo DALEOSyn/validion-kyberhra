@@ -151,3 +151,63 @@ Fix findings 3–6 and the teen track meets the bar.
 | 14 | Accessibility | PASS | minor 20 | minor 21 |
 
 Blocker 2 touches Red Line 8, so `sceptic-reviewer` should see it. Before a classroom pilot, a qualified human (a child or school psychologist) should review the money-mule wording and the help cards, as `docs/PSYCHOLOGY.md` already notes.
+
+---
+
+## Re-review 2026-11-25
+
+Reviewer: `learning-psychologist` (AI advisor, not a licensed psychologist). Method: I read the current `content/`, `src/ui/CaseView.tsx`, `src/ui/StartScreen.tsx`, `src/ui/Help.tsx`, `src/app.tsx` and `src/content/schema.ts`. I could not run git or the game in this session, so this is a close read of the play path in code, not a timed play-through. QA's play-test still covers how it plays.
+
+### Verdict: FAIL (2 small must-fix items, both one-line YAML edits)
+
+Both blockers are resolved, and so are 6 of the 7 majors. The two remaining must-fix items are small, but both work against the "harder" bar or the worked example, so I hold the verdict until they land.
+
+### Status of the first-round findings
+| # | Status | Note |
+|---|---|---|
+| 1 | Resolved | T1 note now uses `fraud-researcher`'s hedged wording („môže byť trestný čin“), followed in the same panel by „ešte dnes to povedz dospelému“. It no longer says Oto committed a crime. Suggestion S3 below. |
+| 2 | Resolved | J1 `verify`: „Neklikať, otvoriť Kryptoriu priamo, účet nahlásiť a ukázať to dospelému.“, with `tells_adult: true`. |
+| 3 | Resolved | „Lipovec · internetové prípady“ / „Vyber si trasu“, the agreed note, „odporúčame …“ ages, „Uzavreté: n/4“, and each card carries its own `data-theme`. |
+| 4 | Resolved for length | Teen best options are no longer clearly the longest: T1 10 words against 8–11, T4 11 against 4–13. In T2 (12 against 11) and T3 (13 against 11) the best is still slightly the longest, which is acceptable. A new cue has replaced the length cue, though: see must-fix R1. |
+| 5 | Resolved | The T4 brief now uses the wording proposed in finding 5. The school call has moved to `verify.known-numbers`. |
+| 6 | Resolved | The debrief now has 4 pages: Pravidlo, Stopy, Ak sa to už stalo, Stopa v príbehu. The exit buttons appear only on the last page, so every player passes „Ak sa to už stalo“, which meets Red Line 4. The help line shows on pages 3 and 4. Page 1 does not show the first found clue, which I accept. |
+| 7 | Partly resolved | The recall stage is built and filled for J2–J4 and T2–T4. It is unscored, gives calm feedback („Tentoraz nie.“ followed by the full rule), and the correct answer sits in a different position from case to case. The rule restatements are gone from the intros. The worked example is still not wired up: see must-fix R2. |
+| 8 | Resolved | T1 `lock_up.correct`: „… Oto to ešte večer povie otcovi a ráno idú spolu do banky.“ |
+| 9 | Resolved, with suggestions | Three topic cards: vydieranie / intímne fotky, kyberšikana, „Je mi veľmi ťažko“. See H1–H4. |
+| 10–19 | Resolved | T3 rule and quick-round item, T4 recovery order, reveal lines in T2 and T4, „Dax nie je skutočný človek. Je to maska.“, J4 rule and recap, J3 rule, stamp drawn in accent, help line for money and accounts in T2 and T3 (T1 points to Pomoc in its note). |
+| 20 | Open (deferred) | Evidence tabs. Still needed before the classroom pilot, for phones. |
+| 21 | Partly resolved | „Preskočiť úvod“ is on intros with more than 2 lines. Arc scenes have no skip link. Minor. |
+
+### Must-fix
+**R1. Teen (and junior) decisions: the only option that mentions an adult is always the best one.** (C10 Track fit, the teen "harder" bar)
+- Where: `decision.options` in T1–T4. The best option names „dospelému“, „mame“ or „otcovi“, and no other option does. J1–J4 follow the same pattern, which I accept for 11–12-year-olds.
+- Problem: after two cases a teen can choose by spotting the adult instead of judging the evidence. This is the same guessability problem as finding 4, with a different cue.
+- Smallest fix: let one distractor in at least two teen cases mention an adult but get the *timing* wrong, which is itself the lesson. Both stay `outcome: ok`, and their existing `calm` lines already say "ešte dnes":
+  - T3 `sleep.text`: **„Reštartovať mobil, ísť spať a ráno to povedať mame.“**
+  - T2 `warn-tomorrow.text`: **„Varovať kamarátov a zajtra to povedať otcovi.“**
+- Red Line 8 still holds, because the best option still tells an adult. `sceptic-reviewer` should confirm that an "adult, but later" option scored as `ok` is acceptable.
+
+**R2. J1 and T1 promise a worked example that does not happen.** (§4 Worked example, C13)
+- Where: the J1 intro says „Prvú ti ukážem. Odosielateľa Lea nepozná …“ and the T1 intro says „Prvú stopu ti ukážem: veľa peňazí za takmer nič.“, but `scan.pre_found` is empty in both files. The player is told the clue is shown, then has to find it, and the meter starts at 0.
+- Fix: in `j1-drak-zadarmo.yaml`, add `pre_found: [sender]` under `scan:`. In `t1-lahka-brigada.yaml`, add `pre_found: [pay]`. Then check that the clue-star minimums still work: either keep them, which makes the stars one clue easier, or raise `min` by 1.
+
+### Help topic cards (most sensitive)
+The wording is good: no shame, no fear, „Nie je to tvoja chyba.“ comes first, 116 111 is named in every card, the trusted adult is always there, there are no gendered forms, and „S tým netreba zostať osamote“ avoids *sám/sama*. The evidence advice („Správy nemaž … ale nikomu ich nepreposielaj“) is right for intimate images. These are suggestions, not blockers:
+- **H1. Grooming is covered only through images.** Red Line 8 names grooming, but the card's heading is about blackmail and photos. Add one sentence to `pomoc-vydieranie.text`, after „Nie je to tvoja chyba.“: **„Ak ťa niekto cudzí online žiada o tajnosť, fotky alebo stretnutie, povedz to dospelému.“** The heading could become **„Niekto ma vydiera, chce fotky alebo stretnutie“**.
+- **H2. The fear of being judged is the main reason young people stay silent.** Add to the end of `pomoc-vydieranie.text`: **„Na linke 116 111 ťa nikto nesúdi a nemusíš povedať meno.“** The anonymity part is already verified in the LDI entry.
+- **H3. The topic cards sit below 9 contact cards.** A distressed child has to scroll a long way. Add a short line under `intro` that points to them, for example **„Keď ide o niečo ťažké, karty nájdeš nižšie.“**, or move the topic section directly after 116 111.
+- **H4. The trusted-adult sentence appears twice on each topic card**: once in the card text and again in `help.trusted_adult`, which `Help.tsx` adds under every card. Drop the repeat in `Help.tsx` for topic cards.
+- The card advice lines still need `fraud-researcher` sources (noted in `help.yaml`). A qualified human should review these three cards before the pilot. That decision is Roman's.
+
+### Other suggestions
+- **S1.** T2 and T3: the best option is still 1–2 words longer than any other. If R1 is done, this does not matter.
+- **S2.** Recall runs before the brief, even when the previous case was not played. That is fine while cases unlock in order.
+- **S3.** T1 note, optional: replace „Platí to, aj keď si to človek neuvedomuje.“ with **„Preto je dôležité zastaviť čo najskôr.“** This keeps the reason to act and drops the extra weight. It needs `fraud-researcher` to accept it.
+- **S4.** Arc scenes have no „Preskočiť“ link (finding 21, the remaining part).
+
+### Teen bar, as played (code read)
+**Yes once R1 lands.**
+- **Different:** a neutral start screen, Ozvena styling on its own card, the podcast desk, the faceless „maska“ opponent, and a calm resolution for Oto.
+- **Harder:** 2–3 artefacts with decoys, recall of earlier rules, a T4 brief that no longer gives away the answer, chained "Hneď / Neskôr" consequences, and recovery drills.
+
+The one thing still making it easy is the adult cue in R1.

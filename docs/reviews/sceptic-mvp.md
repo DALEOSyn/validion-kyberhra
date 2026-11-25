@@ -48,3 +48,34 @@ Reviewer: sceptic-reviewer · 2026-11-25 · Standard: CLAUDE.md Red Lines 1–9.
 - XSS: no `dangerouslySetInnerHTML` or `innerHTML`; all content renders as JSX text.
 - SW: same-origin GET only, own files only, scope `./`.
 - Dependencies: 4 runtime deps, `npm audit` reports 0 vulnerabilities. Actions are SHA-pinned, `persist-credentials: false`, `contents: read`.
+
+## Re-review 2026-11-25
+
+Reviewer: sceptic-reviewer · fixes in `5137c12..c56c626` (4 commits).
+
+### Verdict: PASS
+
+`npm run check` is green (typecheck, lint, validate, Vitest 68/68, red-line lint 11 files clean, build). `npm run e2e` is green: 30/30, desktop and phone-360. That includes the best path of all 8 cases, axe, offline play and the external-request guard.
+
+### First-review findings
+1. Blocker J1: **fixed.** The best option (`j1:96-103`) is "...a ukázať to dospelému" with `tells_adult: true`. `caseIssues` now fails any case that sets `risk` but has no best or ok option with `tells_adult`, and a unit test covers this.
+2. T1 legal note: **fixed** (`t1:228`). The note now uses "môže byť trestný čin" and "aj keď si to človek neuvedomuje", which matches the NBS source's wording ("don't realize ... that they are committing a criminal offense"). The next step follows the sentence. The fraud-researcher should sign off the final wording.
+3. CI e2e: **fixed.** The `e2e` job has `needs: checks` and `CI=1`, and runs Playwright without `--with-deps`.
+4. Fork PRs on the self-hosted runner: **fixed.** Both jobs have the `if:` guard on push or same-repo PR. The trigger is `pull_request`, not `pull_request_target`. The README notes the "require approval" setting.
+5. **Fixed.** `helpIssues` checks that the first entry is 116 111, and the test also checks a reordered list. `HelpLine` skips topic cards.
+6. **Fixed.** All 8 strings from the first review are now flagged, with negative tests.
+7. **Fixed.** A phone check (9 or more unmasked digits; help.yaml and sources.yaml exempt) and a mod-97 IBAN check, with tests.
+8. **Fixed.** T1 now says "Väčšinu pošleš ďalej, kúsok si necháš."; the percentages and the buyer chain are gone.
+9, 10, 11, 12. **Fixed.** The new wording is in j1:71, j2:68, j4:70 and j2:44. The stale comment is gone, and the T1 summary starts "Dax ponúka".
+13. (a) **Fixed.** The SW version hashes the bytes of every output file in `writeBundle`. (b) **Fixed.** `'unsafe-inline'` is removed, and src/ has no `style=` attributes. (c) **Fixed.** Reset now goes through `update`. (d) **Fixed.** The Google Fonts links are gone. (e) **Fixed.** A data-driven best-path test plays every case.
+
+### New in the diff: checked and clean
+- Help topic cards (`help.yaml:72-95`) for blackmail or intimate-photo requests, cyberbullying, and "Je mi veľmi ťažko". They are calm, contain no graphic detail and open with "Nie je to tvoja chyba". Each one names 116 111 and lists Linka detskej istoty first. The distress card adds 112 last. The cards appear only on the help screen, use no alarm colour, and the validator requires 116 111 on every card. No case covers sextortion, grooming, self-harm or bullying.
+- Recall steps (J2-J4, T2-T4): unscored, exactly one correct answer (enforced by the schema), calm feedback ("Tentoraz nie."), no "!".
+- Neutral start screen and title. No tracking. Progress is read from localStorage only.
+- No new `innerHTML`, fetch, links or forms.
+
+### Remaining findings (all non-blocking)
+1. **minor** · `src/content/schema.ts:250` and `content/cases/junior/j3-zamok-na-ucte.yaml` · `risk` is opt-in and defaults to `[]`, so the Red Line 8 trusted-adult rule only applies when the author remembers to declare a risk. J3 (a stranger, Tieň, inside the club account) declares none. Its best option already involves the teacher, but it is not flagged. **Fix:** make `risk` a required field (an explicit `[]` is allowed), or have the validator require it whenever `tells_adult` appears on any option. In J3, set `risk: [stranger]` and `tells_adult: true` on `lock`.
+2. **minor** · `content/help.yaml:74` · The file's own comment says the advice lines on the topic cards (neplať, nemaž, zablokuj, nepreposielaj) have no source yet. **Fix:** the fraud-researcher adds sources (for example LDI, Ochráň ma, BIK) before release.
+3. **minor** · `content/help.yaml:75-81` · Grooming is covered only through intimate-photo requests. An adult stranger who flatters, asks for secrecy or wants to meet has no card. **Fix:** consider a calm card such as "Cudzí človek mi píše a chce, aby to zostalo tajomstvo", with 116 111 first.

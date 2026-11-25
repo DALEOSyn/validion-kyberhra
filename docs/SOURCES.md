@@ -178,4 +178,26 @@ Not on the screen, and why
 - **CSIRT.SK incident@csirt.sk**: only for fake state websites, and not re-checked in this session. It isn't relevant to these cases.
 - **Linka detskej dôvery's second (mobile) number**: not marked free. Don't show it.
 
+## Help topic cards (Red Line 8): advice lines, fact check 2026-11-25 (re-review)
+
+Calm help cards only, never cases. Each advice line below was checked against a page opened on 2026-11-25.
+
+| Card | Advice line | Sources |
+|---|---|---|
+| vydieranie | "Nie je to tvoja chyba." | sk-ochranma-ibsa ("nie ste na vine"), eu-bik-sextortion-teachers, eu-bik-sexual-extortion-2025 |
+| vydieranie | "Neplať" | ie-garda-say-no-2017, eu-bik-sextortion-parents-2025, eu-bik-sextortion-teachers, lu-police-sextorsion-2021 |
+| vydieranie | "nič ďalšie neposielaj" | ie-garda-say-no-2017 ("Don't share more"), lu-police-sextorsion-2021 |
+| vydieranie | "Správy nemaž, sú to dôkazy" | ie-garda-say-no-2017 ("Preserve evidence. Don't delete anything."), eu-bik-sextortion-parents-2025, eu-bik-sextortion-teachers |
+| vydieranie | "nikomu ich nepreposielaj" | **NOT sourced.** No opened page says it. Removed in the re-review replacement. |
+| vydieranie | "Odosielateľa zablokuj" | ie-garda-say-no-2017, eu-bik-sextortion-parents-2025, lu-police-sextorsion-2021, si-policija-say-no |
+| vydieranie | tell a trusted adult, 116 111 | eu-bik-sextortion-teachers, si-policija-say-no, sk-ldi-home |
+| kybersikana | "Nie je to tvoja chyba." | sk-zodpovedne-kybersikanovanie ("Nespravil si nič zlé") |
+| kybersikana | "Neodpovedaj." | sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024, sk-skcert-cyberbullying-2018 |
+| kybersikana | save messages as evidence | sk-minv-kybersikanovanie-brochure, sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018 |
+| kybersikana | block | sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024, sk-zodpovedne-kybersikanovanie |
+| kybersikana | tell a trusted adult, 116 111 | sk-minv-kybersikanovanie-brochure, sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018 |
+| je-mi-tazko | 116 111 nonstop and free; tell an adult; 112 if in danger now | sk-ldi-home, sk-minedu-krizove-linky-2025 (crisis lines for psychological support), eu-youreurope-emergency-faq-sk |
+
+Gaps: no Slovak official page with step-by-step sextortion advice for children was found (Polícia SR, NKS, Ochráň ma, IPčko, UNICEF SK guide checked). The sextortion steps rest on EU sources (BIK, and EU national police relaying Europol's "Say No!"). The Europol campaign page itself did not render. Contacts on the cards are only those already verified in the table above.
+
 Note for the Scam Atlas SK edition (I did not write to that repo): `justice.gov.sk` "Dôležité kontakty" now (modified 2026-11-03) gives Linka detskej dôvery as 0800 221 021, 8.00–20.00. That matches nks.gov.sk and the operator, so the number conflict recorded in its `where-to-report.draft.sk.yaml` is resolved.

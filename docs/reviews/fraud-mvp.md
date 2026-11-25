@@ -192,3 +192,48 @@ Keep the wording as is. Don't strengthen any of them into "always".
   - Ochráň ma is shown only for illegal content, not scams. Stopline is correctly omitted.
   - 112 is shown for immediate danger. The order (talk, then report, then emergency) matches PSYCHOLOGY §3.
 - **Every source id cited** in the 8 cases and in help.yaml comments exists in `content/sources.yaml`.
+
+---
+
+## Re-review 2026-11-25
+
+Reviewer: fraud-researcher. I could not run `git diff 5137c12..HEAD`, because I have no shell here. Instead I read the current `content/` files in full against the first review.
+
+### Verdict: FAIL (0 blockers, 2 majors, 1 minor)
+
+Both remaining majors are one-line fixes. Once they are applied, the content passes.
+
+### First-review findings
+- **Applied correctly:** 1 (T1 note, with an accurate rewording of the second sentence), 2 (T3 e-mail, code line and `reset` hint), 4, 5, 6, 7, 8, 9, 10, 11, 12 and 13.
+- **Major 3 is NOT applied.** `docs/PSYCHOLOGY.md` line 62 still says "banka aj polícia sa často chcú rozprávať s dospelým". Use the replacement from finding 3 above:
+  ```
+  Pri peniazoch, účtoch a vyhrážkach to rieš s dospelým, ktorému dôveruješ. Dvaja ľudia konajú rýchlejšie a dospelý ti pomôže zavolať do banky aj ísť na políciu.
+  ```
+  Also delete "(`fraud-researcher` checks the second clause.)".
+
+### New content
+- **`recall` questions (J2, J3, J4, T2, T3, T4): correct.** Each correct answer matches the previous case's `debrief.rule` word for word. Every distractor is advice the earlier case shows to be unsafe.
+- **Changed case texts (T1, T3, J1, J4): correct.** No new factual claims.
+- **R1 [major] help · `pomoc-vydieranie` → `text`.**
+  - "ale nikomu ich nepreposielaj" has no source. No page I opened says it: Garda/Europol "Say No!", BIK teachers, BIK parents, Luxembourg and Slovenian police, Ochráň ma.
+  - Every other line is sourced. "Neplať" and "nič ďalšie neposielaj" come from ie-garda-say-no-2017, eu-bik-sextortion-parents-2025 and lu-police-sextorsion-2021. "Nemaž, dôkazy" comes from ie-garda-say-no-2017 ("Don't delete anything"). "Zablokuj" comes from ie-garda-say-no-2017 and eu-bik-sextortion-parents-2025. "Nie je to tvoja chyba" comes from sk-ochranma-ibsa and eu-bik-sextortion-teachers. The trusted adult and 116 111 come from eu-bik-sextortion-teachers and sk-ldi-home.
+  - Replacement `text`:
+  ```
+  Nie je to tvoja chyba. Neplať a nič ďalšie neposielaj. Správy nemaž, sú to dôkazy.
+  Odosielateľa zablokuj. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na 116 111.
+  ```
+- **`pomoc-kybersikana`: PASS.** Sources: sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024, sk-skcert-cyberbullying-2018, and sk-zodpovedne-kybersikanovanie for "not your fault".
+- **`pomoc-je-mi-tazko`: PASS.** Sources: sk-ldi-home, sk-minedu-krizove-linky-2025, eu-youreurope-emergency-faq-sk.
+- **R2 [minor] help.yaml lines 74–75 comment.** It is stale. Replace it with:
+  ```
+  # Advice sources (docs/SOURCES.md "Help topic cards"): vydieranie: ie-garda-say-no-2017, eu-bik-sextortion-parents-2025,
+  # eu-bik-sextortion-teachers, sk-ochranma-ibsa; kybersikana: sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024,
+  # sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018; je-mi-tazko: sk-ldi-home, sk-minedu-krizove-linky-2025.
+  ```
+
+### Gap
+I found no Slovak official page with step-by-step sextortion advice for children. I checked Polícia SR/MV SR, NKS, Ochráň ma, IPčko and the UNICEF SK guide. The steps therefore rest on EU sources. Europol's own "Say No!" page did not render, so I used the Garda relay instead.
+
+### What I changed
+- `content/sources.yaml`: added 11 sources, all opened today: eu-bik-sextortion-teachers, eu-bik-sextortion-parents-2025, eu-bik-sexual-extortion-2025, ie-garda-say-no-2017, lu-police-sextorsion-2021, si-policija-say-no, sk-skcert-cyberbullying-2018, sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024, sk-zodpovedne-kybersikanovanie, sk-ochranma-ibsa.
+- `docs/SOURCES.md`: new section "Help topic cards", with each advice line mapped to its sources.

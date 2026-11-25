@@ -169,3 +169,113 @@ I counted the words on screen along the best-answer path, plus the clue hints. R
 - No external requests in any run.
 - No forms or links: help entries show addresses as plain text, and the help phone numbers are also plain text (not `tel:` links).
 - All brands are fictional, and the in-game footer says so.
+
+## Re-test 2026-11-25
+
+**Build:** `main` at `c56c626`, `npm run build` + `vite preview` on port 4173. **Screenshots:** `docs/reviews/qa-shots/` were all replaced, at deviceScaleFactor 1. `10-bug-trust-trap-dots-vertical-j3-360.png` is now `10-trust-trap-dots-j3-360.png` because that bug is fixed. New shots are numbered 11–15.
+
+### Verdict: FAIL
+
+The fix round worked: F1 and F2 are fixed, and so are 11 of the 12 minor findings (F14 did not recur). Two things still block a PASS:
+
+1. **Fix F16** (new, major). The sticky scan bar hides the keyboard focus (WCAG 2.4.11).
+2. **Settle F3.** The cases are still about 7–9 minutes long. Either trim them to the GDD P6 limit (7 minutes or less for a slow reader), or have the producer record that the length is accepted, with a timed classroom pilot to confirm it.
+
+### What was tested
+
+- **All 8 cases**, played from the start screen through all 4 debrief pages (and the arc scenes), in these runs:
+  - best answers: 360×740 touch, 1920×1080, 320×568, and 640×400 (200 % zoom)
+  - wrong answers: 360×740 and 1440×900
+  - keyboard only: 1280×800 with reduced motion
+- **Also tested:** Back and Úvod in the middle of a case, the leave-case dialog, help (with its topic cards) on phone and desktop, reset, reload, offline reload, and locked case cards.
+- **axe-core** (WCAG 2.0/2.1/2.2 A and AA) on every screen in all axe runs: **0 violations**. With best-practice rules on, the only hit is `page-has-heading-one` (see F18).
+- **Network:** 0 requests left the origin, and there were 0 console or CSP errors.
+- **Test suites:** `npm test` 68/68. `npm run e2e` 30/30 (on port 4174).
+
+### Earlier findings
+
+| # | Status | Evidence |
+|---|---|---|
+| F1 clue hint below the fold | **Fixed** | The sticky bar keeps the meter and hint on screen after every tap at 360, 320 and 640×400 (`03-…`). |
+| F2 focus lost in trust-or-trap / lock-up | **Fixed** | Keyboard pass: focus goes to "Ďalej", then to the new card, then to the next lock card, then to "Uzavrieť prípad". It never goes to BODY. The recall step and debrief pages keep focus too. |
+| F3 case length | **Open** | See the estimate below. |
+| F4 dots vertical | Fixed | `10-trust-trap-dots-j3-360.png` |
+| F5 generic prompts | Fixed | J3 prompt and tip now fit the case. |
+| F6 sticky hover on touch | Fixed | — |
+| F7 Úvod / Back drop the case | Fixed | Both ask first, and only in the middle of a case (not in the intro or debrief). "Zostať" keeps the run. `13-leave-confirm-j1-360.png` |
+| F8 320 px overflow | Fixed | No horizontal overflow at 320. |
+| F9 Escape closes help | Fixed | Focus returns to "Pomoc". |
+| F10 reset focus and sound | Fixed | Focus stays on "Vymazať postup", and "Zvuk: zap" survives a reload. |
+| F11 teen meter contrast | Fixed | The empty ring is now `#8a94a2` on `#272c34`, about 5:1. |
+| F12 locked cards | Fixed | They are focusable with `aria-disabled`, and tapping one does nothing. |
+| F13 projector size | Fixed | The column and text are larger at 1920 (`05-…`). |
+| F14 e2e flake | Not seen | One CI retry has been added. |
+| F15 debrief heading wrap | Fixed | `06-…` |
+| L1 tap everything | Fixed | Decoys now cost the clue star in both tracks. |
+| L2 T1 legal note | Out of QA scope | Reworded by the writer. The fraud-researcher re-checks it. |
+| L3 why the clue star was missed | Fixed | The checklist shows the decoy count (`12-…page4`). |
+
+### New parts
+
+- **Recall at cases 2–4 (J2–J4, T2–T4):** a short, unscored question with clear feedback. Focus moves to "Ďalej". The right answer is a different letter in each case. `11-recall-j2-360.png`
+- **Paged debrief:**
+  - The 4 pages (Pravidlo, Stopy, Ak sa to už stalo, Stopa v príbehu) are short and readable on a phone.
+  - Each new page focuses its heading, and "Späť" works.
+  - The 116 111 line appears on pages 3 and 4.
+  - `06-…`, `12-…`
+- **Neutral start screen:** both tracks are framed equally, with "Uzavreté: n/4" on each card. `01-…`, `02-…`
+- **Help topic cards:** three calm cards, with 116 111 named in each and no alarm colour. `14-help-topic-cards-360.png`
+
+### Estimated time per case (same method as before)
+
+| J1 | J2 | J3 | J4 | T1 | T2 | T3 | T4 |
+|---|---|---|---|---|---|---|---|
+| ~7 | ~7 | ~9 | ~9 | ~7.5 | ~8 | ~8.5 | ~9 |
+
+- The content trims were cancelled out by what was added: the recall screen, and 3 more debrief taps with the help line shown twice.
+- Each track takes about 33 minutes. "Preskočiť úvod" saves about 20 seconds on a replay.
+
+### Remaining findings
+
+**F16 (major): The sticky scan bar hides keyboard focus on clues (WCAG 2.4.11 Focus Not Obscured, AA).**
+- **Steps:** At 360×740 open T1, then Tab through the clue lines.
+- **Expected:** Each focused line is visible.
+- **Actual:** The bar is 173–198 px tall. Clue and decoy tab stops end up fully hidden under it:
+
+| Viewport | Bar height | Hidden tab stops |
+|---|---|---|
+| 640×400 (200 % zoom) | 43 % of the viewport | 6 of 11 |
+| 320×568 | — | 6 of 11 |
+| 360×740 | — | 3 of 11 |
+| 1280×800 | — | 2 of 11 |
+
+- At 200 % zoom only about 140 px of evidence is left to read.
+- **Fix:**
+  - set `scroll-padding-bottom` to the bar height (or scroll the focused clue to the centre of the screen)
+  - on short viewports (for example `max-height: 500px`), make the bar compact or stop it being sticky
+- **Screenshot:** `15-bug-scan-bar-hides-focus-t1-zoom200.png`
+
+**F17 (minor): The leave-case dialog does not close with Escape, and it is not modal.**
+- The case behind it stays clickable, and the dialog has no `aria-modal`.
+- Suggestion: Escape should mean "Zostať", and the rest of the page should be inert while the dialog is open.
+
+**F18 (minor, best practice): Case and help screens have no `h1`.**
+- On the start screen, the `h2` eyebrow comes before the `h1`.
+- axe reports `page-has-heading-one` (best-practice only, not WCAG).
+
+**F19 (minor): On debrief page 4, the decoy note runs straight into the star label.**
+- It reads "…neťukať na všetko Označené neutrálne detaily: 2, najviac 1." with no punctuation in between.
+- Suggestion: put the note on its own line.
+
+### Learning issues
+
+**L4: The junior decoy limit is stricter than the teen one, and the label does not give the number.**
+- The rule is half the decoys, with a minimum of 1. That gives J1 and J3 a limit of 1 neutral tap, while teens get 2 out of 4–5.
+- The label only says "neťukať na všetko".
+- A careful 11-year-old who taps two neutral details loses the star and reads it as "I tapped everything".
+- Suggestion: say the number ("najviac 1 neutrálny detail") or allow 2 in the junior track.
+
+### Fun
+
+- The recall screen and the paged debrief make the end of a case feel lighter than the old single page.
+- Teen scans with 2–3 pieces of evidence are still a long scroll on a phone, so attention drops there (psych 20 evidence tabs, deferred).
