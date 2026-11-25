@@ -113,7 +113,7 @@ sources:
     region: EU
     tier: 1
     used_for: [J1, T1, T4]
-    notes: "Opened 2026-11-25. EU portal, Irish-authored: its reporting route (Irish police) is NOT for Slovak players. 'links that offer free game credits or prizes'; 'offers of exclusive items - such as gaming skins or limited-edition merchandise'; criminals 'recruit teens to receive and transfer stolen money, usually in exchange for a cut of the money or a flashy gift'; many young people 'may not fully understand that this activity... is illegal'; investment scams 'frequently use social media ads or influencers to create a sense of credibility and urgency'; fraudsters can create 'deepfake videos, cloned voices' (not tied to young people). Advice: 'Stop, Think, Check'; if a child falls for a scam, 'Reassure them. They are not in trouble.'; contact the bank if financial details were shared, reset passwords, turn on two-factor authentication. The only EU source found that names skins."
+    notes: "Opened 2026-11-25. EU portal, Irish-authored: its reporting route (Irish police) is NOT for Slovak players. 'links that offer free game credits or prizes'; 'offers of exclusive items - such as gaming skins or limited-edition merchandise'; criminals 'recruit teens to receive and transfer stolen money, usually in exchange for a cut of the money or a flashy gift'; many young people 'may not fully understand that this activity... is illegal'; investment scams 'frequently use social media ads or influencers to create a sense of credibility and urgency'; fraudsters can create 'deepfake videos, cloned voices' (not tied to young people). Advice: 'Stop, Think, Check'; if a child falls for a scam, 'Reassure them. They are not in trouble.'; contact the bank if financial details were shared, reset passwords, turn on two-factor authentication. The only EU source found that names skins. Re-checked 2026-11-25 (fact check): parents' steps include 'Report the scam on the relevant platform.' and 'Gather any details: screenshots, emails, account names.'; NO advice on blocking, warning friends, or what to do once a child is already a money mule."
 
   - id: eu-bik-sic-slovakia
     publisher: Better Internet for Kids (European Commission / Insafe)
@@ -225,6 +225,28 @@ sources:
     tier: 2
     used_for: [HELP, J2, T3]
     notes: "Re-opened 2026-11-25. Public web form (linked as https://jiskb.nbu.gov.sk/public-report/incident, 'Use this option if you have no access to JISKB, incl. reports from public'; form not opened on its own) and email published as incident(at)nbu.gov.sk ('for cases where the other methods can't be used'; PGP recommended). No phone line."
+
+  - id: sk-skcert-tech-support-2020
+    publisher: SK-CERT (NBÚ)
+    title: "Do you have calls from Microsoft tech support? It could be a scam"
+    url: https://www.sk-cert.sk/en/do-you-have-calls-from-microsoft-tech-support-it-could-be-a-scam/index.html
+    published: 2020-09-28
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J4, T2]
+    notes: "Opened 2026-11-25 (fraud-researcher fact check). OLDER (2020), English page. Scammers show 'fake error messages through compromised websites, advertisements, applications' to 'trick you into calling an indicated technical support hotline'; 'If you see a phone number with a warning message from Microsoft or other company, do not call it.'; 'Error messages never include a phone number.' (stated for the software vendor's own messages); 'you may be asked to install applications that allow remote access to your device'. After: change passwords, contact the bank, uninstall the requested apps, update, antivirus scan, 'consider resetting the device and report the incident to the National Cyber Security Centre SK-CERT and the police.' The only SK/EU source found that backs J4's 'do not call the number in the warning' clue and the fake-warning lure on websites. Names a real software company: never in game content."
+
+  - id: sk-skcert-kedy-nas-kontaktovat
+    publisher: SK-CERT (NBÚ)
+    title: "Kedy nás kontaktovať"
+    url: https://www.sk-cert.sk/sk/rady-a-navody/kedy-nas-kontaktovat/index.html
+    published: "2018-01-10 (updated 2020-04-06)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Slovak page: contact SK-CERT if you are 'obeťou kybernetického útoku'; report via 'formulár na nahlásenie incidentu' or incident(at)nbu.gov.sk; no phone. 'Nahlásiť incident' is the Slovak site's navigation label, so the help-screen label is accurate. The current form details are on the English page (sk-skcert-report-incident)."
 
   - id: sk-csirt-passwords-infographic-2024
     publisher: CSIRT.SK (Vládna jednotka CSIRT, MIRRI SR)
@@ -486,11 +508,11 @@ sources:
     title: "Človek sa môže aj nevedome dopustiť prania špinavých peňazí, upozorňuje polícia. Na čo si treba dať pozor?"
     url: https://sita.sk/clovek-sa-moze-aj-nevedome-dopustit-prania-spinavych-penazi-upozornuje-policia-na-co-si-treba-dat-pozor/
     published: 2026-07-23
-    accessed: 2026-11-23
+    accessed: 2026-11-25
     region: SK
     tier: 4
     used_for: [T1]
-    notes: "REUSED (opened 2026-11-23). NEWS relay of the Police Presidium: offers to open a bank account or give access to your own account for a reward ('zdanlivo jednoduchý spôsob zárobku') can be prosecuted, incl. negligent money laundering; never give banking details to strangers, incl. via social networks; contact the bank and the police. Never put the penalty or case figures on screen."
+    notes: "Re-opened 2026-11-25. NEWS relay of the Police Presidium: people who 'poskytli údaje o svojich bankových účtoch a prístupoch k nim alebo na ich pokyn založili nové bankové účty' facilitated laundering; 'trestnoprávna zodpovednosť môže vzniknúť aj v prípade nedbanlivostného konania'; 'mnohí ľudia si neuvedomujú' that accepting such an offer makes them an accomplice; advice: 'nikdy neposkytovali svoje osobné ani bankové údaje neznámym osobám', 'bezodkladne kontaktovať svoju banku a zároveň oznámiť vec polícii', 'bankový účet vedený na vaše meno je vašou zodpovednosťou'. Does NOT mention young people, reporting profiles or warning friends. Backs 'MAY be a criminal offence, even unknowingly', NOT 'is always a crime'. The Criminal Code text (300/2005 Z. z., § 233/§ 233a) could not be opened in readable form in this session: do not state thresholds or penalties. Never put the penalty or case figures on screen."
 
   - id: sk-news-sita-slsp-brigada-2024
     publisher: SITA

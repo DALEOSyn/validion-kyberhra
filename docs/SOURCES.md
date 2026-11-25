@@ -11,7 +11,7 @@ Wording here is the researcher's English summary for writers, not game text. Gam
 | J1 game-skin phishing | Medium | sk-skcert-online-games-2020, eu-bik-gaming-teachers, eu-bik-ie-scams-young-2026 | No Slovak source names skins or free currency; the SK-CERT page is from 2020. |
 | J2 friend's account asks for code | High | sk-skcert-whatsapp-vote-2026, sk-skcert-nova-vlna-2025, sk-minv-pk-podvod-leaflet | SK-CERT describes a page asking for the code, not a friend asking directly. Close enough, see below. |
 | J3 passwords, passphrases, two-step login | Medium-High | sk-skcert-passwords-2018, sk-skcert-online-games-2020, sk-csirt-passwords-infographic-2024 | SK-CERT pages are old (2018, 2020). |
-| J4 fake "virus" pop-up, cleaner app | **Thin** | sk-skcert-malicious-app-2025, sk-skcert-fakeapps-2018 (official stores, permissions) | **No Slovak or EU source describes the fake phone-virus pop-up itself.** The lure rests on Swiss NCSC and ESET only. |
+| J4 fake "virus" pop-up, cleaner app | Medium (updated 2026-11-25 fact check) | sk-skcert-malicious-app-2025, sk-skcert-fakeapps-2018 (official stores, permissions), sk-skcert-tech-support-2020 (fake warnings on websites, "do not call the number") | SK-CERT 2020 describes fake error messages with a support number on websites, mainly on computers. No SK/EU source describes a fake warning that pushes a "cleaner" app on a phone or tablet: that part still rests on Swiss NCSC and ESET. |
 | T1 easy-money jobs, money mules | High | eu-europol-mule-jobs, sk-nbs-crypto-mule-2025, eu-europol-iocta-2026, eu-bik-ie-scams-young-2026 | None. |
 | T2 cheats, cracked games, infostealers | **Thin** | sk-skcert-online-games-2020 (official stores only), eu-europol-iocta-2026 (infostealers in general), eu-bik-gaming-teachers (cheats → ban) | **No Slovak or EU source links cheats or cracked games to infostealers.** That link rests on Swiss NCSC only. |
 | T3 MFA push spam, SIM swap, fake recovery | **Thin (push spam: none)** | eu-enisa-sim-swapping-2021, sk-skcert-hacked-accounts-2018, sk-skcert-whatsapp-vote-2026 | **No SK or EU source on MFA push spam was found.** SIM swap: only ENISA 2021 and an industry relay in news. |
@@ -72,7 +72,8 @@ Facts we can teach
 - Check what an app asks for. If it wants permissions it doesn't need, say no and uninstall it. (sk-skcert-malicious-app-2025, sk-skcert-fakeapps-2018)
 - Even the official store can carry a fake app, so check who made it and read the reviews. (sk-skcert-fakeapps-2018)
 - Don't install an app because a call or a message tells you to. (sk-nbs-pozor-na-podvody, which is about calls)
-- The lure (supporting only, no SK/EU source): fake virus warnings are pop-up windows that open while you browse. They push a "cleaner" or antivirus tool that is itself malware, or a support number to call. Close the page, don't tap the links, and don't call the number. (ch-ncsc-fake-virus-alert-2025, sk-eset-kb-fake-virus-android)
+- Fake warnings appear through websites, ads and apps to make you call a "technical support" number. Don't call a number shown in a warning. The caller may ask you to install more apps. (sk-skcert-tech-support-2020, added 2026-11-25)
+- The lure (supporting only, no SK/EU source for the app part): fake virus warnings are pop-up windows that open while you browse. They push a "cleaner" or antivirus tool that is itself malware. Close the page and don't tap the links. (ch-ncsc-fake-virus-alert-2025, sk-eset-kb-fake-virus-android)
 - If it already happened: uninstall the app. If it got special permissions, show the phone to an adult: SK-CERT advises a factory reset, changing all passwords, and telling the bank. (sk-skcert-malicious-app-2025)
 
 Must NOT claim
@@ -87,8 +88,9 @@ Facts we can teach
 - Young people are targeted on purpose: "people under 35, including minors" (Europol) and "students" (NBS). Recruiting happens through social media "get-rich" schemes. (eu-europol-mule-jobs, sk-nbs-crypto-mule-2025, eu-europol-iocta-2026)
 - The pay may be a cut of the money or a "flashy gift". Many young people don't realise this is illegal. (eu-bik-ie-scams-young-2026)
 - Other forms: renting out your account or crypto wallet, or receiving crypto "gifts". (eu-europol-iocta-2026). Never share bank login details. (sk-nbs-crypto-mule-2025, eu-eures-fake-jobs-sk-2023)
-- Moving money for someone else is a criminal offence, even if you didn't know. (sk-nbs-crypto-mule-2025, sk-nbs-money-mule-2019; supporting: sk-news-sita-police-mules-2026)
-- If it already happened: stop moving money now, tell a parent, tell the bank, and report it to the police. (eu-europol-mule-jobs, sk-nbs-crypto-mule-2025)
+- Passing other people's money on through your own account **can be** a criminal offence, even if you don't realise it; police say liability can arise from negligence too. Say "can be" ("môže byť"), never "is always". Paying money on behalf of family or friends is not the issue: the pattern is money from strangers. (sk-nbs-crypto-mule-2025, sk-nbs-money-mule-2019; supporting: sk-news-sita-police-mules-2026, re-opened 2026-11-25)
+- If it already happened: stop moving money now, tell a parent, tell the bank, and report it to the police. (eu-europol-mule-jobs, sk-nbs-crypto-mule-2025, sk-news-sita-police-mules-2026)
+- Report the recruiter's profile on the platform. (eu-bik-ie-scams-young-2026: "Report the scam on the relevant platform.") "Warn friends" has no source for money mules: phrase it as helping a friend who is being recruited go to an adult.
 
 Must NOT claim
 - No prison terms, fines or case figures on screen. Never threaten the player (Red Lines 5, 8). The criminal-responsibility age (14, per sk-justice-trestne-konanie) is for designers only, not for teaching.
@@ -150,7 +152,12 @@ Must NOT claim
 
 ---
 
-## Help screen ("Kde nájsť pomoc"): verified for Slovakia on 2026-11-25
+## Trusted adult: what we can say about banks and police (fact check 2026-11-25)
+
+- Sourced: a parent contacts the bank (eu-bik-ie-scams-young-2026, sk-nbs-pozor-na-podvody); contact the bank and report it to the police (sk-news-sita-police-mules-2026, eu-europol-mule-jobs); a report is made at any police station, in writing or orally (sk-justice-trestne-konanie).
+- NOT sourced: "banks and police often want to talk to an adult". It is plausible for a minor's account and for police interviews of minors, but no bank terms or procedural-law text was opened. Don't teach it. Say instead that an adult helps the teen call the bank and go to the police.
+
+## Help screen ("Kde nájsť pomoc"): verified for Slovakia on 2026-11-25 (helplines re-opened again in the fact check the same day)
 
 | # | Name | Number / URL | For whom | Hours | Cost / anonymity | Sources |
 |---|---|---|---|---|---|---|
@@ -158,8 +165,8 @@ Must NOT claim
 | 2 | Viac ako NI(c)K (national helpline for children at risk; EU Safer Internet Centre helpline) | viacakonick.gov.sk (chat, form, app; **no phone**) | All children and young people; separate chats for under 12 and 12+ | 24/7 | Free (stated for the 12+ chat), anonymous chat; logs your IP; must inform authorities if a child is in danger | sk-viacakonick-home, eu-bik-sic-slovakia, sk-nks-kontakty-pomoci |
 | 3 | IPčko | **0800 500 333**; chat at ipcko.sk; poradna@ipcko.sk | Anyone in a difficult situation; the ministry calls it an online counselling service "pre mladých" | 24/7 (not given per channel) | Free, anonymous | sk-ipcko-home, sk-minedu-krizove-linky-2025, sk-nks-kontakty-pomoci |
 | 4 | Linka detskej dôvery | **0800 221 021**; chat at linkadetskejdovery.sk | Children, young people and parents | Phone on working days 8:00–20:00; chat on working days 8:00–19:00 | Phone free; anonymity not stated | sk-linkadetskejdovery-home, sk-justice-dolezite-kontakty, sk-nks-kontakty-pomoci |
-| 5 | Polícia (Policajný zbor) | **158**, or any police station | Anyone. Under 18: go with a parent or another trusted adult (our wording) | n/s | Cost not stated. A criminal report cannot be anonymous. | sk-justice-dolezite-kontakty, sk-justice-trestne-konanie, sk-minv-pk-podvod-leaflet, sk-numbering-decree-286-2022 (reused) |
-| 6 | SK-CERT (Národné centrum kybernetickej bezpečnosti) | sk-cert.sk "Report an incident" page (public form); email incident@nbu.gov.sk | Anyone. For children, an adult files it. | n/s | No phone line | sk-skcert-report-incident |
+| 5 | Polícia (Policajný zbor) | **158**, or any police station | Anyone. Under 18: go with a parent or another trusted adult (our wording) | n/s | Cost not stated. A criminal report cannot be anonymous. A formal report is made at a police station or prosecutor's office (in writing, orally for the record, or electronically with a qualified e-signature); no official source opened says "report fraud by calling 158". | sk-justice-dolezite-kontakty, sk-justice-trestne-konanie, sk-minv-pk-podvod-leaflet |
+| 6 | SK-CERT (Národné centrum kybernetickej bezpečnosti) | sk-cert.sk "Report an incident" page (public form, English page); email incident@nbu.gov.sk. "Nahlásiť incident" is the Slovak site's menu label. | Anyone. For children, an adult files it. | n/s | No phone line | sk-skcert-report-incident, sk-skcert-kedy-nas-kontaktovat |
 | 7 | Your bank (through a parent) | Number on the card or in the official app | When card data or money is involved | n/s | n/a | sk-nbs-pozor-na-podvody |
 | 8 | 112 | **112** | Danger now | n/s | Don't claim it is free | eu-youreurope-emergency-faq-sk (reused) |
 | 9 | Ochráň ma (national hotline for illegal online content) | ochranma.sk → "Nahlás to" | Reporting child sexual abuse material, grooming and other illegal content. **Red Line 8 help cards only, not for scams.** | 24/7 via the website (per BIK) | Anonymity not stated | sk-ochranma-home, eu-bik-sic-slovakia |
