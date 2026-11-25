@@ -1,0 +1,302 @@
+<title>Kancelária STOPA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&family=Special+Elite&display=swap">
+<style>
+/* Layout: a detective's desk; one case folder (paper card) centred on a cork board; screens swap inside the folder. Single deliberate warm look. */
+:root{
+  --cork:#c99a63; --cork-dk:#7a5430; --paper:#fffaf0; --paper-2:#f3ead6; --ink:#1f2330; --muted:#5d6273;
+  --note:#ffe066; --teal:#2a7d74; --navy:#2d3f55; --red:#d64535; --good:#2f9e5b; --warn:#d48a12;
+  --f-display:"Baloo 2","Nunito",system-ui,sans-serif; --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif; --f-type:"Special Elite","Courier New",monospace;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--cork);background-image:radial-gradient(rgba(122,84,48,.25) 1px,transparent 1.5px),radial-gradient(rgba(255,255,255,.12) 1px,transparent 1.5px);background-size:14px 14px,23px 23px;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;padding-block:18px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hud{width:100%;max-width:580px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.chip{background:var(--paper);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800;box-shadow:0 2px 0 var(--cork-dk)}
+.chip b{color:var(--teal)}
+.hud button{font:inherit;font-size:14px;font-weight:800;background:var(--paper);border:0;border-radius:999px;padding:4px 12px;cursor:pointer;box-shadow:0 2px 0 var(--cork-dk);color:var(--ink)}
+.folder{width:100%;max-width:580px;background:var(--paper);border-radius:4px 14px 14px 14px;box-shadow:0 10px 0 -4px var(--paper-2),0 14px 24px rgba(60,35,10,.35);padding:24px 22px;position:relative}
+.folder::before{content:"";position:absolute;top:-16px;left:0;width:150px;height:18px;background:var(--paper);border-radius:10px 10px 0 0}
+.pin{position:absolute;top:-8px;right:28px;width:18px;height:18px;border-radius:50%;background:var(--red);box-shadow:0 2px 0 #8c2a20}
+section{display:flex;flex-direction:column;gap:16px}
+h1,h2{font-family:var(--f-display);margin:0;line-height:1.1;text-wrap:balance}
+h2{font-size:26px}
+p{margin:0}
+.stamp{font-family:var(--f-type);font-size:14px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--muted)} .small{font-size:14px}
+.logo{font-size:clamp(40px,10vw,60px);font-weight:800}
+.logo span{color:var(--teal)}
+.note{background:var(--note);padding:14px 16px;transform:rotate(-1deg);box-shadow:0 3px 8px rgba(0,0,0,.12);font-size:17px}
+.btn{font-family:var(--f-display);font-weight:800;font-size:19px;color:#fff;background:var(--teal);border:0;border-radius:12px;padding:12px 20px;cursor:pointer;box-shadow:0 4px 0 #1b544e;align-self:flex-start}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #1b544e}
+.btn.alt{background:var(--paper-2);color:var(--ink);box-shadow:0 4px 0 #d2c4a3}
+:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+/* people */
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.ava{flex:0 0 44px;height:44px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--paper-2)}
+.ava svg{width:44px;height:44px}
+.bubble{background:#fff;border:2px solid var(--paper-2);border-radius:4px 14px 14px 14px;padding:8px 12px;min-width:0}
+.who{font-size:13px;font-weight:800;color:var(--teal)}
+/* evidence */
+.evidence{background:#fff;border:2px dashed #cdbf9f;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.evbar{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-weight:700}
+.dm{background:#eef3f7;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:17px}
+.tap{font:inherit;color:inherit;background:transparent;border:0;padding:1px 3px;margin:0;cursor:zoom-in;text-align:left;line-height:1.55;border-radius:4px;border-bottom:2px dotted #9fb3c8}
+.tap:hover{background:rgba(42,125,116,.1)}
+.tap.hit{background:rgba(255,224,102,.75);border-bottom:2px solid var(--red);cursor:default}
+.tap.miss{border-bottom-color:transparent;color:var(--muted)}
+.sender .tap{font-weight:800}
+.link{color:#1f5fa8;text-decoration:underline}
+.meter{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.mag{display:flex;gap:4px}
+.mag i{width:22px;height:22px;border-radius:50%;border:3px solid #cdbf9f;position:relative}
+.mag i.on{border-color:var(--teal);background:var(--note)}
+.tip{min-height:3.2em;background:var(--paper-2);border-left:4px solid var(--teal);padding:10px 12px;border-radius:0 10px 10px 0;font-size:16px}
+.tip.flag{border-left-color:var(--red)}
+/* choices */
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{font:inherit;color:var(--ink);background:#fff;border:2px solid var(--paper-2);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;gap:12px;align-items:flex-start;box-shadow:0 3px 0 #e5d9bd}
+.choice:hover{border-color:var(--teal)}
+.choice .k{font-family:var(--f-display);font-weight:800;color:#fff;background:var(--teal);border-radius:8px;min-width:28px;text-align:center}
+.result{border-radius:12px;padding:16px;background:#fff;border:3px solid var(--paper-2)}
+.result.bad{border-color:var(--red)} .result.ok{border-color:var(--warn)} .result.best{border-color:var(--good)}
+.result .label{font-family:var(--f-display);font-weight:800;font-size:20px}
+.bad .label{color:var(--red)} .ok .label{color:var(--warn)} .best .label{color:var(--good)}
+.calm{font-weight:700;color:var(--teal)}
+/* trust or trap */
+.card{background:#fff;border:2px solid var(--paper-2);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:140px;box-shadow:0 3px 0 #e5d9bd}
+.card .src{font-size:13px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.tt-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tt-btns button{font-family:var(--f-display);font-weight:800;font-size:19px;padding:12px;border-radius:12px;cursor:pointer;border:0;color:#fff}
+.b-safe{background:var(--good);box-shadow:0 4px 0 #1f6b3d}
+.b-trap{background:var(--red);box-shadow:0 4px 0 #8c2a20}
+.dots{display:flex;gap:6px}
+.dots i{width:24px;height:8px;border-radius:4px;background:var(--paper-2)}
+.dots i.y{background:var(--good)} .dots i.n{background:var(--red)} .dots i.c{background:var(--navy)}
+/* case closed */
+.closed{position:relative;border:2px solid var(--paper-2);border-radius:12px;padding:18px;background:#fff;display:flex;flex-direction:column;gap:12px}
+.closed .rubber{position:absolute;top:10px;right:10px;transform:rotate(8deg);border:3px solid var(--red);color:var(--red);font-family:var(--f-type);font-size:14px;padding:2px 8px;border-radius:6px;opacity:.85}
+.rule{font-family:var(--f-display);font-weight:800;font-size:21px;color:var(--teal);padding-right:90px;text-wrap:balance}
+ul,ol{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:4px}
+.stars{font-size:32px;letter-spacing:6px;color:#e5d9bd}
+.stars .on{color:#f2b318}
+.clue{background:var(--navy);color:#fff;border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.clue b{font-family:var(--f-display);font-size:18px;display:block}
+.clue svg{flex:0 0 54px}
+.rank{font-weight:800}
+.help{font-size:14px;border-top:2px dashed var(--paper-2);padding-top:12px;color:var(--muted)}
+.help strong{color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.foot{max-width:580px;margin-top:16px;font-size:13px;color:var(--paper);text-align:center;text-shadow:0 1px 0 var(--cork-dk)}
+@media (prefers-reduced-motion:no-preference){.tap.hit{animation:pop .25s}.closed .rubber{animation:stampin .35s}}
+@keyframes pop{50%{transform:scale(1.06)}}
+@keyframes stampin{from{transform:rotate(8deg) scale(2);opacity:0}}
+</style>
+
+<div class="wrap">
+  <div class="hud">
+    <span class="chip">Prípad <b>1</b> z 8</span>
+    <span class="chip">Hodnosť: <b id="hudRank">nováčik</b></span>
+    <button id="snd" aria-pressed="false" type="button">Zvuk: vyp</button>
+  </div>
+
+  <main class="folder"><span class="pin" aria-hidden="true"></span>
+
+    <!-- TITLE -->
+    <section id="s-title">
+      <p class="stamp">Detektívny klub · Lipovec</p>
+      <h1 class="logo">Kancelária <span>STOPA</span></h1>
+      <p class="note">V meste niekto rozposiela falošné výhry, kradne účty a nastražuje podvodné odkazy. Podpisuje sa ako <b>Tieň</b>. Naša kancelária rieši prípad za prípadom. Pridáš sa?</p>
+      <button class="btn" id="go-brief" type="button">Otvoriť prípad č. 1</button>
+      <p class="muted small" id="best"></p>
+    </section>
+
+    <!-- BRIEF -->
+    <section id="s-brief" hidden>
+      <p class="stamp">Prípad č. 1 · Drak zadarmo</p>
+      <div class="chat">
+        <div class="msg"><div class="ava" data-face="mira"></div><div class="bubble"><div class="who">Mira, vedúca kancelárie</div>Vitaj v STOPE. Práve prišla klientka.</div></div>
+        <div class="msg"><div class="ava" data-face="lea"></div><div class="bubble"><div class="who">Lea</div>prišla mi táto správa v Bzuku. vraj som vyhrala draka do Kryptorie. mám kliknúť?</div></div>
+        <div class="msg"><div class="ava" data-face="mira"></div><div class="bubble"><div class="who">Mira</div>Zober lupu a preskúmaj správu. Nájdi aspoň 3 stopy, že niečo nesedí.</div></div>
+        <div class="msg"><div class="ava" data-face="fuzik"></div><div class="bubble"><div class="who">Fúzik, detektívny pes</div>Haf. Bzuk je chatovacia appka, Kryptoria je hra. Obe sú vymyslené. Triky sú skutočné.</div></div>
+      </div>
+      <button class="btn" id="go-scan" type="button">Vziať lupu</button>
+    </section>
+
+    <!-- SCAN -->
+    <section id="s-scan" hidden>
+      <p class="stamp">Dôkaz A · Leina správa</p>
+      <div class="evidence" aria-label="Správa v aplikácii Bzuk">
+        <div class="evbar"><span>BZUK · súkromná správa</span><span>19:41</span></div>
+        <div class="dm" id="dm">
+          <div class="sender"><button class="tap" data-id="sender" type="button">Kryptoria_Oficial_Team</button> <span class="muted small">· nový kontakt</span></div>
+          <div><button class="tap" data-id="decoy-hi" type="button">GRATULUJEME 🎉</button> <button class="tap" data-id="prize" type="button">Si medzi 50 výhercami: 5 000 kryštálov a skin Ohnivý drak zadarmo.</button></div>
+          <div><button class="tap" data-id="hurry" type="button">Výhru si vyzdvihni do 15 minút, inak prepadne.</button></div>
+          <div><button class="tap link" data-id="link" type="button">kryptoria-odmeny.example/login</button></div>
+          <div><button class="tap" data-id="pass" type="button">Prihlás sa menom a heslom do hry, aby sme ti výhru poslali.</button></div>
+          <div class="muted small"><button class="tap" data-id="decoy-sig" type="button">Tím Kryptoria 🐉</button></div>
+        </div>
+      </div>
+      <div class="meter"><span>Stopy</span><span class="mag" id="mag"></span><span id="scanCount">0/5</span></div>
+      <div class="tip" id="tip" aria-live="polite">Ťukni na časť správy, ktorá ti nesedí.</div>
+      <button class="btn" id="go-decide" type="button" hidden>Poradiť Lei</button>
+    </section>
+
+    <!-- DECIDE -->
+    <section id="s-decide" hidden>
+      <p class="stamp">Čo poradíš klientke?</p>
+      <div class="chat"><div class="msg"><div class="ava" data-face="lea"></div><div class="bubble"><div class="who">Lea</div>tak čo mám spraviť? ten drak je fakt super</div></div></div>
+      <div class="choices">
+        <button class="choice" data-c="click" type="button"><span class="k">A</span><span>Kliknúť na odkaz a rýchlo sa prihlásiť, kým výhra neprepadne.</span></button>
+        <button class="choice" data-c="ask" type="button"><span class="k">B</span><span>Odpísať tomu účtu a opýtať sa, či je to naozaj pravé.</span></button>
+        <button class="choice" data-c="verify" type="button"><span class="k">C</span><span>Neklikať. Otvoriť hru Kryptoria priamo a pozrieť správy v nej. Účet v Bzuku nahlásiť a zablokovať.</span></button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="s-result" hidden>
+      <p class="stamp">Čo sa stalo ďalej</p>
+      <div class="result" id="resBox"><p class="label" id="resLabel"></p><p id="resText"></p></div>
+      <p class="calm" id="resCalm"></p>
+      <button class="btn" id="go-tt" type="button">Rýchly výcvik: Dôvera alebo pasca</button>
+    </section>
+
+    <!-- TRUST OR TRAP -->
+    <section id="s-tt" hidden>
+      <p class="stamp">Výcvik · Dôvera alebo pasca</p>
+      <div class="dots" id="dots"></div>
+      <div class="card"><p class="src" id="ttSrc"></p><p id="ttText"></p></div>
+      <div class="tt-btns" id="ttBtns">
+        <button class="b-safe" data-a="safe" type="button">Dôvera</button>
+        <button class="b-trap" data-a="trap" type="button">Pasca</button>
+      </div>
+      <div class="tip" id="ttTip" aria-live="polite">Je to v poriadku, alebo je to pasca?</div>
+      <button class="btn" id="tt-next" type="button" hidden>Ďalej</button>
+    </section>
+
+    <!-- CASE CLOSED -->
+    <section id="s-debrief" hidden>
+      <p class="stamp">Spis prípadu č. 1</p>
+      <div class="stars" id="stars"></div>
+      <div class="closed">
+        <span class="rubber" aria-hidden="true">UZAVRETÉ</span>
+        <p class="rule">Prihlasuj sa len v hre alebo v jej aplikácii. Nikdy cez odkaz zo správy.</p>
+        <div><b>Stopy v tomto prípade</b>
+          <ul><li>Výhra zadarmo od účtu, ktorý nepoznáš.</li><li>Časový tlak: „do 15 minút, inak prepadne“.</li><li>Cudzí odkaz, ktorý pýta meno a heslo.</li></ul>
+        </div>
+        <div><b>Ak sa to už stalo</b>
+          <ol><li>Otvor hru vlastnou cestou a hneď zmeň heslo.</li><li>Zapni dvojstupňové prihlásenie.</li><li>Povedz to dospelému, ktorému dôveruješ, a napíš podpore hry priamo v hre.</li></ol>
+        </div>
+      </div>
+      <div class="clue">
+        <svg viewBox="0 0 54 54" aria-hidden="true"><rect x="4" y="8" width="46" height="38" rx="4" fill="#fffaf0"/><text x="15" y="36" font-size="22">🐉</text><rect x="4" y="8" width="46" height="8" fill="#ffe066"/></svg>
+        <div><b>Stopa k Tieňovi č. 1</b>Správu podpísal malý drak 🐉. Rovnaký drak sa objaví aj v ďalších prípadoch. Kto za ním stojí?</div>
+      </div>
+      <p class="rank" id="rankLine"></p>
+      <p class="calm">Toto sa môže stať komukoľvek. Dôležité je vedieť, čo urobiť ďalej.</p>
+      <div class="row">
+        <button class="btn" id="again" type="button">Hrať znova</button>
+        <button class="btn alt" id="home" type="button">Na úvod</button>
+      </div>
+      <p class="muted small">Prípad č. 2 „Kód pre kamaráta“ pribudne v ďalšej verzii.</p>
+      <p class="help">Trápi ťa niečo na internete? Linka detskej istoty <strong>116 111</strong>: bezplatne, anonymne a nonstop pre deti a mladých do 18 rokov.</p>
+    </section>
+  </main>
+  <p class="foot">Prototyp v0.2 pre VALIDION. Hra Kryptoria, aplikácia Bzuk, mesto Lipovec aj všetky adresy sú vymyslené. Hra nič neodosiela.</p>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  // faces
+  function face(skin,hair,extra){return '<svg viewBox="0 0 44 44"><rect width="44" height="44" fill="#f3ead6"/><circle cx="22" cy="26" r="13" fill="'+skin+'"/>'+hair+'<circle cx="17" cy="26" r="1.8" fill="#1f2330"/><circle cx="27" cy="26" r="1.8" fill="#1f2330"/><path d="M18 31 q4 3 8 0" stroke="#1f2330" stroke-width="1.6" fill="none"/>'+(extra||'')+'</svg>'}
+  var F={
+    mira:face("#e2b896",'<path d="M9 24 Q10 9 22 9 Q34 9 35 24 L31 18 Q22 14 13 18Z" fill="#3b2a6b"/>','<rect x="12" y="10" width="20" height="5" rx="2" fill="#2a7d74"/>'),
+    lea:face("#f0c7a8",'<path d="M9 26 Q8 9 22 10 Q36 9 35 26 L33 34 L31 20 Q22 15 13 20 L11 34Z" fill="#e0a526"/>'),
+    fuzik:'<svg viewBox="0 0 44 44"><rect width="44" height="44" fill="#f3ead6"/><ellipse cx="11" cy="20" rx="6" ry="11" fill="#7a5430"/><ellipse cx="33" cy="20" rx="6" ry="11" fill="#7a5430"/><circle cx="22" cy="25" r="13" fill="#c99a63"/><ellipse cx="22" cy="31" rx="7" ry="5" fill="#f3e0c0"/><circle cx="22" cy="28" r="2.6" fill="#1f2330"/><circle cx="17" cy="22" r="1.8" fill="#1f2330"/><circle cx="27" cy="22" r="1.8" fill="#1f2330"/><path d="M12 13 L32 13 L30 8 L14 8Z" fill="#2d3f55"/></svg>'
+  };
+  Array.prototype.forEach.call(document.querySelectorAll("[data-face]"),function(e){e.innerHTML=F[e.getAttribute("data-face")]});
+
+  var screens=["s-title","s-brief","s-scan","s-decide","s-result","s-tt","s-debrief"];
+  var state={found:{},choice:null,tt:0,ttIdx:0};
+  function show(id){screens.forEach(function(s){$(s).hidden=(s!==id)});window.scrollTo(0,0);var h=$(id).querySelector(".stamp");if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}}
+
+  var ac=null,soundOn=false;
+  function beep(f,d,type){if(!soundOn)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),g=ac.createGain();o.type=type||"triangle";o.frequency.value=f;g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+  $("snd").onclick=function(){soundOn=!soundOn;this.setAttribute("aria-pressed",soundOn);this.textContent="Zvuk: "+(soundOn?"zap":"vyp");beep(660,.12)};
+
+  function loadBest(){try{var b=+(localStorage.getItem("stopa.c1.best")||0);if(b){$("best").textContent="Tvoj najlepší výsledok v prípade č. 1: "+"★".repeat(b)+"☆".repeat(3-b);if(b>=2)$("hudRank").textContent="detektív"}}catch(e){}}
+  function saveBest(n){try{var b=+(localStorage.getItem("stopa.c1.best")||0);if(n>b)localStorage.setItem("stopa.c1.best",n)}catch(e){}}
+  loadBest();
+
+  $("go-brief").onclick=function(){beep(520,.1);show("s-brief")};
+  $("go-scan").onclick=function(){beep(520,.1);show("s-scan")};
+
+  var flags={
+    sender:"Stopa: neznámy účet. Hra ti zvyčajne nepíše súkromnú správu cez chatovaciu appku. Slovo „Oficial“ si do mena môže dať ktokoľvek.",
+    prize:"Stopa: veľká výhra zadarmo. Lákadlo, ktoré má vypnúť opatrnosť.",
+    hurry:"Stopa: časový tlak. Kto ťa ženie, nechce, aby si to stihol niekto overiť.",
+    link:"Stopa: cudzí odkaz. Nie je to adresa hry. Do hry sa vždy dostaneš cez jej vlastnú aplikáciu.",
+    pass:"Stopa: pýtajú heslo. Na poslanie výhry nikto tvoje heslo nepotrebuje."
+  };
+  var decoys={
+    "decoy-hi":"Toto samo osebe stopa nie je. „Gratulujeme“ píšu aj skutočné hry. Sleduj, čo od teba chcú.",
+    "decoy-sig":"Podpis sám osebe nič nedokazuje. Ale toho draka si zapamätaj, Fúzik ho zavetril."
+  };
+  var total=Object.keys(flags).length;
+  function renderMag(){var m=$("mag"),n=Object.keys(state.found).length;m.innerHTML="";for(var i=0;i<total;i++){var e=document.createElement("i");if(i<n)e.className="on";m.appendChild(e)}$("scanCount").textContent=n+"/"+total}
+  renderMag();
+  Array.prototype.forEach.call(document.querySelectorAll("#dm .tap"),function(b){
+    b.onclick=function(){
+      var id=b.getAttribute("data-id"),tip=$("tip");
+      if(flags[id]){if(!state.found[id]){state.found[id]=1;b.classList.add("hit");beep(880,.09)}tip.textContent=flags[id];tip.className="tip flag"}
+      else{b.classList.add("miss");tip.textContent=decoys[id];tip.className="tip";beep(300,.08,"sine")}
+      renderMag();if(Object.keys(state.found).length>=3)$("go-decide").hidden=false;
+    };
+  });
+  $("go-decide").onclick=function(){beep(520,.1);show("s-decide")};
+
+  var outcomes={
+    click:{cls:"bad",label:"Účet je preč",text:"Stránka vyzerá ako Kryptoria, ale patrí Tieňovi. Po zadaní hesla sa niekto iný prihlási do Leinho účtu, zmení heslo a rozdá jej predmety. Žiadny drak neprišiel."},
+    ask:{cls:"ok",label:"Skoro",text:"Účet hneď odpíše: „Áno, je to 100 % pravé, ponáhľaj sa.“ Podvodník sa neprizná. Overovať treba inou cestou, nie u toho, kto správu poslal."},
+    verify:{cls:"best",label:"Prípad vyriešený",text:"Lea otvorí Kryptoriu vlastnou cestou. V hre žiadna výhra nie je. Účet v Bzuku nahlási a zablokuje. Tieň tentoraz odchádza naprázdno."}
+  };
+  Array.prototype.forEach.call(document.querySelectorAll(".choice"),function(b){
+    b.onclick=function(){var c=b.getAttribute("data-c"),o=outcomes[c];state.choice=c;
+      $("resBox").className="result "+o.cls;$("resLabel").textContent=o.label;$("resText").textContent=o.text;
+      $("resCalm").textContent=c==="verify"?"Presne tak. Overiť vlastnou cestou je detektívna klasika.":"Toto sa môže stať komukoľvek. Bezpečnejšia cesta: neklikať a otvoriť hru priamo.";
+      beep(c==="click"?160:c==="ask"?440:990,.25);show("s-result")};
+  });
+
+  var items=[
+    {src:"Launcher Pixelbrána · upozornenie v aplikácii",t:"Nová aktualizácia Kryptorie je pripravená. Spusti ju tlačidlom Aktualizovať.",a:"safe",why:"Prišlo to priamo v launcheri, ktorý máš nainštalovaný, a nepýta to heslo."},
+    {src:"Bzuk · kamarát Tomáš",t:"čau, prišiel ti teraz SMS kód? pošli mi ho prosím, potrebujem ho na turnaj",a:"trap",why:"Kód zo SMS je kľúč k tvojmu účtu. Nedávaj ho nikomu, ani najlepšiemu kamarátovi. Jeho účet mohol niekto ukradnúť."},
+    {src:"Video · komentár pod videom",t:"GENERÁTOR KRYŠTÁLOV ZADARMO. Stiahni si program z kryst-gen.example a spusti ho.",a:"trap",why:"Generátory zadarmo nefungujú. Takéto programy často kradnú heslá z počítača."},
+    {src:"Kryptoria · obchod v hre",t:"Víkendová akcia: skin Mesačná líška za 200 kryštálov.",a:"safe",why:"Je to v obchode priamo v hre. Ak by išlo o skutočné peniaze, poraď sa najprv s rodičom."},
+    {src:"E-mail · podpora-kryptoria@ucet.example",t:"Váš účet bude dnes zrušený. Overte heslo tu: kryptoria-support.example",a:"trap",why:"Strašenie a odkaz, ktorý pýta heslo. Otvor hru vlastnou cestou a pozri, či je s účtom niečo v neporiadku."}
+  ];
+  function renderDots(){var d=$("dots");d.innerHTML="";items.forEach(function(it,i){var e=document.createElement("i");if(it.r===true)e.className="y";else if(it.r===false)e.className="n";else if(i===state.ttIdx)e.className="c";d.appendChild(e)})}
+  function showItem(){var it=items[state.ttIdx];$("ttSrc").textContent=it.src;$("ttText").textContent=it.t;$("ttTip").textContent="Je to v poriadku, alebo je to pasca?";$("ttTip").className="tip";$("ttBtns").hidden=false;$("tt-next").hidden=true;renderDots()}
+  $("go-tt").onclick=function(){state.tt=0;state.ttIdx=0;items.forEach(function(i){delete i.r});show("s-tt");showItem()};
+  Array.prototype.forEach.call(document.querySelectorAll("#ttBtns button"),function(b){
+    b.onclick=function(){var it=items[state.ttIdx],ok=b.getAttribute("data-a")===it.a;it.r=ok;if(ok)state.tt++;
+      $("ttTip").textContent=(ok?"Správne. ":"Tentoraz nie. ")+(it.a==="safe"?"Dôvera. ":"Pasca. ")+it.why;$("ttTip").className=ok?"tip":"tip flag";
+      $("ttBtns").hidden=true;$("tt-next").hidden=false;$("tt-next").textContent=state.ttIdx<items.length-1?"Ďalej":"Uzavrieť prípad";$("tt-next").focus();renderDots();beep(ok?880:200,.12)};
+  });
+  $("tt-next").onclick=function(){if(state.ttIdx<items.length-1){state.ttIdx++;showItem()}else debrief()};
+
+  function debrief(){
+    var s=0;if(Object.keys(state.found).length>=4)s++;if(state.choice==="verify")s++;if(state.tt>=4)s++;
+    $("stars").innerHTML=[0,1,2].map(function(i){return '<span class="'+(i<s?"on":"")+'">★</span>'}).join("");
+    $("stars").setAttribute("aria-label","Hviezdy: "+s+" z 3");
+    $("rankLine").textContent=s>=2?"Povýšenie: z nováčika je teraz detektív. Gratulujeme.":"Hodnosť: nováčik. S dvoma hviezdami ťa čaká povýšenie na detektíva.";
+    if(s>=2)$("hudRank").textContent="detektív";
+    saveBest(s);show("s-debrief");beep(1046,.3);
+  }
+  function reset(){state.found={};state.choice=null;Array.prototype.forEach.call(document.querySelectorAll("#dm .tap"),function(b){b.classList.remove("hit","miss")});renderMag();$("tip").textContent="Ťukni na časť správy, ktorá ti nesedí.";$("tip").className="tip";$("go-decide").hidden=true}
+  $("again").onclick=function(){reset();show("s-brief")};
+  $("home").onclick=function(){reset();loadBest();show("s-title")};
+})();
+</script>

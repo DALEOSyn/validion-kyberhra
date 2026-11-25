@@ -1,0 +1,211 @@
+<title>Príbeh Kancelárie STOPA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&family=Special+Elite&display=swap">
+<style>
+/* Layout: a case file read top to bottom; cast strip, then 11 comic panels, each = drawing + text + class question + reactions. Single warm paper-and-cork look. */
+:root{
+  --cork:#c99a63; --cork-dk:#7a5430; --paper:#fffaf0; --paper-2:#f3ead6; --ink:#1f2330; --muted:#5d6273;
+  --note:#ffe066; --teal:#2a7d74; --navy:#2d3f55; --red:#d64535;
+  --f-display:"Baloo 2","Nunito",system-ui,sans-serif; --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif; --f-type:"Special Elite","Courier New",monospace;
+  color-scheme:light;
+}
+body{background:var(--cork);background-image:radial-gradient(rgba(122,84,48,.25) 1px,transparent 1.5px);background-size:14px 14px;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:26px}
+.sheet{background:var(--paper);border-radius:14px;padding:22px;box-shadow:0 8px 20px rgba(60,35,10,.3)}
+header.sheet{display:flex;flex-direction:column;gap:12px}
+.stamp{font-family:var(--f-type);font-size:14px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;margin:0}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,7vw,54px);line-height:1.02;margin:0}
+h1 span{color:var(--teal)}
+.lead{font-size:18px;margin:0;max-width:62ch}
+.how{background:var(--note);padding:12px 16px;transform:rotate(-.6deg);font-size:15px;max-width:66ch;box-shadow:0 3px 8px rgba(0,0,0,.12)}
+h2.sec{font-family:var(--f-display);font-weight:800;font-size:26px;margin:0;color:var(--paper);text-shadow:0 2px 0 var(--cork-dk)}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:12px}
+.who{background:var(--paper);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;min-width:0;box-shadow:0 4px 0 var(--cork-dk)}
+.who svg{width:100%;max-width:120px;height:auto}
+.who strong{font-family:var(--f-display);font-size:18px}
+.who span{font-size:13px;color:var(--muted)}
+.strip{display:flex;flex-direction:column;gap:26px}
+.panel{background:var(--paper);border-radius:14px;overflow:hidden;display:grid;grid-template-columns:1fr;box-shadow:0 8px 20px rgba(60,35,10,.3)}
+@media (min-width:740px){.panel{grid-template-columns:1.1fr 1fr}.panel:nth-child(even) .art{order:2}}
+.art{position:relative;min-width:0;background:var(--paper);display:flex;align-items:center;border:6px solid var(--paper)}
+.art svg{display:block;width:100%;height:auto;border:3px solid var(--ink);border-radius:6px}
+.num{position:absolute;top:12px;left:12px;font-family:var(--f-type);font-size:13px;background:var(--note);border:2px solid var(--ink);border-radius:4px;padding:1px 7px}
+.txt{padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.txt h3{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1.1;margin:0;text-wrap:balance}
+.place{font-family:var(--f-type);font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.05em}
+.txt p{margin:0}
+.say{border-left:4px solid var(--teal);padding:4px 0 4px 10px;font-style:italic}
+.say b{font-style:normal;font-size:13px;color:var(--teal);display:block}
+.rule{font-family:var(--f-display);font-weight:800;color:var(--navy);background:var(--paper-2);border-radius:8px;padding:6px 10px}
+.clue{font-size:15px;background:var(--navy);color:#fff;border-radius:8px;padding:8px 12px}
+.clue b{color:var(--note)}
+.q{border:2px dashed var(--teal);border-radius:10px;padding:10px 12px;font-size:16px}
+.q b{color:var(--teal)}
+.react{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.react button{font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--paper-2);border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;box-shadow:0 2px 0 #e5d9bd}
+.react button:hover{border-color:var(--teal)}
+.react .n{font-variant-numeric:tabular-nums;color:var(--teal);min-width:1.2em;text-align:right}
+.react .cm{border-style:dashed;color:var(--teal)}
+.foot{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted)}
+.foot strong{color:var(--ink)}
+.foot p{margin:0}
+.foot button{align-self:flex-start;font:inherit;font-size:14px;background:transparent;border:2px solid var(--paper-2);border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--muted)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+</style>
+
+<div class="wrap">
+  <header class="sheet">
+    <p class="stamp">Návrh príbehu · na pripomienky detí · VALIDION</p>
+    <h1>Kancelária <span>STOPA</span></h1>
+    <p class="lead">V meste Lipovec niekto rozposiela falošné výhry, kradne účty a nastražuje podvodné odkazy. Podpisuje sa malým drakom a volá sa Tieň. Partia spolužiakov si založí detektívnu kanceláriu a rieši prípad za prípadom. Celý príbeh hry v 11 obrázkoch.</p>
+    <div class="how"><b>Ako to použiť s deťmi:</b> prejdite obrázky jeden po druhom a pri každom sa porozprávajte o otázke. Deti môžu hlasovať tlačidlami. Hlasy sa počítajú len na tomto zariadení a nič sa neodosiela. Dospelí s prístupom k stránke môžu pridať komentár tlačidlom „Komentovať“.</div>
+  </header>
+
+  <h2 class="sec">Kto je kto</h2>
+  <div class="cast" id="cast"></div>
+
+  <h2 class="sec">Príbeh</h2>
+  <div class="strip" id="strip"></div>
+
+  <div class="sheet foot">
+    <p>Všetky postavy, mesto Lipovec, hry, aplikácie a obchody sú vymyslené. Je to návrh na diskusiu, texty ešte prejdú kontrolou.</p>
+    <p>Trápi ťa niečo na internete? Linka detskej istoty <strong>116 111</strong>: bezplatne, anonymne a nonstop pre deti a mladých do 18 rokov.</p>
+    <button id="resetVotes" type="button">Vynulovať hlasy na tomto zariadení</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var C={ink:"#1f2330",paper:"#fffaf0",p2:"#f3ead6",cork:"#c99a63",dk:"#7a5430",note:"#ffe066",teal:"#2a7d74",navy:"#2d3f55",red:"#d64535",sky:"#bfe3ef",grass:"#9fd28c"};
+  var S='stroke="'+C.ink+'" stroke-width="2.5" stroke-linejoin="round"';
+  function rnd(seed){return function(){seed=(seed*9301+49297)%233280;return seed/233280}}
+  // backgrounds
+  function town(seed,skyc,night){var r=rnd(seed),s='<rect width="400" height="250" fill="'+(skyc||C.sky)+'"/>';
+    if(night)s+='<circle cx="340" cy="44" r="18" fill="#fff6c8"/>';else s+='<circle cx="350" cy="40" r="20" fill="#ffd34d"/>';
+    var x=-10;while(x<410){var w=50+r()*40,h=60+r()*60,col=["#f4b6a0","#f7d58b","#a9cfe0","#c7b8e6","#b6dcb0"][Math.floor(r()*5)];
+      s+='<rect x="'+x+'" y="'+(215-h)+'" width="'+w+'" height="'+h+'" fill="'+col+'" '+S+'/><path d="M'+(x-4)+' '+(215-h)+' L'+(x+w/2)+' '+(215-h-26)+' L'+(x+w+4)+' '+(215-h)+'Z" fill="'+C.red+'" '+S+'/>';
+      for(var wy=215-h+14;wy<200;wy+=26)for(var wx=x+10;wx<x+w-18;wx+=22)s+='<rect x="'+wx+'" y="'+wy+'" width="12" height="14" fill="'+(night&&r()<.6?"#ffe066":"#fff")+'" '+S+'/>';
+      x+=w+6}
+    return s+'<rect x="0" y="215" width="400" height="35" fill="#d9cdb3" '+S+'/>'}
+  function room(seed){return '<rect width="400" height="250" fill="#f6e3c0"/><rect x="0" y="200" width="400" height="50" fill="#c49461" '+S+'/>'+board(24,26,150,110)}
+  function board(x,y,w,h){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+C.cork+'" '+S+'/><rect x="'+(x+12)+'" y="'+(y+14)+'" width="40" height="32" fill="#fff" '+S+' transform="rotate(-5 '+(x+30)+' '+(y+30)+')"/><rect x="'+(x+w-56)+'" y="'+(y+18)+'" width="40" height="40" fill="'+C.note+'" '+S+'/><path d="M'+(x+32)+' '+(y+30)+' L'+(x+w-36)+' '+(y+38)+' L'+(x+w/2)+' '+(y+h-22)+'" stroke="'+C.red+'" stroke-width="2" fill="none"/><text x="'+(x+w/2-10)+'" y="'+(y+h-12)+'" font-size="18">🐉</text>'}
+  // people
+  function kid(x,o){o=o||{};var s=o.s||1,y=o.y||215,sk=o.skin||"#f0c7a8",flip=o.flip?-1:1;
+    var g='<g transform="translate('+x+','+y+') scale('+(s*flip)+','+s+')">'+
+      '<rect x="-15" y="-66" width="30" height="40" rx="10" fill="'+(o.top||C.teal)+'" '+S+'/>'+
+      '<rect x="-12" y="-28" width="10" height="28" rx="4" fill="'+(o.legs||C.navy)+'" '+S+'/><rect x="2" y="-28" width="10" height="28" rx="4" fill="'+(o.legs||C.navy)+'" '+S+'/>'+
+      '<circle cx="0" cy="-84" r="18" fill="'+sk+'" '+S+'/>'+(o.hair||'')+
+      '<circle cx="-6" cy="-84" r="2.2" fill="'+C.ink+'"/><circle cx="6" cy="-84" r="2.2" fill="'+C.ink+'"/><path d="M-5 -76 q5 '+(o.sad?-3:4)+' 10 0" stroke="'+C.ink+'" stroke-width="2" fill="none"/>';
+    if(o.phone)g+='<rect x="14" y="-58" width="12" height="20" rx="3" fill="'+C.navy+'" '+S+'/><rect x="16" y="-55" width="8" height="12" fill="#bfe3ef"/>';
+    if(o.mag)g+='<circle cx="26" cy="-60" r="9" fill="#cfe9f0" '+S+'/><line x1="20" y1="-53" x2="12" y2="-44" stroke="'+C.ink+'" stroke-width="4"/>';
+    if(o.apron)g+='<rect x="-11" y="-56" width="22" height="30" rx="3" fill="#fff" '+S+'/>';
+    if(o.cap)g+='<path d="M-18 -92 Q0 -112 18 -92 Z" fill="'+o.cap+'" '+S+'/><rect x="0" y="-95" width="22" height="5" rx="2" fill="'+o.cap+'" '+S+'/>';
+    return g+'</g>'}
+  var H={
+    mira:'<path d="M-19 -84 Q-18 -106 0 -105 Q18 -106 19 -84 L13 -94 Q0 -98 -13 -94Z" fill="#3b2a6b" '+S+'/><path d="M-19 -86 L-22 -62 L-14 -70Z" fill="#3b2a6b" '+S+'/>',
+    lea:'<path d="M-20 -80 Q-20 -106 0 -104 Q20 -106 20 -80 L22 -60 L14 -80 Q0 -96 -14 -80 L-22 -60Z" fill="#e0a526" '+S+'/>',
+    tom:'<path d="M-18 -88 Q-14 -106 2 -104 Q18 -104 18 -88 Q8 -96 -18 -88Z" fill="#6b4a2b" '+S+'/>',
+    you:'<path d="M-18 -88 Q-16 -105 0 -104 Q16 -105 18 -88 L10 -95 L4 -90 L-4 -96 L-10 -90Z" fill="#2d3f55" '+S+'/>',
+    zora:'<path d="M-18 -88 Q0 -108 18 -88 Q10 -98 -18 -88Z" fill="#c9c9d6" '+S+'/><circle cx="0" cy="-106" r="8" fill="#c9c9d6" '+S+'/><circle cx="-6" cy="-84" r="5" fill="none" stroke="'+C.ink+'" stroke-width="1.5"/><circle cx="6" cy="-84" r="5" fill="none" stroke="'+C.ink+'" stroke-width="1.5"/>',
+    nina:'<path d="M-18 -86 Q-16 -106 0 -105 Q16 -106 18 -86 Z" fill="#1f2330" '+S+'/><circle cx="16" cy="-98" r="7" fill="#1f2330" '+S+'/>'
+  };
+  var MIRA=function(x,o){o=o||{};o.hair=H.mira;o.top="#e85d4a";o.skin="#e2b896";return kid(x,o)};
+  var LEA=function(x,o){o=o||{};o.hair=H.lea;o.top="#7cc47a";return kid(x,o)};
+  var TOM=function(x,o){o=o||{};o.hair=H.tom;o.top="#b9a2e6";o.skin="#c99273";return kid(x,o)};
+  var YOU=function(x,o){o=o||{};o.hair=H.you;o.top=C.teal;o.mag=o.mag!==false;return kid(x,o)};
+  var ZORA=function(x,o){o=o||{};o.hair=H.zora;o.top="#d48a9a";o.apron=true;return kid(x,o)};
+  function dog(x,y,s){s=s||1;return '<g transform="translate('+x+','+y+') scale('+s+')"><ellipse cx="0" cy="-16" rx="24" ry="14" fill="'+C.cork+'" '+S+'/><rect x="-18" y="-6" width="8" height="10" fill="'+C.cork+'" '+S+'/><rect x="10" y="-6" width="8" height="10" fill="'+C.cork+'" '+S+'/><path d="M-24 -18 q-10 -10 -4 -16" stroke="'+C.ink+'" stroke-width="3" fill="none"/><circle cx="22" cy="-34" r="15" fill="'+C.cork+'" '+S+'/><ellipse cx="12" cy="-38" rx="6" ry="11" fill="'+C.dk+'" '+S+'/><ellipse cx="33" cy="-38" rx="6" ry="11" fill="'+C.dk+'" '+S+'/><circle cx="18" cy="-36" r="2" fill="'+C.ink+'"/><circle cx="27" cy="-36" r="2" fill="'+C.ink+'"/><circle cx="23" cy="-29" r="3" fill="'+C.ink+'"/><path d="M10 -46 L34 -46 L31 -54 L13 -54Z" fill="'+C.navy+'" '+S+'/></g>'}
+  function shadow(x,y,s,o){s=s||1;return '<g transform="translate('+x+','+y+') scale('+s+')" opacity="'+(o||1)+'"><path d="M-26 0 Q-30 -60 -16 -78 Q0 -104 16 -78 Q30 -60 26 0Z" fill="#6c6f82" '+S+'/><path d="M-12 -74 Q0 -92 12 -74 Q0 -66 -12 -74Z" fill="#3d4052"/><text x="-9" y="-30" font-family="Baloo 2" font-weight="800" font-size="30" fill="#fff">?</text><text x="10" y="-6" font-size="14">🐉</text></g>'}
+  function phone(x,y,lines,w,h,warn){w=w||110;h=h||140;var g='<g transform="translate('+x+','+y+')"><rect width="'+w+'" height="'+h+'" rx="14" fill="'+C.navy+'" '+S+'/><rect x="8" y="14" width="'+(w-16)+'" height="'+(h-26)+'" rx="6" fill="'+(warn?"#ffe3df":"#fff")+'"/>';
+    lines.forEach(function(l,i){g+='<text x="14" y="'+(32+i*16)+'" font-family="Nunito,sans-serif" font-weight="700" font-size="11" fill="'+(l.c||C.ink)+'">'+l.t+'</text>'});return g+'</g>'}
+  function bubble(x,y,w,text,tail){var lines=text.split("|"),h=14+lines.length*16,g='<g transform="translate('+x+','+y+')"><rect width="'+w+'" height="'+h+'" rx="12" fill="#fff" '+S+'/>';
+    if(tail)g+='<path d="M'+tail+' '+h+' l8 14 l6 -14" fill="#fff" '+S+'/><rect x="'+(tail-1)+'" y="'+(h-3)+'" width="16" height="5" fill="#fff"/>';
+    lines.forEach(function(l,i){g+='<text x="10" y="'+(20+i*16)+'" font-family="Nunito,sans-serif" font-weight="800" font-size="12.5" fill="'+C.ink+'">'+l+'</text>'});return g+'</g>'}
+  function qr(x,y,s){var r=rnd(77),g='<g transform="translate('+x+','+y+')"><rect width="'+(s+8)+'" height="'+(s+8)+'" fill="#fff" '+S+'/>',n=9,c=s/n;for(var i=0;i<n;i++)for(var j=0;j<n;j++){var cor=(i<3&&j<3)||(i>5&&j<3)||(i<3&&j>5);if(cor?((i%2===0||j%2===0)&&!(i===1&&j===1)&&!(i===7&&j===1)&&!(i===1&&j===7)):r()<.45)g+='<rect x="'+(4+i*c).toFixed(1)+'" y="'+(4+j*c).toFixed(1)+'" width="'+c.toFixed(1)+'" height="'+c.toFixed(1)+'" fill="'+C.ink+'"/>'}return g+'</g>'}
+  function label(x,y,t,size,col){return '<text x="'+x+'" y="'+y+'" font-family="Baloo 2,sans-serif" font-weight="800" font-size="'+(size||18)+'" fill="'+(col||C.ink)+'">'+t+'</text>'}
+  function svg(inner,lab){return '<svg viewBox="0 0 400 250" role="img" aria-label="'+lab+'">'+inner+'</svg>'}
+
+  // cast
+  var cast=[
+    {n:"Ty",d:"Nový detektív v kancelárii.",a:YOU(60,{s:1.05})},
+    {n:"Mira",d:"Založila kanceláriu. Rozvážna, vtipná.",a:MIRA(60,{s:1.05})},
+    {n:"Fúzik",d:"Detektívny pes. Vysvetľuje ťažké slová.",a:dog(48,190,1.3)},
+    {n:"Lea a Tomáš",d:"Spolužiaci a prví klienti.",a:LEA(36,{s:.85})+TOM(86,{s:.85})},
+    {n:"Babi Zora",d:"Má pekáreň pod kanceláriou. Dospelá, ktorej sa dá veriť.",a:ZORA(60,{s:1.05})},
+    {n:"Tieň",d:"Záhadný podvodník. Podpisuje sa drakom.",a:shadow(60,205,1.1)}
+  ];
+  var castEl=document.getElementById("cast");
+  cast.forEach(function(c){var d=document.createElement("div");d.className="who";d.innerHTML='<svg viewBox="0 0 120 220" aria-hidden="true"><rect x="2" y="2" width="116" height="216" rx="10" fill="#f6e3c0" stroke="'+C.ink+'" stroke-width="2"/>'+c.a+'</svg>';var st=document.createElement("strong");st.textContent=c.n;var sp=document.createElement("span");sp.textContent=c.d;d.appendChild(st);d.appendChild(sp);castEl.appendChild(d)});
+
+  var P=[
+    {id:"s01",t:"Čudné správy v Lipovci",pl:"Prológ · mesto Lipovec",
+     art:town(5)+phone(30,60,[{t:"VYHRAL SI!",c:C.red},{t:"klikni sem",c:C.red},{t:"🐉"}],100,120,true)+phone(270,50,[{t:"Váš účet bude",c:C.red},{t:"zrušený!",c:C.red},{t:"🐉"}],100,120,true)+shadow(200,205,.9,.85),
+     txt:"V meste Lipovec ľuďom pípajú telefóny. Falošné výhry, strašenie o zrušenom účte, čudné odkazy. Pod mnohými správami je nakreslený malý drak.",
+     say:["Babi Zora","Moja suseda takmer zaplatila za balík, ktorý nikdy neobjednala."],q:"Aké čudné správy už prišli tebe alebo niekomu, koho poznáš?"},
+    {id:"s02",t:"Kancelária nad pekárňou",pl:"Založenie kancelárie STOPA",
+     art:room(1)+label(220,52,"STOPA",34,C.teal)+MIRA(240,{s:1.1})+YOU(320,{s:1.1})+dog(120,212,1.1)+bubble(196,76,190,"Hľadáme ľudí, ktorí|si všímajú detaily.",60),
+     txt:"Mira si nad pekárňou Babi Zory zariadi detektívnu kanceláriu. Má korkovú nástenku, lupu a psa Fúzika. Hľadá parťáka, ktorý si všíma detaily. To si ty.",
+     say:["Mira","Detektív nič nerozbíja. Detektív si všíma."],q:"Čo všetko sa dá „všimnúť“ na správe v telefóne?"},
+    {id:"s03",t:"Prípad č. 1: Drak zadarmo",pl:"Klientka: Lea",
+     art:room(2)+LEA(220,{s:1.1,phone:true})+phone(260,40,[{t:"Kryptoria_Oficial",c:C.teal},{t:"5000 kryštálov",c:C.ink},{t:"do 15 minút!",c:C.red},{t:"prihlás sa tu",c:C.ink},{t:"🐉"}],120,150,true)+YOU(90,{s:1.1,flip:true}),
+     txt:"Lea dostane správu, že vyhrala vzácneho draka do hry. Stačí sa prihlásiť cez odkaz. Lupou nájdeš stopy: výhra zadarmo, časový tlak, cudzí odkaz a otázka na heslo.",
+     say:["Lea","Ten drak je fakt super. Mám kliknúť?"],rule:"Prihlasuj sa len v hre alebo v jej aplikácii.",clue:"Správu podpísal malý drak 🐉.",q:"Čo poradiť Lei? Podľa čoho spoznáš, že výhra nie je pravá?"},
+    {id:"s04",t:"Prípad č. 2: Kód pre kamaráta",pl:"Klient: Tomáš",
+     art:town(9)+TOM(80,{s:1.1,phone:true,sad:true})+phone(140,50,[{t:"od: Tomáš",c:C.teal},{t:"pošli mi kód",c:C.ink},{t:"zo SMS, rýchlo",c:C.ink},{t:"🐉"}],110,130,true)+YOU(300,{s:1.1})+bubble(250,60,140,"Tomáš je predsa|vedľa mňa!",30),
+     txt:"Tomášovi niekto ukradol účet. Z jeho mena teraz píše kamarátom a pýta kód zo SMS. Tomáš pritom stojí vedľa teba a o ničom nevie.",
+     say:["Fúzik","Kód zo SMS je kľúč od účtu. Nedávaj ho nikomu."],rule:"Kód nikdy nikomu, ani kamarátovi.",clue:"Aj tu je drak. Tieň píše z ukradnutých účtov.",q:"Ako overiť, že ti naozaj píše kamarát?"},
+    {id:"s05",t:"Prípad č. 3: Zámok na účte",pl:"Klient: školský herný klub",
+     art:room(3)+'<rect x="200" y="60" width="170" height="40" rx="8" fill="#fff" '+S+'/>'+label(212,86,"heslo: 1234",16,C.red)+'<rect x="200" y="112" width="170" height="40" rx="8" fill="#fff" '+S+'/>'+label(212,138,"dazdivy-pes-cucoriedka",13,C.teal)+'<rect x="200" y="164" width="76" height="30" rx="6" fill="'+C.note+'" '+S+'/>'+label(208,185,"+ 2. zámok",12)+MIRA(110,{s:1}),
+     txt:"Tieň sa dostal do účtu školského klubu, lebo heslo bolo „1234“ a rovnaké všade. Kancelária pomôže postaviť dlhé heslo z viet a pridať druhý zámok.",
+     say:["Mira","Dlhá veta poráža krátke heslo. A každý účet má iné."],rule:"Dlhé heslo, pre každý účet iné, a druhý zámok.",q:"Vymysli dlhé heslo z troch slov. (Nepíš sem svoje skutočné heslo.)"},
+    {id:"s06",t:"Prípad č. 4: Kričiaca obrazovka",pl:"Klientka: Babi Zora",
+     art:room(4)+'<rect x="190" y="40" width="190" height="120" rx="8" fill="#ffe3df" '+S+'/>'+label(204,78,"⚠ VÍRUS!!!",24,C.red)+label(204,104,"Stiahni čistič hneď",13)+'<rect x="216" y="118" width="130" height="28" rx="6" fill="'+C.red+'" '+S+'/>'+label(240,138,"STIAHNUŤ",14,"#fff")+ZORA(110,{s:1.05})+dog(330,212,.8),
+     txt:"Babi Zore vyskočí na tablete blikajúce okno: vraj má vírus a musí si hneď stiahnuť čistič. Je to trik. Strach má urýchliť rozhodnutie.",
+     say:["Fúzik","Okno zavri. Aplikácie len z oficiálneho obchodu."],rule:"Strašiace okno zavri a nič z neho nesťahuj.",clue:"Aj v tomto okne bol drak, malý v rohu.",q:"Prečo podvodníci radi strašia? Čo pomáha, keď sa niečoho zľakneš?"},
+    {id:"s07",t:"Prípad č. 5: Dvojníčka",pl:"Klientka: Nina z 8.B",
+     art:town(13)+phone(30,40,[{t:"@nina.8b.nova",c:C.teal},{t:"ahoj to som ja",c:C.ink},{t:"starý profil mi",c:C.ink},{t:"zablokovali",c:C.ink}],130,140,true)+kid(260,{s:1.1,hair:H.nina,top:"#f2a65a"})+'<path d="M200 120 l40 0" stroke="'+C.red+'" stroke-width="3" stroke-dasharray="6 4"/>'+label(296,74,"?",40,C.red),
+     txt:"Niekto si založil profil s Nininými fotkami a píše jej kamarátom. Nina o ňom nevie. Kancelária pomôže profil nahlásiť a varovať triedu.",
+     say:["Mira","Nový profil známeho? Opýtaj sa ho inou cestou, napríklad v škole."],rule:"Nový profil známeho over inou cestou.",q:"Ako spoznáš falošný profil? Čo robiť, keby niekto použil tvoje fotky?"},
+    {id:"s08",t:"Prípad č. 6: Nálepka na plagáte",pl:"Námestie v Lipovci",
+     art:town(17)+'<rect x="150" y="30" width="120" height="170" fill="#fff" '+S+'/>'+label(164,62,"KONCERT",20,C.teal)+label(164,84,"lístky tu ↓",12)+qr(178,100,56)+'<rect x="172" y="94" width="76" height="76" fill="none" stroke="'+C.red+'" stroke-width="3" stroke-dasharray="6 4"/>'+YOU(80,{s:1.05})+dog(330,212,.85)+bubble(286,60,100,"Nálepka|navrchu!",20),
+     txt:"Na plagáte koncertu je QR kód na lacné lístky. Tieň cez neho nalepil vlastný kód. Ten vedie na falošnú stránku, ktorá chce platbu.",
+     say:["Fúzik","Pred otvorením sa pozri na adresu. Radšej ju napíš ručne."],rule:"Pozri adresu skôr, než otvoríš QR kód.",clue:"V rohu nálepky je drak 🐉.",q:"Ako zistiť, že je QR kód nalepený navrch?"},
+    {id:"s09",t:"Prípad č. 7: Tenisky za 9 €",pl:"Klient: Tomáš",
+     art:room(5)+'<rect x="200" y="40" width="180" height="120" rx="10" fill="#fff" '+S+'/>'+label(214,72,"SUPER-TENISKY",16,C.teal)+label(214,108,"−95 %  9 €",28,C.red)+label(214,136,"len dnes!",14)+TOM(110,{s:1.05,phone:true})+ZORA(180,{s:.9,y:215}),
+     txt:"Tomáš nájde e-shop so značkovými teniskami za 9 €. Babi Zora sa usmeje: keď je niečo až príliš lacné, niekde je háčik.",
+     say:["Babi Zora","Pred platbou na internete sa poraď s niekým dospelým."],rule:"Pred platbou sa poraď s dospelým.",q:"Kto je tvoj dospelý, ktorému dôveruješ? Ako mu povedať, že sa niečo stalo?"},
+    {id:"s10",t:"Prípad č. 8: Tieň útočí naraz",pl:"Finále",
+     art:room(6)+board(200,24,180,150)+phone(24,60,[{t:"mami, mám nové",c:C.ink},{t:"číslo, pošli...",c:C.ink}],100,80,true)+phone(24,150,[{t:"Schváliť",c:C.teal},{t:"prihlásenie?",c:C.ink}],100,60,true)+MIRA(170,{s:.95})+YOU(240,{s:.95,y:230}),
+     txt:"Tieň skúsi všetko naraz: správu „mami, mám nové číslo“, žiadosť o schválenie prihlásenia a falošnú podporu, ktorá chce prístup do telefónu. Kancelária spojí všetky stopy na nástenke.",
+     say:["Mira","Pauza. Overiť. Povedať niekomu."],rule:"Pauza. Overiť. Povedať niekomu.",q:"Ktorý z troch trikov je podľa teba najzákernejší? Prečo?"},
+    {id:"s11",t:"Kto je Tieň?",pl:"Odhalenie a koniec",
+     art:town(21,"#ffd9a8")+shadow(70,205,.9,.5)+label(32,60,"Tieň = celá skupina podvodníkov",14,C.navy)+MIRA(170,{s:1})+YOU(220,{s:1})+LEA(270,{s:.9})+TOM(310,{s:.9})+ZORA(355,{s:.95})+dog(130,215,.8),
+     txt:"Stopy ukážu, že Tieň nie je jeden zloduch z mesta. Je to skupina podvodníkov ďaleko odtiaľto, ktorá posiela rovnaké triky tisícom ľudí. Kancelária odovzdá dôkazy dospelým a polícii a mesto si vydýchne.",
+     say:["Mira","Tieň nevyhrá, keď ľudia vedia, na čo si dať pozor. Teraz to vieš aj ty."],q:""}
+  ];
+  P[10].q="Páči sa vám tento koniec? Navrhnite vlastné odhalenie Tieňa.";
+
+  var R=[["like","Páči sa mi","😀"],["meh","Neviem","😐"],["no","Nebaví ma","🙁"]];
+  function getVotes(){try{return JSON.parse(localStorage.getItem("stopa.story.votes")||"{}")}catch(e){return {}}}
+  function setVotes(v){try{localStorage.setItem("stopa.story.votes",JSON.stringify(v))}catch(e){}}
+  var votes=getVotes(),commentsApi=null,strip=document.getElementById("strip");
+  P.forEach(function(p,i){
+    var el=document.createElement("article");el.className="panel";el.id=p.id;
+    el.innerHTML='<div class="art">'+svg(p.art,p.t)+'<span class="num">'+(i+1)+' / '+P.length+'</span></div><div class="txt"><span class="place"></span><h3></h3><p class="body"></p><p class="say"><b></b><span></span></p>'+(p.rule?'<p class="rule"></p>':'')+(p.clue?'<p class="clue"><b>Stopa k Tieňovi:</b> <span></span></p>':'')+'<p class="q"><b>Otázka pre triedu:</b> <span></span></p><div class="react"></div></div>';
+    el.querySelector(".place").textContent=p.pl;el.querySelector("h3").textContent=p.t;el.querySelector(".body").textContent=p.txt;
+    el.querySelector(".say b").textContent=p.say[0];el.querySelector(".say span").textContent="„"+p.say[1]+"“";
+    if(p.rule)el.querySelector(".rule").textContent="Pravidlo: "+p.rule;
+    if(p.clue)el.querySelector(".clue span").textContent=p.clue;
+    el.querySelector(".q span").textContent=p.q;
+    var rc=el.querySelector(".react");
+    R.forEach(function(r){var b=document.createElement("button");b.type="button";b.innerHTML='<span aria-hidden="true">'+r[2]+'</span><span></span><span class="n"></span>';b.children[1].textContent=r[1];
+      b._upd=function(){var n=(votes[p.id]&&votes[p.id][r[0]])||0;b.querySelector(".n").textContent=n;b.setAttribute("aria-label",r[1]+": "+n)};b._upd();
+      b.onclick=function(){votes[p.id]=votes[p.id]||{};votes[p.id][r[0]]=(votes[p.id][r[0]]||0)+1;setVotes(votes);b._upd()};rc.appendChild(b)});
+    var cm=document.createElement("button");cm.type="button";cm.className="cm";cm.textContent="Komentovať";cm.hidden=true;
+    cm.onclick=function(){if(commentsApi)commentsApi.openComposer({element:el}).catch(function(){})};rc.appendChild(cm);
+    strip.appendChild(el);
+  });
+  document.getElementById("resetVotes").onclick=function(){votes={};setVotes(votes);Array.prototype.forEach.call(document.querySelectorAll(".react button"),function(b){if(b._upd)b._upd()})};
+  if(window.claude&&window.claude.use){window.claude.use("comments").then(function(c){if(!c)return;commentsApi=c;Array.prototype.forEach.call(document.querySelectorAll(".react .cm"),function(b){b.hidden=false})}).catch(function(){})}
+})();
+</script>

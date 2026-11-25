@@ -1,0 +1,12 @@
+# The "Kde nájsť pomoc" screen. Real organisations may be named only here (Red Line 1).
+# [PLACEHOLDER] The fraud-researcher provides the verified list.
+title: Kde nájsť pomoc
+intro: >-
+  Trápi ťa niečo na internete? Nie je to tvoja chyba. O pomoc môžeš požiadať kedykoľvek.
+trusted_adult: Povedz to dospelému, ktorému dôveruješ. Spolu to vyriešite pokojne.
+entries:
+  - id: linka-detskej-istoty
+    name: Linka detskej istoty
+    phone: 116 111
+    text: Bezplatne, anonymne a nonstop pre deti a mladých do 18 rokov.
+    placeholder: true

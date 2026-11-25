@@ -1,0 +1,15 @@
+{
+  "name": "Kancelária STOPA",
+  "short_name": "STOPA",
+  "description": "Detektívna hra o bezpečnosti na internete pre deti od 11 do 15 rokov.",
+  "lang": "sk",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#c99a63",
+  "theme_color": "#c99a63",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

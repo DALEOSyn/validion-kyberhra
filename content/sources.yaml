@@ -1,0 +1,560 @@
+# content/sources.yaml: sources for Kancelária STOPA (VALIDION kids' cybersecurity game).
+# Owner: fraud-researcher. Created 2026-11-25.
+#
+# Fields: id, publisher, title, url, published, accessed, region, tier, used_for, notes.
+# Tiers: 1 EU agency/body · 2 national CERT/CSIRT · 3 other national authority, consumer body, banking association,
+#        state helpline · 4 NGO, operator, industry or news (supporting only, never the only source for a claim).
+# used_for: case ids J1-J4, T1-T4, and HELP (help screen "Kde nájsť pomoc").
+#
+# Provenance: many rows are reused from the Slovak edition of Scam Atlas (fraud-researcher, opened 2026-11-23/24).
+# accessed = 2026-11-25 means the page was opened again in this session (quotes in notes are from that visit).
+# An older accessed date means the row is reused unchanged and was NOT re-opened in this session.
+# Non-EU European sources (Swiss NCSC) are marked region CH: they are supporting only and do NOT satisfy Red Line 6.
+#
+# Real names in notes (games, platforms, apps, people) are reference only. Never put them in game content (Red Line 1).
+
+sources:
+
+  # =============================================================== EU (tier 1)
+  - id: eu-europol-mule-jobs
+    publisher: Europol (EMMA campaign)
+    title: "Money Mule - job offers (flyer)"
+    url: https://www.europol.europa.eu/sites/default/files/documents/emma_flyer_job_offers.pdf
+    published: n/d
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [T1]
+    notes: "Re-opened 2026-11-25. Red flags: 'Unsolicited contact promising easy money'; overseas companies recruiting 'local/national agents'; all communication and transactions online; the role requires moving money through your own bank account; no education or experience required. Most targeted: 'Unemployed, students and people in economic distress', 'People under 35, including minors'. If involved: stop sending money at once, tell your bank or payment provider, report to national police. English, EU-wide, undated."
+
+  - id: eu-europol-iocta-2026
+    publisher: Europol
+    title: "Internet Organised Crime Threat Assessment (IOCTA) 2026"
+    url: https://www.europol.europa.eu/cms/sites/default/files/documents/IOCTA-2026.pdf
+    published: 2026-04-28
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [T1, T2]
+    notes: "Re-opened 2026-11-25. p. 14: money laundering services 'increasingly accessible to minors and young adults, also via social media \"get-rich\" schemes'; 'Minors may unknowingly engage in money laundering by renting out wallets or receiving crypto \"gifts\" from cybercriminals.' p. 28: 'Infostealers persisted as a key enabler for the entire spectrum of cyber-attacks in 2025.' Does NOT mention games, cheats or cracked software. p. 34 'Offenders often target potential victims on gaming platforms popular among children' is in the CHILD SEXUAL EXPLOITATION chapter: never cite it for J1 or any scam case. No deepfake or celebrity-ad content. SIM swapping only in passing (criminal collectives)."
+
+  - id: eu-enisa-sim-swapping-2021
+    publisher: ENISA (EU Agency for Cybersecurity)
+    title: "Countering SIM-Swapping: Overview and good practices to reduce the impact of SIM-Swapping Attacks"
+    url: https://www.enisa.europa.eu/sites/default/files/publications/ENISA_REPORT-Countering_SIM_Swapping.pdf
+    published: 2021-12
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [T3]
+    notes: "Re-opened 2026-11-25. OLDER (2021). §4.4: first sign is 'an inexplicable and more than momentary loss of mobile network access'; subscribers 'are strongly recommended to contact their MNO without any delay'; check bank transactions and contact the bank and the operator immediately; the OTP 'must never be communicated to anyone' (incl. a caller claiming to be the operator); 'Be cautious with the information shared on social media networks.' Executive summary: 'If possible, other authentication mechanisms available should be chosen' (instead of SMS). Not aimed at children; no Slovak data."
+
+  - id: eu-esas-ai-scams-factsheet-sk
+    publisher: EBA, EIOPA, ESMA (European Supervisory Authorities)
+    title: "Online finančné podvody vo svete umelej inteligencie"
+    url: https://www.eba.europa.eu/sites/default/files/2026-01/fa63af9a-bafd-4821-baee-48c7c8fb6490/Online%20financial%20frauds%20and%20scams%20in%20an%20AI%20world_SK.pdf
+    published: "2025-12-15 (launch; SK file uploaded 2026-01 per URL path)"
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [J2, T4]
+    notes: "Slovak edition, re-opened 2026-11-25. Verbatim: 'Naliehavá žiadosť o peniaze alebo osobné informácie, a to aj od niekoho, kto predstiera, že je rodinným príslušníkom'; 'Zavolajte alebo napíšte svojej rodine a priateľom pomocou známeho čísla prostredníctvom dôveryhodného kanála'; 'Dohodnite sa so svojou rodinou na „bezpečnom slove“'; 'Dávajte si pozor na „klonovaniu hlasu“' (the factsheet adds that AI speech can sound very natural); 'Toto sa nazýva „Deepfake“.'; 'Reklama obsahuje fotografiu celebrity a odporúčania, ktoré sú často falošné.'; 'Legitímne spoločnosti nikdy nebudú žiadať o vaše PIN kódy, heslá, prihlasovacie údaje k internetovému bankovníctvu'. If caught ('Čo robiť, keď ste sa stali obeťou podvodu'): stop transactions and contact, 'Okamžite informujte svoju banku alebo finančnú spoločnosť', change passwords on all devices. Aimed at adults."
+
+  - id: eu-esas-crypto-factsheet-sk
+    publisher: EBA, EIOPA, ESMA
+    title: "Podvody s kryptoaktívami: buďte ostražití"
+    url: https://www.esma.europa.eu/sites/default/files/2026-01/Factsheet_on_crypto_fraud_and_scams_SK.pdf
+    published: "2025-12-15 (launch)"
+    accessed: 2026-11-23
+    region: EU
+    tier: 1
+    used_for: [T4]
+    notes: "REUSED from Scam Atlas SK (opened 2026-11-23), not re-opened here. Celebrity or brand images in videos or posts, AI-generated images, ads on social media; recovery scams 'za poplatok'; if caught: stop transactions and contact, tell the provider, report to police. The word 'deepfake' does NOT appear in this edition."
+
+  - id: eu-eures-fake-jobs-sk-2023
+    publisher: EURES (European Labour Authority / European Commission)
+    title: "Ako rozpoznať podvodné ponuky práce a dezinformácie"
+    url: https://eures.europa.eu/how-spot-fraudulent-job-offers-and-misinformation-2023-06-15_sk
+    published: 2023-06-15
+    accessed: 2026-11-23
+    region: EU
+    tier: 1
+    used_for: [T1]
+    notes: "REUSED (opened 2026-11-23), not re-opened here. 'Nikdy neodpovedajte na „pracovnú ponuku“, ktorá zahŕňa preposielanie alebo prijímanie peňazí'; 'Žiadna seriózna spoločnosť nezačne žiadosťou o poskytnutie údajov o vašej banke alebo platobnej karte'. Not aimed at teens."
+
+  - id: eu-youreurope-emergency-faq-sk
+    publisher: European Union (Your Europe portal)
+    title: "Najčastejšie otázky (Núdzové situácie)"
+    url: https://europa.eu/youreurope/citizens/travel/security-and-emergencies/emergency/faq/index_sk.htm
+    published: "last checked 2026-06-22"
+    accessed: 2026-11-23
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "REUSED (opened 2026-11-23). 112 works across the EU (no cost stated); '116 111 – linka detskej istoty'; the 116 numbers are free European help numbers."
+
+  - id: eu-bik-gaming-teachers
+    publisher: Better Internet for Kids (European Commission / Insafe)
+    title: "Online gaming (learning corner for teachers and educators)"
+    url: https://better-internet-for-kids.europa.eu/en/learning-corners/teachers-and-educators/online-gaming
+    published: "n/d (chart image timestamp suggests 2023-06)"
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [J1, T2]
+    notes: "Opened 2026-11-25. 'Some players may try to deceive others with promises of virtual items, cheats, or prizes'; 'players may offer to grant VIP status or gift free items to a child in exchange for their account password'; 'Once a scammer has the password, they are able to lock the child out of their account'; 'Players may be targeted by scams and frauds that offer fake in-game items or currency in exchange for real money'; cheating with 'hacks or custom programs' risks being 'permanently banned from the game and losing their account'. Does NOT mention phishing pages, malware, mods or two-factor login."
+
+  - id: eu-bik-ie-scams-young-2026
+    publisher: Better Internet for Kids (article by the Irish Safer Internet Centre)
+    title: "Online scams and young people: what parents need to know"
+    url: https://better-internet-for-kids.europa.eu/en/news/online-scams-and-young-people-what-parents-need-know
+    published: 2026-01-08
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [J1, T1, T4]
+    notes: "Opened 2026-11-25. EU portal, Irish-authored: its reporting route (Irish police) is NOT for Slovak players. 'links that offer free game credits or prizes'; 'offers of exclusive items - such as gaming skins or limited-edition merchandise'; criminals 'recruit teens to receive and transfer stolen money, usually in exchange for a cut of the money or a flashy gift'; many young people 'may not fully understand that this activity... is illegal'; investment scams 'frequently use social media ads or influencers to create a sense of credibility and urgency'; fraudsters can create 'deepfake videos, cloned voices' (not tied to young people). Advice: 'Stop, Think, Check'; if a child falls for a scam, 'Reassure them. They are not in trouble.'; contact the bank if financial details were shared, reset passwords, turn on two-factor authentication. The only EU source found that names skins."
+
+  - id: eu-bik-sic-slovakia
+    publisher: Better Internet for Kids (European Commission / Insafe)
+    title: "Safer Internet Centre: Slovakia"
+    url: https://better-internet-for-kids.europa.eu/en/sic/slovakia
+    published: n/d
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Awareness centre: NKS (Ministry of Labour) with NGO DigiQ. Helpline: 'National Helpline for Children at Risk Viac ako ni(c)k', viacakonick.gov.sk, '24/7 assistance to children at risk via chatbox, app or e-mail'. Hotline: 'NGO Ochráň ma', ochranma.sk, report form ochranma.sk/nahlas-to/, 'available 24/7 via the website'. No phone numbers. Stopline.sk is NOT named: the current EU-listed Slovak hotline is Ochráň ma."
+
+  - id: eu-bik-sic-slovakia-spotlight-2025
+    publisher: Better Internet for Kids
+    title: "Spotlight on the Safer Internet Centre Slovakia"
+    url: https://better-internet-for-kids.europa.eu/en/news/spotlight-safer-internet-centre-slovakia
+    published: 2025-02-25
+    accessed: 2026-11-25
+    region: EU
+    tier: 1
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Confirms the SIC structure above; helpline Viac ako NI(c)K offers free chat and email (email replies within 24 h); hotline described as the only national hotline against child sexual abuse material and other potentially illegal content. Does not name Stopline."
+
+  # =============================================================== Slovakia: national CERTs (tier 2)
+  - id: sk-skcert-online-games-2020
+    publisher: SK-CERT (Národné centrum kybernetickej bezpečnosti, NBÚ)
+    title: "The National Cyber Security Centre SK-CERT recommends to pay attention to security when playing online games"
+    url: https://www.sk-cert.sk/en/the-national-cyber-security-centre-sk-cert-recommends-to-pay-attention-to-security-when-playing-online-games/index.html
+    published: 2020-09-21
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J1, J3, T2]
+    notes: "Opened 2026-11-25. OLDER (2020), English page. 'Do not respond to private messages or messages in a game chat that prompt you to provide your login'; 'Do not share your game account login information with anyone'; 'Do not click on suspicious attachments and links in emails' (phishing emails carry malicious code); 'Use complex and hard-to-guess passwords'; 'If you have different game accounts, use a different password for each one'; 'Set up two-factor authentication to log into your account (avoid SMS authentication if possible)'; 'Buy games and game content only in official stores of game platforms or through trusted websites'; fake websites 'that offer cheaper games or premium content' steal personal and payment data; use in-game report and block tools. Does NOT mention skins, free currency, cheats-as-malware, mods or account-recovery steps. The core Slovak source for J1."
+
+  - id: sk-skcert-passwords-2018
+    publisher: SK-CERT (NBÚ)
+    title: "Passwords and Securing Your Accounts"
+    url: https://www.sk-cert.sk/en/tips-and-tricks/security-recommendations/securing-accounts-and-devices/passwords-and-securing-your-accounts/index.html
+    published: "2018-03-05 (updated 2018-03-16)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J3]
+    notes: "Opened 2026-11-25. OLDER (2018) but consistent with current practice. 'A strong password is a sentence that is at least 12 characters long'; 'Focus on positive sentences or phrases that you like to think about and are easy to remember'; 'On many sites, you can even use spaces!'; 'Having separate passwords for every account helps to thwart cybercriminals'; a password manager is an option; for key accounts (email, banking, social media) enable 'the strongest authentication tools available, such as biometrics, security keys or a unique one-time code through an app on your mobile device'. No SMS or push methods; no breach-check advice. Footer date 2026-11-19 is site-wide."
+
+  - id: sk-skcert-hacked-accounts-2018
+    publisher: SK-CERT (NBÚ)
+    title: "Hacked Accounts"
+    url: https://www.sk-cert.sk/en/tips-and-tricks/security-recommendations/securing-accounts-and-devices/hacked-accounts/index.html
+    published: "2018-03-05 (updated 2018-03-16)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J2, J3, T2, T3]
+    notes: "Opened 2026-11-25. OLDER (2018). Signs: posts you never made; 'A friend, family member or colleague reports getting e-mail from you that you never sent'; data lost via breach, malware or a lost device. Do: notify contacts; scan for malware; 'Change passwords to all accounts that have been compromised and other key accounts as soon as possible'; if locked out, contact the service provider and follow its account-recovery steps. No 2FA step, no report step."
+
+  - id: sk-skcert-whatsapp-vote-2026
+    publisher: NCKB / SK-CERT (NBÚ)
+    title: "Podvodníci pokračujú v úspešnej WhatsApp kampani imitujúcej súťaž"
+    url: https://www.sk-cert.sk/sk/podvodnici-pokracuju-v-uspesnej-whatsapp-kampani-imitujucej-sutaz/index.html
+    published: 2026-10-06
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J2, J3, T3]
+    notes: "Re-opened 2026-11-25. 'Správa odoslaná z kompromitovaného konta vyzýva na hlasovanie v súťaži'; a fake page asks for your phone number and 'overovacieho kódu', which links a new device; 'Nikdy nezdieľajte vaše verifikačné kódy s inými osobami'; before opening a shared link 'telefonicky kontaktujte odosielateľa'; 'Aktivujte dvojfaktorovú autentifikáciu pre vašu platformu'; unlink unknown devices manually ('nestačí aplikáciu WhatsApp vypnúť alebo odinštalovať'); warn contacts; report to the National Cyber Security Centre with the exact link. Describes a page asking for the code, NOT a friend asking you to forward it directly. Names a real app: never in game content."
+
+  - id: sk-skcert-nova-vlna-2025
+    publisher: SK-CERT (NBÚ)
+    title: "Nová vlna podvodných kampaní"
+    url: https://www.sk-cert.sk/sk/nova-vlna-podvodnych-kampani/index.html
+    published: 2025-04-11
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J2]
+    notes: "Re-opened 2026-11-25. 'obeti príde správa od známeho s prosbou o hlasovanie'; the attacker copies the contact list and 'na všetky kontakty obete začnú šíriť tú istú správu'; scanning a code links the account to the attacker's device. After: unlink all devices, warn contacts ('aby v žiadnom prípade neotvárali linku'), change shared passwords, call the bank if card data were shared, police if ID photos were shared."
+
+  - id: sk-skcert-fakeapps-2018
+    publisher: SK-CERT (NBÚ)
+    title: "FakeApps world"
+    url: https://www.sk-cert.sk/en/fakeapps-world/index.html
+    published: 2018-03-15
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J4]
+    notes: "Opened 2026-11-25. OLDER (2018). Fake apps that do not do what they claim, incl. adware and data-stealing apps; one fake app in an OFFICIAL store had over a million downloads. Advice: verify legitimacy and the developer; 'Study in detail which permissions the application asks for during the installation'; read reviews or do not install; 'Do not install applications from unverified sources.' Does NOT mention pop-ups or fake virus warnings."
+
+  - id: sk-skcert-malicious-app-2025
+    publisher: SK-CERT (NBÚ)
+    title: "Škodlivá mobilná aplikácia, ktorá cieli aj na slovenských zákazníkov"
+    url: https://www.sk-cert.sk/sk/skodliva-mobilna-aplikacia-ktora-cieli-aj-na-slovenskych-zakaznikov/index.html
+    published: 2025-09-10
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J4, T2]
+    notes: "Re-opened 2026-11-25. Lure: 'klamlivou reklamou'. 'Inštalujte aplikácie iba z oficiálnych „obchodov“.'; give apps only the permissions they need; do not let other apps install apps or use accessibility services; 'Ak si aplikácia žiada neprimerané prístupové práva, odporúčame žiadosť zamietnuť a aplikáciu odinštalovať.' If installed: factory reset (control can persist after deletion), change all passwords, tell the bank. The real lure was an ADULT-content app: never reuse that lure in a children's game. Does NOT mention fake virus pop-ups."
+
+  - id: sk-skcert-report-incident
+    publisher: SK-CERT (NBÚ)
+    title: "Report an incident"
+    url: https://www.sk-cert.sk/en/tips-and-tricks/report-an-incident/index.html
+    published: "2025-08-12 (updated 2026-09-16)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [HELP, J2, T3]
+    notes: "Re-opened 2026-11-25. Public web form (linked as https://jiskb.nbu.gov.sk/public-report/incident, 'Use this option if you have no access to JISKB, incl. reports from public'; form not opened on its own) and email published as incident(at)nbu.gov.sk ('for cases where the other methods can't be used'; PGP recommended). No phone line."
+
+  - id: sk-csirt-passwords-infographic-2024
+    publisher: CSIRT.SK (Vládna jednotka CSIRT, MIRRI SR)
+    title: "Infografika: Heslá"
+    url: https://CSIRT.SK/wp-content/uploads/2024/03/Infografika_Hesla_compressed.pdf
+    published: "n/d (upload path 2024-03)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 2
+    used_for: [J3]
+    notes: "Opened 2026-11-25. 'Heslo má mať aspoň 12 až 16 znakov.'; 'Nepoužívajte slová, ktoré možno nájsť v slovníkoch.'; 'Pre každý z vašich online účtov použite iné heslo.'; 'Zvážte použitie aplikácie - správcu hesiel'; 'Vždy, keď je to možné, povoľte pre svoje účty dvojfaktorové overenie (overenie napríklad cez SMS, či e-mail).' Credits a commercial password-manager vendor as its source ('Zdroj: NordPass'): tier 2 host, vendor content. Its 'no dictionary words' line CONFLICTS with SK-CERT's passphrase advice: the game follows SK-CERT (a long sentence of words) and does not quote this line."
+
+  - id: sk-csirt-ms-2026-06
+    publisher: CSIRT.SK
+    title: "Mesačná správa, jún 2026"
+    url: https://csirt.sk/wp-content/uploads/2026/07/MS202606.pdf
+    published: 2026-07
+    accessed: 2026-11-23
+    region: SK
+    tier: 2
+    used_for: [T2]
+    notes: "REUSED (opened 2026-11-23), not re-opened here. p. 8: fake alerts deliver 'infostealery alebo trójske kone na krádež hesiel' (not tied to games). A SIM-swap gang arrest it mentions was in POLAND: not a Slovak SIM-swap source."
+
+  # =============================================================== Slovakia: other national authorities (tier 3)
+  - id: sk-nbs-pozor-na-podvody
+    publisher: Národná banka Slovenska (NBS)
+    title: "Pozor na podvody!"
+    url: https://nbs.sk/pozor-na-podvody/
+    published: "updated 2026-11-16"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [J4, T4, HELP]
+    notes: "Re-opened 2026-11-25 ('Dátum poslednej aktualizácie 16. nov 2026'). AI makes 'reálne vyzerajúce videá a vedia napodobniť známe hlasy'; 'Nikomu neposkytujte prístupové údaje k internet bankingu, čísla kariet a PIN po telefóne či e-mailom.' (no one-time codes named); 'Neinštalujte si do mobilu aplikáciu na základe telefonátu.'; distrust 'príliš dobre znejúcim ponukám v mene NBS, jej zamestnanca alebo iných verejne známych osôb'; after fraud 'Okamžite kontaktujte svoju banku'; 'Podvod oznámte polícii, najmä ak ste prišli o peniaze alebo došlo k zneužitiu vašich údajov.'"
+
+  - id: sk-nbs-crypto-mule-2025
+    publisher: Národná banka Slovenska (NBS)
+    title: "How Not to Become a Money Mule in the Crypto World"
+    url: https://nbs.sk/en/financial-market-supervision1/supervision/crypto-assets/investing-risks-and-scams/how-not-to-become-a-money-mule-in-the-crypto-world/
+    published: "updated 2025-03-25"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [T1]
+    notes: "Re-opened 2026-11-25. Criminals 'often target students or seniors'; red flags: 'Being approached by a stranger offering quick and easy money', 'Being asked to forward large sums of money through your personal bank account', 'Being asked to share your banking details or login credentials for crypto platforms'; those who do it often 'don't realize ... that they are committing a criminal offense'; 'If you suspect money laundering, contact the Slovak Police (Polícia SR).' No job-ad or social-media detail; no bank step."
+
+  - id: sk-nbs-money-mule-2019
+    publisher: Národná banka Slovenska (NBS)
+    title: "NBS warning: Don't become a money mule, don't be duped"
+    url: https://nbs.sk/en/nbs-warning-dont-become-a-money-mule-dont-be-duped/
+    published: 2019-05-06
+    accessed: 2026-11-23
+    region: SK
+    tier: 3
+    used_for: [T1]
+    notes: "REUSED (opened 2026-11-23), not re-opened here. Money mules risk criminal proceedings. Old (2019)."
+
+  - id: sk-nbs-crypto-warning-signs-2025
+    publisher: Národná banka Slovenska (NBS)
+    title: "What are the warning signs of fraudulent platforms and suspicious crypto-asset service providers?"
+    url: https://nbs.sk/en/financial-market-supervision1/supervision/crypto-assets/investing-risks-and-scams/what-are-the-warning-signs-of-fraudulent-platforms-and-suspicious-crypto-asset-service-providers/
+    published: "updated 2025-03-25"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [T4]
+    notes: "Re-opened 2026-11-25. Warning signs: 'names and images of public figures who supposedly achieved high or guaranteed profits'; 'promising unusually high returns or guaranteed profits'; scammers often call victims; a 'withdrawal fee' is a red flag. Promotion via 'magazines, websites, or online portals' (social-media ads NOT named). Do: check whether authorities have issued warnings; never pay to withdraw; 'contact the Slovak Police (Polícia SR)'."
+
+  - id: sk-minv-pk-podvod-leaflet
+    publisher: MV SR, Odbor prevencie kriminality (Okresný úrad Nitra)
+    title: "Podvod a podvodné konania (leaflet)"
+    url: https://www.minv.sk/swift_data/source/miestna_statna_sprava/okres_nitra/organizacne/prevencia_krimi/letaky/PK_Podvod_a_podvodne_konania.pdf
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [J2, T1, T4, HELP]
+    notes: "Re-opened 2026-11-25. UNDATED crime-prevention leaflet, adult audience. 'Neposielajte cudzím osobám overovacie kódy z SMS, ktoré boli zaslané na vaše telefónne číslo.'; relative-needs-money call: verify 'priamym kontaktovaním rodinného príslušníka, o ktorého máte strach' before giving money (PHONE-CALL version); fake jobs: 'podozrivo vysoká mzda', fees and advances for job placement, 'Nikdy neprijímajte nelegálnu prácu'; investment: 'Buďte skeptickí voči nereálnym sľubom o dosiahnutí zisku', 'žiadny renomovaný poskytovateľ finančných služieb nesľubuje vysoké výnosy'; reporting: 'nehanbite sa o tejto skutočnosti upovedomiť políciu', at 'najbližšom oddelení Policajného zboru alebo prokuratúre', 'Trestné oznámenie môžete podať aj ústne do zápisnice'; victim offices pomocobetiam@minv.sk. Does not mention children or 158."
+
+  - id: sk-justice-trestne-konanie
+    publisher: Ministerstvo spravodlivosti SR
+    title: "Trestné konanie (pomoc obetiam)"
+    url: https://www.justice.gov.sk/sluzby/pomoc-obetiam/obete-trestnych-cinov/trestne-konanie/
+    published: "modified 2021-04-30"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP, T1]
+    notes: "Opened 2026-11-25. 'Trestné oznámenie môže podať ktokoľvek, na ktorejkoľvek polícii, prokuratúre, príp. súde.'; 'písomne, ústne do zápisnice alebo aj elektronicky so zaručeným elektronickým podpisom'; 'Trestné oznámenie nesmie byť anonymné' (details withheld on request). A person under 14 at the time of an act is not criminally responsible. No children's reporting route. No Polícia SR online fraud-report portal was found in this session."
+
+  - id: sk-justice-dolezite-kontakty
+    publisher: Ministerstvo spravodlivosti SR
+    title: "Dôležité kontakty (pomoc obetiam)"
+    url: https://www.justice.gov.sk/sluzby/pomoc-obetiam/dolezite-kontakty/
+    published: "modified 2026-11-03"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Re-opened 2026-11-25 (page metadata modified 2026-11-03, newer than the 2024 version Scam Atlas used). Section 'Linky pomoci': 'odborné poradenstvo anonymne a bezplatne dištančnou formou'. Linka detskej istoty 116 111 'non-stop'; Linka detskej dôvery 0800 221 021, 8.00 – 20.00 (the 2024 version gave a different number: the conflict noted by Scam Atlas SK is now RESOLVED, it matches nks.gov.sk and the operator); Nezábudka 0800 800 566; VIAC AKO NI(c)K www.viacakonick.sk; 116 000 non-stop; under 'Iné kontakty' 158 police and 112. IPčko not listed."
+
+  - id: sk-minedu-krizove-linky-2025
+    publisher: Ministerstvo školstva, výskumu, vývoja a mládeže SR
+    title: "Krízové linky psychologickej podpory a pomoci"
+    url: https://www.minedu.sk/krizove-linky-psychologickej-podpory-a-pomoci/
+    published: 2025-01-16
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Re-opened 2026-11-25. 116 111 'pre deti a mládež do 18 rokov' '(nonstop)'; 'IPčko - internetová poradňa pre mladých', 0800 500 333 (nonstop), 'Online chat na ipcko.sk'; Nezábudka 0800 800 566 (nonstop; operator hours differ, see Scam Atlas SK); line for parents and teachers (VÚDPaP) 0911 969 725, 08:00–16:00."
+
+  - id: sk-nks-kontakty-pomoci
+    publisher: Národné koordinačné stredisko pre riešenie problematiky násilia na deťoch (NKS)
+    title: "Kontakty pomoci"
+    url: https://nks.gov.sk/kontakty-pomoci/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Re-opened 2026-11-25. Lists Linka detskej dôvery 0800 221 021 (www.linkadetskejdovery.sk), Linka detskej istoty 116 111, Ipčko 0800 500 333, Viac ako nick (www.viacakonick.gov.sk). No hours or target groups."
+
+  - id: sk-nks-bezpecny-internet
+    publisher: NKS (Ministry of Labour, Social Affairs and Family)
+    title: "Centrum bezpečného internetu"
+    url: https://bezpecnyinternet.nks.gov.sk/centrum-bezpecneho-internetu/
+    published: "n/d (centre opened 2024-07-22)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. The Slovak Safer Internet Centre (Insafe / Better Internet for Kids), coordinated by the ministry through NKS. Helpline 'Viac ako ni(c)k' (nonstop chat, email, app); a 'Hotlinka' for illegal content incl. CSAM. No content found on scams, passwords or gaming: not a source for case facts."
+
+  - id: sk-viacakonick-home
+    publisher: VIAC AKO NI(c)K (set up by Ústredie práce, sociálnych vecí a rodiny)
+    title: "Národná linka na pomoc deťom v ohrození"
+    url: https://www.viacakonick.gov.sk/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 3
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. 'pre všetky deti a mladých ľudí'; separate chats for under 12 ('Kedykoľvek', day and night every day) and over 12 ('Sme tu 24 hodín denne, 7 dní v týždni', 'Zadarmo a nonstop'); 'Chat je anonymný' (nickname; phone optional); written message form; app. NO voice phone line. Logs IP address; must inform authorities if a child's safety is at risk. Covers violence incl. 'zosmiešňovanie na internete, vydieranie'; scams and account theft NOT mentioned."
+
+  # =============================================================== Slovakia: operators, NGOs, industry (tier 4)
+  - id: sk-ldi-home
+    publisher: Linka detskej istoty, n. o. (operator of 116 111)
+    title: "Linka detskej istoty (home page)"
+    url: https://www.ldi.sk/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Operator page: 116 111 'NON-STOP', 'BEZPLATNE'; chat via ldi.sk daily 18:00–22:00; email 116111@ldi.sk; 'Všetky služby sú zadarmo'; 'Keď zavoláš, nemusíš nám povedať ani svoje meno, ani kde bývaš'; calls not recorded (per page). Also 116 000 (missing children) nonstop. Backs hours, cost and channels; the age range (under 18) comes from sk-minedu-krizove-linky-2025."
+
+  - id: sk-ipcko-home
+    publisher: IPčko (helpline operator)
+    title: "IPčko (home page)"
+    url: https://ipcko.sk/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Phone 0800 500 333 (lines can be busy, try again); chat ('Začať chat'); email poradna@ipcko.sk; in-person Káčka centres in every region. 'BEZPLATNE', 'Peňaženku ti netreba'; 'Pomoc poskytujeme anonymne'; '24 hodín denne, 7 dní v týždni' (not split by channel). For 'všetkých, ktorí sa ocitli v ťažkej životnej situácii'; the ministry frames it 'pre mladých'."
+
+  - id: sk-ipcko-poster-2026
+    publisher: IPčko
+    title: "Plagát pre školy"
+    url: https://ipcko.sk/engine/wp-content/uploads/2026/03/A0-plagat-1_skoly_ipcko.pdf
+    published: 2026-03
+    accessed: 2026-11-23
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "REUSED (opened 2026-11-23). 'nonstop - bezplatne - anonymne'; aimed at schools."
+
+  - id: sk-linkadetskejdovery-home
+    publisher: Spoločnosť priateľov detí - Li(e)nka, o. z.
+    title: "Linka detskej dôvery (home page)"
+    url: https://www.linkadetskejdovery.sk/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Phone 0800 221 021 '(bezplatne)', 'každý pracovný deň od 8:00 do 20:00'; chat 'každý pracovný deň od 8:00 do 19:00'; email poradna@linkadetskejdovery.sk; sections for children/young people and for adults. Anonymity not stated. A second mobile number is NOT marked free: do not show it."
+
+  - id: sk-ochranma-home
+    publisher: Ochráň ma (national hotline, INHOPE)
+    title: "Ochráň ma (home page and report form)"
+    url: https://ochranma.sk/
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25 (also ochranma.sk/nahlas-to/, form embedded, not opened). 'Sme oficiálna národná hotlinka'. Reports of illegal content: child sexual abuse material, grooming, image-based sexual abuse, trafficking, incitement, racism, terrorism, drugs, spam, 'Chcem nahlásiť protizákonný obsah'. Fraud NOT mentioned; anonymity and hours not stated on its own page (BIK says 24/7 via the website). For Red Line 8 help cards only, never a scam-report route."
+
+  - id: sk-stopline-home
+    publisher: Stopline.sk (eSlovensko project; partners incl. the Ministry of Education and Linka detskej istoty)
+    title: "Stopline.sk"
+    url: https://www.stopline.sk/
+    published: "n/d (newest upload path 2024-05)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [HELP]
+    notes: "Opened 2026-11-25. Reporting of illegal online content (child abuse incl. grooming, hate content, 'inému obsahu alebo činnostiam, ktoré vykazujú znaky trestného činu'). Fraud and phishing NOT named; anonymity not stated. The EU Safer Internet Centre listing (eu-bik-sic-slovakia) names Ochráň ma, not Stopline, as the national hotline: Stopline's current status is UNCLEAR. Not recommended for the help screen."
+
+  - id: sk-zodpovedne-internetove-podvody
+    publisher: Zodpovedne.sk (eSlovensko o. z.; co-financed by the EU CEF programme)
+    title: "Internetové podvody"
+    url: https://www.zodpovedne.sk/index.php/sk/ohrozenia/internetove-podvody
+    published: "n/d (examples from 2011, sources from 2013)"
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [J1]
+    notes: "Opened 2026-11-25. UNDATED and OLD. 'Nenechajte sa nalákať na podozrivo výhodné ponuky, v skutočnosti nie je nič zadarmo.'; phishing defined as a fraudster trying 'vylákať od používateľov rôzne heslá'; 'poraď sa s rodičmi'. No codes, money mules or reporting route. Supporting only."
+
+  - id: sk-zodpovedne-hry
+    publisher: Zodpovedne.sk (eSlovensko o. z.)
+    title: "Hry a gambling"
+    url: https://www.zodpovedne.sk/index.php/sk/ohrozenia/hry-a-gambling
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [J1]
+    notes: "Opened 2026-11-25. UNDATED. 'Rovnako mu môžu ukradnúť konto v hre' (in the cyberbullying context); 'Pre prihlasovanie do hry by si malo vybrať bezpečné heslo'; 'chráň svoje heslo'. No phishing, skins, cheats or malware. Supporting only."
+
+  - id: sk-zodpovedne-osobne-udaje
+    publisher: Zodpovedne.sk (eSlovensko o. z.)
+    title: "Zneužitie osobných údajov"
+    url: https://www.zodpovedne.sk/index.php/sk/ohrozenia/zneuzitie-osobnych-udajov
+    published: n/d
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [J3]
+    notes: "Opened 2026-11-25. UNDATED and partly OUTDATED. 'nepoužívajte jedno heslo na všetky stránky a služby na internete'; 'Svoje heslá nikdy neprezrádzajte nikomu inému' (incl. friends); 'Ak máte pocit, že sa niekto dostal k vášmu heslu, radšej si ho zmeňte'; keep evidence. Its 'at least 7 characters' rule is OUTDATED: never teach it (SK-CERT: a sentence of 12+ characters). No two-step login for general accounts."
+
+  - id: sk-eset-kb-fake-virus-android
+    publisher: ESET (SK support knowledge base)
+    title: "[KB3758] Falošné upozornenia na vírusy na mobilných zariadeniach Android"
+    url: https://support.eset.com/sk/kb3758-falosne-upozornenia-na-virusy-na-mobilnych-zariadeniach-android
+    published: "updated 2022-03-04"
+    accessed: 2026-11-25
+    region: SK
+    tier: 4
+    used_for: [J4]
+    notes: "Opened 2026-11-25. INDUSTRY, supporting only. 'falošné upozornenie na prítomnosť vírusu' appear as automatically opened windows while browsing and 'sa vás snažia presvedčiť' the phone has a virus; advice: 'zatvorte webovú stránku', clear the browser cache if it persists. Does NOT say the pop-up pushes an app install; recommends its own product (never echo)."
+
+  - id: sk-news-sita-police-mules-2026
+    publisher: SITA
+    title: "Človek sa môže aj nevedome dopustiť prania špinavých peňazí, upozorňuje polícia. Na čo si treba dať pozor?"
+    url: https://sita.sk/clovek-sa-moze-aj-nevedome-dopustit-prania-spinavych-penazi-upozornuje-policia-na-co-si-treba-dat-pozor/
+    published: 2026-07-23
+    accessed: 2026-11-23
+    region: SK
+    tier: 4
+    used_for: [T1]
+    notes: "REUSED (opened 2026-11-23). NEWS relay of the Police Presidium: offers to open a bank account or give access to your own account for a reward ('zdanlivo jednoduchý spôsob zárobku') can be prosecuted, incl. negligent money laundering; never give banking details to strangers, incl. via social networks; contact the bank and the police. Never put the penalty or case figures on screen."
+
+  - id: sk-news-sita-slsp-brigada-2024
+    publisher: SITA
+    title: "Veľmi lákavá brigáda z vás môže spraviť aj bieleho koňa. Na Slovensku sa objavili nové typy podvodov"
+    url: https://sita.sk/velmi-lakava-brigada-z-vas-moze-spravit-aj-bieleho-kona-na-slovensku-sa-objavili-nove-typy-podvodov/
+    published: 2024-06-06
+    accessed: 2026-11-23
+    region: SK
+    tier: 4
+    used_for: [T1]
+    notes: "REUSED (opened 2026-11-23). NEWS quoting a Slovak bank's security head: messenger offers of easy home work; the mule variant (money arrives, you send it on, often to crypto). Never name the bank or quote figures."
+
+  - id: sk-news-sita-ahoj-mami-2025
+    publisher: SITA
+    title: "Ministerstvo vnútra opäť upozorňuje na podvodné SMS správy, známa schéma cieli najmä na rodičov"
+    url: https://sita.sk/ministerstvo-vnutra-opat-upozornuje-na-podvodne-sms-spravy-znama-schema-cieli-najma-na-rodicov/
+    published: 2025-04-10
+    accessed: 2026-11-23
+    region: SK
+    tier: 4
+    used_for: [T4]
+    notes: "REUSED (opened 2026-11-23). NEWS relay of an MV SR statement (original not opened): the 'Ahoj mami, new number' SMS scheme targets mainly parents. Supporting only; no game line may say the ministry warned about it unless the MV SR original is opened."
+
+  - id: sk-news-teraz-eset-simswap-2025
+    publisher: TASR (teraz.sk)
+    title: "ESET: podvodníci môžu telefónne… (title truncated as recorded)"
+    url: https://www.teraz.sk/ekonomika/eset-podvodnici-mozu-telefonne-ci/848525-clanok.html
+    published: 2025-01-11
+    accessed: 2026-11-23
+    region: SK
+    tier: 4
+    used_for: [T3]
+    notes: "REUSED (opened 2026-11-23). NEWS relaying ESET: SIM swap and call forwarding against Slovak users; advises extra security with the operator and an authenticator app instead of SMS. The only Slovak-context SIM-swap source; industry via news."
+
+  # =============================================================== Non-EU European CERT (supporting only; NOT Red Line 6)
+  - id: ch-ncsc-mods-cheats-2024
+    publisher: National Cyber Security Centre (NCSC / BACS), Switzerland
+    title: "Week 7: Mods and cheats - What you should be aware of in video games"
+    url: https://www.bacs.admin.ch/en/24w07-en
+    published: 2024-02-20
+    accessed: 2026-11-25
+    region: CH
+    tier: 2
+    used_for: [T2]
+    notes: "Opened 2026-11-25 (ncsc.admin.ch redirects to bacs.admin.ch). Cheat and mod sites are 'specifically designed to trap players who are trying to cheat games'; the malware 'steals information from the local device'; 'the user's accounts could be hijacked (email, social media, etc.)'. Red flags: a password-protected ZIP; instructions to 'deactivate anti-virus software'. Advice: download only from 'trustworthy and official sources'; the first search hits are often paid; turn on two-factor authentication. If infected: 'the safest thing to do is to reset the system'; 'change all passwords immediately'. NON-EU: supporting only. Do not reproduce file-handling details beyond the victim-side red flag."
+
+  - id: ch-ncsc-gamer-phishing-2024
+    publisher: National Cyber Security Centre (NCSC / BACS), Switzerland
+    title: "Week 9: Phishing scammers targeting gamers"
+    url: https://www.bacs.admin.ch/en/24w09-en
+    published: 2024-03-05
+    accessed: 2026-11-25
+    region: CH
+    tier: 2
+    used_for: [J1]
+    notes: "Opened 2026-11-25. A stranger asks a player to vote for a team via a link; a pop-up that only looks like the game platform's login window asks for username and password; stolen accounts are valuable because rare skins resell. Advice: 'Do not give out any information on websites that you visit through a link sent to you by a stranger'; change a reused password everywhere; turn on two-factor authentication. NON-EU: supporting only. Names a real game and platform: never reuse."
+
+  - id: ch-ncsc-fake-virus-alert-2025
+    publisher: National Cyber Security Centre (NCSC / BACS), Switzerland
+    title: "Week 24: Fake virus alert - Is my computer really infected?"
+    url: https://www.bacs.admin.ch/en/25w24-en
+    published: 2025-06-17
+    accessed: 2026-11-25
+    region: CH
+    tier: 2
+    used_for: [J4]
+    notes: "Opened 2026-11-25. Scareware pushes 'an antivirus tool or PC cleaner' that is malware, or a call to a fake support hotline, or asks for login or card details. Advice: 'Be suspicious of unexpected pop-ups in your browser'; 'Never click on links in these warnings'; 'Don't call any phone numbers shown in the alert'; close the browser; remove suspicious browser notification permissions. Mainly about computers (a phone is mentioned only in a caption). NON-EU: supporting only; it is the best official match for J4's lure."

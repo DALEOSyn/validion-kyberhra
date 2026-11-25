@@ -1,0 +1,92 @@
+/*
+ * Design tokens. Two themes on the same component set:
+ *  - junior: the approved prototype look (cork board, paper folder, warm comic).
+ *  - teen: a darker, neutral investigation desk. Calm and grown-up, deliberately not neon.
+ * Components use only these tokens, so a theme is a block of custom properties.
+ */
+:root,
+[data-theme='junior'] {
+  --desk: #c99a63;
+  --desk-dot-1: rgba(122, 84, 48, 0.25);
+  --desk-dot-2: rgba(255, 255, 255, 0.12);
+  --desk-edge: #7a5430;
+  --paper: #fffaf0;
+  --paper-2: #f3ead6;
+  --paper-line: #e5d9bd;
+  --surface: #ffffff;
+  --surface-alt: #eef3f7;
+  --ink: #1f2330;
+  --muted: #5d6273;
+  --accent: #23716a;
+  --link: #1f5fa8;
+  --note-bg: #ffe066;
+  --note-ink: #1f2330;
+  --note-tilt: -1deg;
+  --btn-bg: #2a7d74;
+  --btn-ink: #ffffff;
+  --btn-shadow: #1b544e;
+  --btn-alt-bg: #f3ead6;
+  --btn-alt-ink: #1f2330;
+  --btn-alt-shadow: #d2c4a3;
+  --good: #23824a;
+  --warn: #9a5b00;
+  --bad: #c0392b;
+  --safe-bg: #23824a;
+  --trap-bg: #c0392b;
+  --star-on: #c98a00;
+  --star-off: #d8cba9;
+  --focus: #2d3f55;
+  --hit-bg: rgba(255, 224, 102, 0.85);
+  --clue-bg: #2d3f55;
+  --clue-ink: #ffffff;
+  --dashed: #cdbf9f;
+  --foot-bg: rgba(255, 250, 240, 0.9);
+  --radius: 12px;
+  --radius-folder: 4px 14px 14px 14px;
+  --f-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+  --f-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-type: 'Special Elite', 'Courier New', monospace;
+  color-scheme: light;
+}
+
+[data-theme='teen'] {
+  --desk: #1c2026;
+  --desk-dot-1: rgba(255, 255, 255, 0.035);
+  --desk-dot-2: rgba(255, 255, 255, 0.02);
+  --desk-edge: #0f1215;
+  --paper: #272c34;
+  --paper-2: #343a44;
+  --paper-line: #414955;
+  --surface: #2f353e;
+  --surface-alt: #3a414c;
+  --ink: #eceef1;
+  --muted: #b3bac4;
+  --accent: #7fd1c4;
+  --link: #9cc8ff;
+  --note-bg: #3a3424;
+  --note-ink: #f3e6c0;
+  --note-tilt: 0deg;
+  --btn-bg: #7fd1c4;
+  --btn-ink: #10201d;
+  --btn-shadow: #3f8b80;
+  --btn-alt-bg: #3a414c;
+  --btn-alt-ink: #eceef1;
+  --btn-alt-shadow: #20252c;
+  --good: #7ed69c;
+  --warn: #f0c060;
+  --bad: #ff9b8c;
+  --safe-bg: #2c7247;
+  --trap-bg: #a3352b;
+  --star-on: #f0c060;
+  --star-off: #4a525e;
+  --focus: #f0c060;
+  --hit-bg: rgba(240, 192, 96, 0.3);
+  --clue-bg: #11151a;
+  --clue-ink: #eceef1;
+  --dashed: #4f5864;
+  --foot-bg: rgba(39, 44, 52, 0.92);
+  --radius: 6px;
+  --radius-folder: 3px 8px 8px 8px;
+  --f-display: 'Nunito', system-ui, sans-serif;
+  color-scheme: dark;
+}

@@ -1,0 +1,118 @@
+# Red Line 1 denylist: real brands that must never appear in game content (content/), except on the help
+# screen (help.yaml) and in sources.yaml. One name per line; '#' starts a comment.
+# Matching (scripts/lib/redline.ts): case-insensitive, diacritics ignored, at the start of a word.
+# Names of 5+ characters also match Slovak inflected forms (up to 4 extra letters: "Robloxe", "TikToku").
+# Shorter names match the whole word only. Add a name here before anyone is tempted to use it.
+
+# games, launchers and game currencies
+Minecraft
+Roblox
+Robux
+Fortnite
+V-Bucks
+Brawl Stars
+Clash Royale
+Clash of Clans
+Supercell
+Among Us
+Genshin
+Valorant
+League of Legends
+Riot Games
+Counter-Strike
+CS2
+Steam
+Epic Games
+Mojang
+PlayStation
+Xbox
+Nintendo
+Ubisoft
+EA Sports
+FIFA
+Rockstar
+GTA
+Pokemon
+Pokémon
+Free Fire
+PUBG
+Call of Duty
+Twitch
+Kick.com
+
+# social, chat and video platforms
+TikTok
+Instagram
+Snapchat
+WhatsApp
+Messenger
+Facebook
+YouTube
+Discord
+Telegram
+Viber
+Pinterest
+Reddit
+BeReal
+Threads
+OnlyFans
+
+# tech companies and apps
+Google
+Gmail
+Apple
+iPhone
+iCloud
+App Store
+Google Play
+Samsung
+Xiaomi
+Huawei
+Microsoft
+Windows
+Outlook
+Hotmail
+ChatGPT
+OpenAI
+Netflix
+Spotify
+Disney
+Amazon
+eBay
+AliExpress
+Temu
+Shein
+Vinted
+Allegro
+Alza
+Bazoš
+PayPal
+Revolut
+Wise
+Google Pay
+Apple Pay
+
+# Slovak banks, couriers, telcos and services
+Slovenská sporiteľňa
+Tatra banka
+VÚB
+ČSOB
+Prima banka
+Poštová banka
+Fio banka
+365.bank
+mBank
+UniCredit
+Slovenská pošta
+Packeta
+Zásielkovňa
+DPD
+GLS
+SPS
+Orange
+Telekom
+O2
+4ka
+Swan
+slovensko.sk
+eKasa

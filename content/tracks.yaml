@@ -1,0 +1,71 @@
+# Tracks: theme, case order, ranks and cast. Schema: docs/CONTENT_SCHEMA.md
+tracks:
+  - id: junior
+    title: Kancelária STOPA
+    tagline: Detektívny klub · Lipovec
+    age: 11 – 12 rokov
+    theme: junior
+    intro: >-
+      V meste niekto rozposiela falošné výhry, kradne účty a nastražuje podvodné odkazy.
+      Podpisuje sa ako Tieň. Naša kancelária rieši prípad za prípadom. Pridáš sa?
+    planned_cases: 4
+    # Ranks are badges, not role nouns (GDD §7, Red Line 9).
+    rank_label: Odznak
+    ranks:
+      - { min_stars: 0, name: Papierová lupa }
+      - { min_stars: 3, name: Bronzová lupa }
+      - { min_stars: 6, name: Strieborná lupa }
+      - { min_stars: 9, name: Zlatá lupa }
+    footer: Hra Kryptoria, aplikácia Bzuk, mesto Lipovec aj všetky adresy sú vymyslené.
+    cast:
+      - id: mira
+        name: Mira
+        role: vedúca kancelárie
+        avatar: { kind: person, skin: "#e2b896", hair: "#3b2a6b", hair_style: short, band: "#2a7d74" }
+      - id: lea
+        name: Lea
+        role: klientka
+        avatar: { kind: person, skin: "#f0c7a8", hair: "#e0a526", hair_style: long }
+      - id: fuzik
+        name: Fúzik
+        role: detektívny pes
+        avatar: { kind: dog }
+    cases:
+      - j1-drak-zadarmo
+
+  - id: teen
+    title: Ozvena
+    tagline: Overovací stôl · školský podcast
+    age: 13 – 15 rokov
+    theme: teen
+    placeholder: true
+    intro: >-
+      [PLACEHOLDER] Ozvena je školský podcast v Lipovci. Každý tip pred vysielaním overuje overovací stôl.
+      Teraz je to tvoje miesto. Text nahradí scenárista.
+    planned_cases: 4
+    rank_label: Preukaz
+    ranks:
+      - { min_stars: 0, name: stáž }
+      - { min_stars: 3, name: overovanie }
+      - { min_stars: 6, name: reportáž }
+      - { min_stars: 9, name: hlavný spis }
+    footer: Ozvena, Záber, Bzuk, Lipovec aj všetky mená, čísla a adresy v hre sú vymyslené.
+    cast:
+      - id: sara
+        name: Sára
+        role: moderátorka Ozveny
+        avatar: { kind: person, skin: "#d9a27e", hair: "#1f2330", hair_style: bun }
+      - id: matej
+        name: Matej
+        role: zvuk a strih
+        avatar: { kind: person, skin: "#f0c7a8", hair: "#6b4a2b", hair_style: short }
+      - id: bielikova
+        name: pani Bieliková
+        role: knihovníčka
+        avatar: { kind: person, skin: "#e8c3a0", hair: "#8a8f99", hair_style: bun, band: "#f0c060" }
+      - id: kristian
+        name: Kristián
+        role: 9.B
+        avatar: { kind: person, skin: "#c98f6b", hair: "#2b2118", hair_style: short }
+    cases:
+      - t1-placeholder

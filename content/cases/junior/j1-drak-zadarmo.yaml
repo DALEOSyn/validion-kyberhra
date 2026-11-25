@@ -1,0 +1,151 @@
+# J1 "Drak zadarmo", ported from prototypes/stopa-case1-v0.2.html. Schema: docs/CONTENT_SCHEMA.md
+id: j1-drak-zadarmo
+track: junior
+number: 1
+title: Drak zadarmo
+summary: Lea vraj vyhrala draka do hry. Stačí sa prihlásiť cez odkaz.
+# From docs/CASE_SPECS.md (J1). The fraud-researcher confirms.
+sources:
+  - sk-skcert-online-games-2020
+  - eu-bik-gaming-teachers
+  - eu-bik-ie-scams-young-2026
+  - sk-skcert-hacked-accounts-2018
+
+intro:
+  stamp: Prípad č. 1 · Drak zadarmo
+  lines:
+    - speaker: mira
+      text: Vitaj v STOPE. Práve prišla klientka.
+    - speaker: lea
+      text: prišla mi táto správa v Bzuku. vraj som vyhrala draka do Kryptorie. mám kliknúť?
+    - speaker: mira
+      text: Zober lupu a preskúmaj správu. Nájdi aspoň 3 stopy, že niečo nesedí.
+    - speaker: fuzik
+      text: Haf. Bzuk je chatovacia appka, Kryptoria je hra. Obe sú vymyslené. Triky sú skutočné.
+  button: Vziať lupu
+
+evidence:
+  - kind: chat
+    label: Dôkaz A · Leina správa
+    header: BZUK · súkromná správa
+    meta: "19:41"
+    aria_label: Správa v aplikácii Bzuk
+    lines:
+      - style: sender
+        segments:
+          - text: Kryptoria_Oficial_Team
+            clue:
+              id: sender
+              hint: "Stopa: neznámy účet. Hra ti zvyčajne nepíše cez chatovaciu appku. Slovo „Oficial“ si do mena môže dať ktokoľvek."
+          - " · nový kontakt"
+      - segments:
+          - text: GRATULUJEME 🎉
+            decoy: Toto samo osebe stopa nie je. „Gratulujeme“ píšu aj skutočné hry. Sleduj, čo od teba chcú.
+          - " "
+          - text: "Si medzi 50 výhercami: 5 000 kryštálov a skin Ohnivý drak zadarmo."
+            clue:
+              id: prize
+              hint: "Stopa: veľká výhra zadarmo. Lákadlo, ktoré má vypnúť opatrnosť."
+      - segments:
+          - text: Výhru si vyzdvihni do 15 minút, inak prepadne.
+            clue:
+              id: hurry
+              hint: "Stopa: časový tlak. Kto ťa ženie, nechce, aby bol čas niečo overiť."
+      - style: link
+        segments:
+          - text: kryptoria-odmeny.example/login
+            clue:
+              id: link
+              hint: "Stopa: cudzí odkaz. Do hry sa vždy dostaneš cez jej vlastnú aplikáciu."
+      - segments:
+          - text: Prihlás sa menom a heslom do hry, aby sme ti výhru poslali.
+            clue:
+              id: pass
+              hint: "Stopa: pýtajú heslo. Na poslanie výhry nikto tvoje heslo nepotrebuje."
+      - style: meta
+        segments:
+          - text: Tím Kryptoria 🐉
+            decoy: Podpis sám osebe nič nedokazuje. Skutoční podvodníci sa nepodpisujú. Ale toho draka si zapamätaj.
+
+scan:
+  min_clues: 3
+  prompt: Ťukni na časť správy, ktorá ti nesedí.
+  button: Poradiť Lei
+
+decision:
+  title: Čo poradíš klientke?
+  prompt:
+    - speaker: lea
+      text: tak čo mám spraviť? ten drak je fakt super
+  next_button: "Rýchly výcvik: Dôvera alebo pasca"
+  options:
+    - id: click
+      text: Kliknúť na odkaz a rýchlo sa prihlásiť, kým výhra neprepadne.
+      outcome: bad
+      label: Účet je preč
+      consequence: Stránka vyzerá ako Kryptoria, ale patrí Tieňovi. Po zadaní hesla sa do Leinho účtu prihlási niekto iný a rozdá jej predmety. Žiadny drak neprišiel.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: otvoriť hru priamo a zmeniť heslo."
+    - id: ask
+      text: Odpísať tomu účtu a opýtať sa, či je to naozaj pravé.
+      outcome: ok
+      label: Skoro
+      consequence: Účet hneď odpíše „Áno, je to 100 % pravé, ponáhľaj sa.“ Podvodník sa neprizná.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: overovať inou cestou, nie u toho, kto správu poslal."
+    - id: verify
+      text: Neklikať. Otvoriť hru Kryptoria priamo a pozrieť správy v nej. Účet v Bzuku nahlásiť a zablokovať.
+      outcome: best
+      label: Prípad vyriešený
+      consequence: Lea otvorí Kryptoriu vlastnou cestou. V hre žiadna výhra nie je. Účet v Bzuku nahlási. Tieň odchádza naprázdno.
+      calm: Presne tak. Overiť vlastnou cestou je detektívna klasika.
+
+trust_or_trap:
+  items:
+    - source: Launcher Pixelbrána · upozornenie v aplikácii
+      text: Nová aktualizácia Kryptorie je pripravená. Spusti ju tlačidlom Aktualizovať.
+      answer: trust
+      why: Prišlo to priamo v launcheri, ktorý máš nainštalovaný, a nepýta to heslo.
+    - source: Bzuk · kamarát Tomáš
+      text: čau, prišiel ti teraz SMS kód? pošli mi ho prosím, potrebujem ho na turnaj
+      answer: trap
+      why: Kód zo SMS je kľúč k tvojmu účtu. Nedávaj ho nikomu, ani najlepšiemu kamarátovi. Jeho účet mohol niekto ukradnúť.
+    - source: Video · komentár pod videom
+      text: GENERÁTOR KRYŠTÁLOV ZADARMO. Stiahni si program z kryst-gen.example a spusti ho.
+      answer: trap
+      why: Generátory zadarmo nefungujú. Takéto programy často kradnú heslá z počítača.
+    - source: Kryptoria · obchod v hre
+      text: "Víkendová akcia: skin Mesačná líška za 200 kryštálov."
+      answer: trust
+      why: Je to v obchode priamo v hre. Ak by išlo o skutočné peniaze, poraď sa najprv s rodičom.
+    - source: E-mail · podpora-kryptoria@ucet.example
+      text: "Váš účet bude dnes zrušený. Overte heslo tu: kryptoria-support.example"
+      answer: trap
+      why: Strašenie a odkaz, ktorý pýta heslo. Otvor hru vlastnou cestou a pozri, či je s účtom niečo v neporiadku.
+
+debrief:
+  rule: Ak ti správa sľúbi výhru za prihlásenie, neklikaj. Prihlasuj sa len v hre alebo v jej aplikácii.
+  clues:
+    - text: Výhra zadarmo od účtu, ktorý nepoznáš.
+      clue: prize
+    - text: Časový tlak „do 15 minút, inak prepadne“.
+      clue: hurry
+    - text: Cudzí odkaz, ktorý pýta meno a heslo.
+      clue: link
+  if_it_happened:
+    - Otvor hru vlastnou cestou a hneď zmeň heslo. Zmeň ho aj všade, kde bolo rovnaké.
+    - Zapni dvojstupňové overenie.
+    - Ak sa nevieš prihlásiť, použi oficiálne obnovenie účtu v hre.
+    - Povedz to dospelému, ktorému dôveruješ. Ak sa platilo kartou, dospelý zavolá do banky.
+  story_clue:
+    title: Stopa k Tieňovi č. 1
+    text: Správu podpísal malý drak 🐉. Kto za ním stojí?
+  next_teaser: Prípad č. 2 „Kód pre kamaráta“ pribudne v ďalšej verzii.
+
+stars:
+  - type: clues
+    min: 4
+    label: Nájsť aspoň 4 stopy
+  - type: decision_best
+    label: Vybrať najbezpečnejšiu radu
+  - type: trust_or_trap
+    min: 4
+    label: Aspoň 4 správne vo výcviku
