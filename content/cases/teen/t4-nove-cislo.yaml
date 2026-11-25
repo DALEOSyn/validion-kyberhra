@@ -1,0 +1,244 @@
+# T4 · Nové číslo (docs/CASE_SPECS.md T4; threats A6.2 "new number" + A6.3 cloned voice; A5.1 named in the quick round).
+# End of the teen arc: arc scene "Odvysielané" after the debrief.
+# Claims stay inside docs/SOURCES.md T4a/T4b. Never teach that a fake voice can be heard by ear.
+# Folded per spec: `otheracc` (money to someone else's account) has no confirmed source, so the money request is one
+# clue `hurry` ("urgent request for money"); the IBAN line is plain. "A ocinovi to nehovor" is plain (secrecy unsourced).
+# The positive call-log row (mum calls the school on a number she knows) is plain text and is praised in the brief,
+# because the schema has no neutral decoy. Sára is never in danger.
+# IBAN: SK00 check digits are never valid; bank code 0000 belongs to no bank.
+id: t4-nove-cislo
+track: teen
+number: 4
+title: Nové číslo
+summary: Prípad o falošnej správe od člena rodiny. Sárinej mame píše „Sára“ z nového čísla.
+sources:
+  - eu-esas-ai-scams-factsheet-sk
+  - sk-nbs-pozor-na-podvody
+  - sk-minv-pk-podvod-leaflet
+  - sk-nbs-crypto-warning-signs-2025
+  - eu-bik-ie-scams-young-2026
+  - sk-news-sita-ahoj-mami-2025
+
+intro:
+  stamp: Spis č. 4 · Nové číslo
+  lines:
+    - speaker: matej
+      text: "Z minulého spisu: keď mobil zrazu dlho nemá signál, tak to hneď povedz rodičovi. A teraz deň nahrávania."
+    - speaker: bielikova
+      text: Pani Lacková, Sára je v škole, len na chvíľu odišla. Pošlite nám, čo vám prišlo.
+    - speaker: lackova
+      text: Je to jej hlas. Ale nedvíha mi. Tak som volala do školy, na číslo, ktoré poznám.
+    - speaker: bielikova
+      text: To bol dobrý krok. Screenshoty už máme.
+    - speaker: matej
+      text: Overovací stôl, toto je tvoje. Rýchlo, ale pokojne.
+  button: Otvoriť spis
+
+evidence:
+  - kind: chat
+    label: Dôkaz A · Správy z nového čísla
+    header: BZUK · +421 9•• ••• 507
+    meta: "13:47"
+    aria_label: Správy a hlasová správa z neznámeho čísla v aplikácii Bzuk
+    lines:
+      - style: sender
+        segments:
+          - text: "[profilová fotka: Sárina skutočná fotka]"
+            decoy: Fotku si vezme ktokoľvek z verejného profilu. Nič nedokazuje.
+          - " · nový kontakt"
+      - segments:
+          - "Mami, to som ja, Sára. Spadol mi mobil do vody "
+          - text: 🙈
+            decoy: Štýl písania a emoji sa dajú okopírovať. Nič neoveria.
+          - " "
+          - text: toto je moje nové číslo,
+            clue:
+              id: newnum
+              hint: "Stopa: nové číslo. Overiť sa dá len cez staré."
+          - " "
+          - text: staré si zmaž.
+            clue:
+              id: delete
+              hint: "Stopa: príkaz zmazať staré číslo. Práve staré číslo je cesta, ako to overiť."
+      - segments:
+          - text: "[hlasová správa 0:14] „Mami, prosím ťa, potrebujem rýchlo zaplatiť za opravu mobilu, inak mi ho nevrátia.“"
+            decoy: Hlas sám nič nedokazuje, ani že je pravý, ani že je falošný. Sárin hlas je verejne v podcaste. Sleduj, čo správa chce.
+      - segments:
+          - text: Pošli mi prosím 290 € na účet kamarátky, ja zatiaľ nemám appku. Mám to len do 15:00.
+            clue:
+              id: hurry
+              hint: "Stopa: naliehavá prosba o peniaze s termínom. Je to varovný znak, aj keď píše niekto z rodiny."
+      - segments:
+          - "SK00 0000 0000 0026 9812 3456 · Vanesa K."
+      - segments:
+          - text: Nevolaj, mikrofón na novom mobile nejde, len píšem.
+            clue:
+              id: nocall
+              hint: "Stopa: zavolať sa vraj nedá. Práve hovor na známe číslo by to overil."
+      - segments:
+          - "A ocinovi to nehovor, poviem mu to sama."
+
+  - kind: call
+    label: Dôkaz B · Hovory pani Lackovej
+    header: Mobil pani Lackovej · posledné hovory
+    aria_label: Zoznam posledných hovorov v mobile pani Lackovej
+    lines:
+      - segments:
+          - text: Sára (mobil) · odchádzajúci · neprijatý · 13:52
+            decoy: Že Sára nedvíha, nie je dôkaz, že správa je pravá. Mobil môže byť v taške.
+      - segments:
+          - "Škola, pani Bieliková · odchádzajúci · 13:55"
+
+scan:
+  min_clues: 3
+  prompt: Hlas, fotka, štýl písania. Čo z toho je naozaj stopa?
+  button: Rozhodnúť
+
+decision:
+  title: Čo poradíš pani Lackovej?
+  prompt:
+    - speaker: lackova
+      text: Čo mám robiť? Je tri minúty po druhej.
+  next_button: "Ďalej: ako to overiť"
+  options:
+    - id: pay-now
+      text: Zaplatiť hneď. Je to predsa Sárin hlas.
+      outcome: bad
+      label: Peniaze odišli
+      consequence: 290 € odíde na cudzí účet.
+      later: "O desať minút nové číslo píše znova: „ešte 150 € za poplatok“."
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: už neplatiť, novému číslu neodpisovať a hneď to oznámiť banke."
+    - id: pay-half
+      text: Poslať polovicu, pre istotu.
+      outcome: bad
+      label: Polovica je tiež priveľa
+      consequence: 145 € odíde na cudzí účet.
+      later: Nové číslo ďakuje a pýta zvyšok.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: zavolať do banky a novému číslu neodpisovať."
+    - id: quiz
+      text: Opýtať sa nového čísla na niečo, čo vie len Sára.
+      outcome: ok
+      label: Otázka nestačí
+      consequence: "Odpoveď: „mami, nemám čas na kvízy, ponáhľam sa“."
+      later: Otázka môže pomôcť, ale odpoveď sa dá nájsť aj na sociálnych sieťach.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: overiť cez staré číslo alebo osobne."
+    - id: wait-old
+      text: Neplatiť a novému číslu neodpisovať. Počkať, kým sa Sára ozve zo starého čísla alebo osobne.
+      outcome: best
+      label: Peniaze ostali doma
+      consequence: O šesť minút vchádza Sára s fľašou vody. Zavolá mame zo svojho čísla.
+      later: Mama nové číslo zablokuje a nahlási.
+      calm: Presne tak. Nové číslo a peniaze, tak overiť cez staré číslo.
+
+verify:
+  title: Sára nedvíha. Ako to mama overí?
+  next_button: "Ďalej: záverečný výcvik"
+  options:
+    - id: call-new
+      text: Zavolať na nové číslo a vypočuť si hlas naživo.
+      outcome: bad
+      label: Hlas nie je dôkaz
+      consequence: Ani hlas v hovore z nového čísla nie je dôkaz.
+      calm: Overuje sa inou cestou, nie cez nové číslo.
+    - id: selfie
+      text: Napísať novému číslu, nech pošle selfie.
+      outcome: bad
+      label: Fotky sú verejné
+      consequence: Fotky sú na Sárinom profile. Poslať ich vie ktokoľvek.
+      calm: Overuje sa inou cestou.
+    - id: known-numbers
+      text: "Skúšať staré číslo a zavolať niekomu, kto môže byť pri Sáre, na číslo, ktoré už má: škole, kamarátke, rodine."
+      outcome: best
+      label: Známe čísla
+      consequence: Presne to pani Lacková robí. Škola potvrdí, že Sára je v budove.
+      calm: Presne tak. Overuje sa cez čísla, ktoré už poznáš.
+    - id: profile-photo
+      text: Pozrieť, či je na profile Sárina fotka.
+      outcome: bad
+      label: Fotka nič neoverí
+      consequence: Fotku vezme ktokoľvek z jej profilu.
+      calm: Overuje sa inou cestou.
+
+trust_or_trap:
+  title: Záverečný výcvik · Bezpečné alebo pasca
+  start_button: "Záverečný výcvik: Bezpečné alebo pasca"
+  trust_label: Bezpečné
+  trap_label: Pasca
+  items:
+    - source: Záber · reklama, tvár známej tvorkyne videí
+      text: Z 50 € som mala za týždeň 900 €. Klikni a začni aj ty.
+      answer: trap
+      why: Zaručené vysoké zisky a známa tvár v reklame sú varovný znak. Tvár aj hlas sa dajú zneužiť. Ukáž to dospelému.
+    - source: Bzuk · oco, uložené číslo
+      text: Som v obchode. Chceš rožok alebo croissant?
+      answer: trust
+      why: Známe číslo, bežná otázka, nič nepýta.
+    - source: Plagát v kaviarni Pod Lipou
+      text: Hľadáme pomoc na leto. Pohovor v pondelok o 16:00 tu na mieste, potrebný súhlas rodiča.
+      answer: trust
+      why: Skutočné miesto, pohovor osobne, súhlas rodiča. Účet ani heslo nechcú.
+    - source: Klipko · komentár
+      text: "Skiny zadarmo: stiahni generátor a vypni antivírus."
+      answer: trap
+      why: Sťahovanie mimo oficiálneho obchodu a žiadosť vypnúť ochranu. Ochranu nevypínaj.
+    - source: Mama, osobne
+      text: Dohodnime si rodinné heslo. Keď niekto z nás napíše z nového čísla, opýtame sa naň.
+      answer: trust
+      why: Dobrý nápad. Rodinné heslo dopĺňa hovor na staré číslo, nenahrádza ho.
+
+debrief:
+  rule: Keď známy píše z nového čísla o peniaze, tak mu zavolaj na staré číslo.
+  clues:
+    - text: Správa z nového čísla, ktoré sa nedá overiť.
+      clue: newnum
+    - text: Príkaz zmazať staré číslo.
+      clue: delete
+    - text: Naliehavá prosba o peniaze s termínom.
+      clue: hurry
+    - text: Hovor vraj „nejde“.
+      clue: nocall
+    - Hlas ani fotka nie sú dôkaz. Umelá inteligencia vie napodobniť známy hlas.
+  note: Dohodnite si doma rodinné heslo. Je to doplnok k hovoru na staré číslo, nie náhrada.
+  if_it_happened:
+    - Už neplať a s novým číslom prestaň komunikovať.
+    - Rodič to hneď oznámi banke na číslo zo zadnej strany karty alebo z aplikácie.
+    - Oznámte to polícii.
+    - Varuj rodinu.
+    - Dohodnite si rodinné heslo.
+    - Ak sa to stalo tebe, najprv to povedz dospelému, ktorému dôveruješ.
+  story_clue:
+    title: "Do spisu: 4"
+    text: Hlas v hlasovke bol poskladaný z epizód Ozveny.
+
+arc_scene:
+  button: Záver príbehu
+  stamp: Spis uzavretý. Odvysielané.
+  lines:
+    - speaker: matej
+      text: Daxovu profilovú fotku sme s pani Bielikovou dali do spätného vyhľadávania obrázkov. Tá istá tvár. Štyri profily, štyri mená.
+    - speaker: sara
+      text: "Spájame špendlíky. @kvapka_desk pri brigáde aj pri cheate. Moje verejné číslo a dátum narodenia. Môj hlas z podcastu."
+    - speaker: bielikova
+      text: Spis odovzdáme polícii. Spolu s rodičmi. To je ich práca, nie naša.
+    - speaker: sara
+      text: Dax nie je človek. Je to maska. Za ňou je skupina ľudí ďaleko odtiaľto. Nepotrebujú byť geniálni. Stačí im, keď sa ponáhľame.
+    - speaker: matej
+      text: "Červené svetlo svieti: NAHRÁVAME. Epizóda 5, „Požičané ja“."
+    - speaker: sara
+      text: Spomaľ. Over si to inou cestou. Povedz to niekomu.
+  closing: >-
+    Štyri pravidlá Ozveny. Keď za ľahkú prácu chcú tvoj účet, tak odmietni a povedz to dospelému.
+    Keď ponúkajú cheat mimo oficiálneho obchodu, tak ho nesťahuj ani nespúšťaj.
+    Keď mobil zrazu dlho nemá signál, tak to hneď povedz rodičovi.
+    Keď známy píše z nového čísla o peniaze, tak mu zavolaj na staré číslo.
+
+stars:
+  - type: clues
+    min: 3
+    max_decoys: 2
+    label: Aspoň 3 stopy a najviac 2 neutrálne detaily
+  - type: decision_and_verify_best
+    label: Najlepšia rada aj overenie na prvý pokus
+  - type: trust_or_trap
+    min: 4
+    label: Aspoň 4 správne v záverečnom výcviku

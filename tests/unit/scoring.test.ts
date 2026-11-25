@@ -6,8 +6,9 @@ import { clueIds, emptyLockUp, nextAllowed, nextStage, shuffledOrder, stagesFor,
 
 const content = loadContent(resolve(import.meta.dirname, '../../content')).content;
 const j1 = content?.cases['j1-drak-zadarmo'];
-const t1 = content?.cases['t1-placeholder'];
-if (!j1 || !t1) throw new Error('content missing');
+const t1 = content?.cases['t1-lahka-brigada'];
+const t4 = content?.cases['t4-nove-cislo'];
+if (!j1 || !t1 || !t4) throw new Error('content missing');
 
 describe('stars', () => {
   it('gives 0 for an empty run and 3 for a perfect J1 run', () => {
@@ -29,7 +30,7 @@ describe('stars', () => {
     expect(computeStars(j1, { ...emptyRun(), found: ['sender', 'sender', 'sender', 'sender'] })).toBe(0);
   });
 
-  it('scores decoys, decision + first verify pick, and lock-up errors (teen placeholder)', () => {
+  it('scores decoys, decision + first verify pick, and lock-up errors (teen T1)', () => {
     const base = { ...emptyRun(), found: clueIds(t1), decision: 'refuse', verify: 'ask-in-person', lockUpErrors: 1 };
     expect(computeStars(t1, base)).toBe(3);
     expect(computeStars(t1, { ...base, decoys: ['a', 'b', 'c'] })).toBe(2);
@@ -65,7 +66,9 @@ describe('flow', () => {
   it('skips optional stages', () => {
     expect(stagesFor(j1)).toEqual(['intro', 'scan', 'decision', 'decision-result', 'trust-or-trap', 'debrief']);
     expect(stagesFor(t1)).not.toContain('trust-or-trap');
-    expect(stagesFor(t1).at(-1)).toBe('arc-scene');
+    expect(stagesFor(t1).at(-1)).toBe('debrief');
+    expect(stagesFor(t4).at(-1)).toBe('arc-scene');
+    expect(stagesFor(t4)).toContain('trust-or-trap');
     expect(stagesFor(t1)).toContain('verify');
     expect(stagesFor(t1)).toContain('lock-up');
     expect(nextStage(j1, 'decision-result')).toBe('trust-or-trap');
@@ -74,8 +77,8 @@ describe('flow', () => {
 
   it('shuffles deterministically and never into the solved order', () => {
     const ids = ['a', 'b', 'c', 'd'];
-    const s = shuffledOrder(ids, 't1-placeholder');
-    expect(s).toEqual(shuffledOrder(ids, 't1-placeholder'));
+    const s = shuffledOrder(ids, 't1-lahka-brigada');
+    expect(s).toEqual(shuffledOrder(ids, 't1-lahka-brigada'));
     expect(s).not.toEqual(ids);
     expect([...s].sort()).toEqual(ids);
     for (const seed of ['a', 'b', 'c', 'x', 'yy', 'zzz']) expect(shuffledOrder(['p', 'q', 'r'], seed)).not.toEqual(['p', 'q', 'r']);

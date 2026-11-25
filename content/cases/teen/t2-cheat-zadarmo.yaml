@@ -1,0 +1,271 @@
+# T2 · Cheat zadarmo (docs/CASE_SPECS.md T2; threats B2.4 → B3.1).
+# Sourcing is thin for the cheat → infostealer link (docs/SOURCES.md T2). The case teaches only: games and add-ons
+# from official stores or trusted sites, don't run downloaded cheats, programs that steal passwords exist, and the
+# clean-device recovery order. "Switch off antivirus" and "locked archive" are supporting-only red flags
+# (ch-ncsc-mods-cheats-2024). No claim that an SK/EU body warned about cheats; no malware names, files or install steps.
+id: t2-cheat-zadarmo
+track: teen
+number: 2
+title: Cheat zadarmo
+summary: Matej si stiahol pomôcku na mierenie do Kovoboja. Ráno jeho účty robia veci, ktoré on nerobí.
+sources:
+  - sk-skcert-online-games-2020
+  - eu-europol-iocta-2026
+  - sk-csirt-ms-2026-06
+  - eu-bik-gaming-teachers
+  - sk-skcert-hacked-accounts-2018
+  - ch-ncsc-mods-cheats-2024
+
+intro:
+  stamp: Spis č. 2 · Cheat zadarmo
+  lines:
+    - speaker: sara
+      text: "Z minulého spisu: keď za ľahkú prácu chcú tvoj účet, tak odmietni a povedz to dospelému. Dnes máme nový prípad."
+    - speaker: matej
+      text: Včera som stiahol cheat na Kovoboj. Nefungoval. A dnes ráno toto.
+    - speaker: sara
+      text: Toto sa môže stať komukoľvek. Rozoberieme to od začiatku. Video, stránka, mobil.
+    - speaker: bielikova
+      text: A potom poradie krokov. Na poradí tu záleží.
+  button: Otvoriť spis
+
+evidence:
+  - kind: webpage
+    label: Dôkaz A · Video na Klipku
+    header: KLIPKO · video
+    aria_label: Stránka s videom na platforme Klipko
+    lines:
+      - style: title
+        segments:
+          - text: KOVOBOJ aim helper ZADARMO · funguje 2026
+            clue:
+              id: cheat
+              hint: "Stopa: cheat z neznámeho zdroja. Aj keby fungoval, za cheaty môže prísť trvalý zákaz účtu."
+      - style: meta
+        segments:
+          - text: 1,2 mil. zhliadnutí
+            decoy: Zhliadnutia nič nedokazujú, dobré ani zlé.
+          - " · pred 6 dňami"
+      - segments:
+          - text: "[náhľad videa: záber z Kovoboja, zameriavač sa sám drží na súperovi]"
+            decoy: Obrázok z hry spraví každý.
+      - segments:
+          - text: Stiahni z kovo-tools.example (v obchode to zakázali)
+            clue:
+              id: offstore
+              hint: "Stopa: mimo oficiálneho obchodu. Hry a doplnky len z oficiálneho obchodu alebo dôveryhodnej stránky."
+      - style: meta
+        segments:
+          - "Komentáre"
+      - segments:
+          - text: "„funguje díky 🔥“ · „funguje díky 🔥“ · „funguje díky 🔥“ (tri rôzne účty)"
+            decoy: Komentáre nič nedokazujú, dobré ani zlé. Sleduj, odkiaľ máš sťahovať.
+
+  - kind: webpage
+    label: Dôkaz B · Stránka na stiahnutie
+    header: Prehliadač
+    aria_label: Webová stránka, z ktorej sa sťahuje cheat
+    lines:
+      - style: address
+        segments:
+          - text: kovo-tools.example/download
+            clue:
+              id: domain
+              hint: "Stopa: adresa nepatrí vývojárovi hry. Kovoboj má stránku kovoboj.example."
+      - style: title
+        segments:
+          - "Kovoboj Aim Helper 3.2"
+      - segments:
+          - text: Pred inštaláciou vypni antivírus. Hlási falošný poplach, lebo cheat je neviditeľný.
+            clue:
+              id: av
+              hint: "Stopa: žiadosť vypnúť ochranu. Ochranu kvôli sťahovaniu nevypínaj."
+      - segments:
+          - text: "Archív je zamknutý, heslo: 2026"
+            clue:
+              id: archive
+              hint: "Stopa: zamknutý archív s heslom pri cheate je ďalší varovný znak."
+      - style: meta
+        segments:
+          - text: Veľkosť 14 MB · aktualizované 2. 11.
+            decoy: Veľkosť a dátum nič neprezradia.
+      - style: button
+        segments:
+          - "STIAHNUŤ"
+      - style: meta
+        segments:
+          - "Podpora: @kvapka_desk v Bzuku"
+
+  - kind: popup
+    label: Dôkaz C · Matejov mobil ráno
+    header: Zamknutá obrazovka · upozornenia
+    meta: "7:42"
+    aria_label: Upozornenia na zamknutej obrazovke Matejovho mobilu
+    lines:
+      - segments:
+          - text: "Kovoboj: nové prihlásenie z neznámeho zariadenia"
+            clue:
+              id: login
+              hint: "Stopa: niekto je v Matejovom účte. Bez hesla, ktoré by mu Matej dal."
+      - segments:
+          - text: "Bzuk: správa odoslaná 23 kontaktom"
+            clue:
+              id: sent
+              hint: "Stopa: správy, ktoré Matej nepísal."
+      - segments:
+          - text: "Záber: Heslo k účtu bolo zmenené. Ak ste to neboli vy, obnovte účet v aplikácii."
+            clue:
+              id: changed
+              hint: "Stopa: zmenu hesla Matej nerobil."
+      - segments:
+          - text: "Kovoboj: sezóna 9 začína v piatok"
+            decoy: Bežná správa hry. Nie každé upozornenie je problém.
+
+scan:
+  min_clues: 4
+  prompt: Prejdi všetky tri dôkazy. Hľadaj, čo nesedí, nie čo len vyzerá podozrivo.
+  button: Rozhodnúť
+
+decision:
+  title: Čo má Matej urobiť ako prvé?
+  prompt:
+    - speaker: sara
+      text: Existujú programy, ktoré kradnú heslá. Volajú sa infostealery. Tento sa tváril ako cheat.
+    - speaker: matej
+      text: Dobre. Čo teraz?
+  next_button: "Ďalej: ako to overiť"
+  options:
+    - id: same-pc
+      text: Na tom istom počítači hneď zmeniť všetky heslá.
+      outcome: bad
+      label: Nové heslá, starý problém
+      consequence: Matej mení heslá na počítači, na ktorom bol cheat.
+      later: O hodinu je cudzie prihlásenie späť, aj s novým heslom.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: heslá meniť z iného, čistého zariadenia."
+    - id: uninstall
+      text: Cheat odinštalovať a dúfať, že je hotovo.
+      outcome: bad
+      label: Zmizol len zo zoznamu
+      consequence: Cheat zmizne zo zoznamu programov.
+      later: Heslá má stále niekto cudzí. V noci odíde z Matejovho Bzuku ďalšia várka odkazov.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to dospelému a z čistého zariadenia zmeniť heslá."
+    - id: warn-tomorrow
+      text: Napísať kamarátom, nech na odkaz neklikajú, a zvyšok riešiť zajtra.
+      outcome: ok
+      label: Polovica práce
+      consequence: Varovanie pomôže, kamaráti sú opatrnejší.
+      later: Kým sa veci odkladajú, cudzí človek je stále v Matejových účtoch.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes začať heslom k e-mailu."
+    - id: clean-start
+      text: Povedať to dospelému. Na tom počítači sa už neprihlasovať. Z iného, čistého zariadenia zmeniť heslo k e-mailu, potom ostatné, a zapnúť dvojstupňové overenie.
+      outcome: best
+      label: Čistý štart
+      consequence: Do večera majú účty nové heslá a dvojstupňové overenie a neznáme zariadenia sú odstránené.
+      later: Počítač dá otec obnoviť do pôvodného stavu.
+      calm: Presne tak. Najprv dospelý a čisté zariadenie, potom e-mail.
+
+verify:
+  title: Ako to má Nela overiť?
+  prompt:
+    - speaker: sara
+      text: "Nela dostala z Matejovho Bzuku: „pozri toto video s tebou 😂 klipko-video.example/x7“."
+  next_button: "Ďalej: čistý štart"
+  options:
+    - id: ask-in-chat
+      text: "Opýtať sa v tom istom chate: „Si to ty, Matej?“"
+      outcome: bad
+      label: Ten istý chat
+      consequence: "Odpíše ten, kto má účet: „Jasné, pozri to.“"
+      calm: Overuje sa inou cestou, nie v tom istom chate.
+    - id: open-link
+      text: Otvoriť odkaz, len sa pozrieť.
+      outcome: bad
+      label: Pozrieť nie je overiť
+      consequence: Otvorením sa neoverí nič a riziko je zbytočné.
+      calm: Overuje sa inou cestou.
+    - id: call-matej
+      text: Zavolať Matejovi na číslo, ktoré má uložené, alebo sa ho opýtať v škole.
+      outcome: best
+      label: Iná cesta
+      consequence: Matej hneď potvrdí, že nič neposielal. Nela odkaz zmaže.
+      calm: Presne tak. Známe číslo alebo osobne.
+    - id: forward-class
+      text: Preposlať odkaz do triedneho chatu, či to niekto pozná.
+      outcome: bad
+      label: Odkaz sa šíri
+      consequence: Takto sa odkaz šíri ďalej.
+      calm: Overuje sa inou cestou, priamo u Mateja.
+
+lock_up:
+  title: Čistý štart
+  prompt: Zoraď Matejove kroky. Kroky na rovnakej úrovni môžu ísť v ľubovoľnom poradí.
+  steps:
+    - id: tell-adult
+      text: Povedať to dospelému a na napadnutom počítači sa už nikam neprihlasovať.
+      rank: 1
+    - id: email-first
+      text: Na inom, čistom zariadení zmeniť heslo k e-mailu.
+      rank: 2
+      hint: Najprv dospelý a čisté zariadenie.
+    - id: other-passwords
+      text: Zmeniť heslá k ostatným účtom, každé iné.
+      rank: 3
+      hint: Najprv e-mail, potom ostatné účty.
+    - id: remove-devices
+      text: V nastaveniach účtov odstrániť zariadenia, ktoré nepoznáš.
+      rank: 3
+      hint: Najprv e-mail. Potom účty a ich zariadenia.
+    - id: two-step
+      text: Zapnúť dvojstupňové overenie.
+      rank: 4
+      hint: Dvojstupňové overenie príde, keď sú heslá nové a cudzie zariadenia preč.
+    - id: reset-pc
+      text: Napadnutý počítač nechať dospelým obnoviť do pôvodného stavu.
+      rank: 5
+      hint: Počítač príde na rad nakoniec. Účty sú prednejšie.
+  distractors:
+    - id: av-off
+      text: Vypnúť antivírus, aby neprekážal.
+      hint: Toto do postupu nepatrí. Ochranu nevypínaj.
+    - id: same-pc
+      text: Zmeniť heslá rovno na napadnutom počítači, je to rýchlejšie.
+      hint: Toto do postupu nepatrí. Na napadnutom počítači sa už neprihlasuj.
+  correct: Presne tak. Dospelý, čisté zariadenie, e-mail, ostatné účty, dvojstupňové overenie, počítač.
+
+debrief:
+  rule: Keď ponúkajú cheat mimo oficiálneho obchodu, tak ho nesťahuj ani nespúšťaj.
+  clues:
+    - text: Cheat z neznámeho zdroja.
+      clue: cheat
+    - text: Sťahovanie mimo oficiálneho obchodu.
+      clue: offstore
+    - text: Adresa nepatrí vývojárovi hry.
+      clue: domain
+    - text: Žiadosť vypnúť antivírus.
+      clue: av
+    - text: Zamknutý archív s heslom.
+      clue: archive
+    - text: Prihlásenia a správy, ktoré Matej nerobil.
+      clue: login
+  note: Infostealer je program, ktorý kradne heslá. Preto sa heslá menia z iného, čistého zariadenia.
+  if_it_happened:
+    - Povedz to dospelému a na napadnutom počítači sa už nikam neprihlasuj.
+    - Na inom, čistom zariadení zmeň najprv heslo k e-mailu.
+    - Potom zmeň heslá k ostatným účtom, každé iné, a odstráň zariadenia, ktoré nepoznáš.
+    - Zapni dvojstupňové overenie.
+    - Napadnutý počítač nechaj dospelým obnoviť do pôvodného stavu.
+    - Daj vedieť kamarátom, nech na odkazy z tvojho účtu nereagujú.
+  story_clue:
+    title: "Do spisu: 2"
+    text: Stránka kovo-tools.example má v časti Podpora kontakt @kvapka_desk. Ten istý ako pri Daxovi.
+
+stars:
+  - type: clues
+    min: 6
+    max_decoys: 2
+    label: Aspoň 6 stôp a najviac 2 neutrálne detaily
+  - type: decision_and_verify_best
+    label: Najlepší prvý krok aj overenie na prvý pokus
+  - type: lock_up
+    max_errors: 1
+    label: Čistý štart najviac s 1 chybou

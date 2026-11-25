@@ -1,0 +1,249 @@
+# T1 · Ľahká brigáda (docs/CASE_SPECS.md T1; threat A8.2 money-mule recruitment).
+# Teaching claims stay inside docs/SOURCES.md T1. Kristián and Oto are targets, never criminals (GDD §12.7).
+# The legal sentence appears once (debrief note), followed by the next step. No prison, fines or figures.
+# "A nikomu o tom nehovor" is plain text: secrecy has no source in SOURCES.md yet.
+id: t1-lahka-brigada
+track: teen
+number: 1
+title: Ľahká brigáda
+summary: Recruiter Dax ponúka 150 € týždenne za pár minút z mobilu. Kristiánov kamarát Oto už súhlasil.
+sources:
+  - eu-europol-mule-jobs
+  - sk-nbs-crypto-mule-2025
+  - sk-nbs-money-mule-2019
+  - eu-europol-iocta-2026
+  - eu-bik-ie-scams-young-2026
+  - eu-eures-fake-jobs-sk-2023
+  - sk-minv-pk-podvod-leaflet
+  - sk-news-sita-police-mules-2026
+
+intro:
+  stamp: Spis č. 1 · Ľahká brigáda
+  lines:
+    - speaker: sara
+      text: Pripravujeme epizódu o letných brigádach. Prišiel tip. Overovací stôl, je to tvoje.
+    - speaker: kristian
+      text: Dax zo Záberu ponúka brigádu, 150 € týždenne z mobilu. Oto už do toho išiel. Je to legit?
+    - speaker: bielikova
+      text: Pred éterom všetko overujeme. Aj to, čo vyzerá nevinne.
+    - speaker: sara
+      text: "Prvú stopu ti ukážem: 150 € týždenne za desať minút denne. Veľa peňazí za takmer nič. Zvyšok je na tebe."
+  button: Otvoriť spis
+
+evidence:
+  - kind: profile
+    label: Dôkaz A · Daxov príspevok na Záberi
+    header: ZÁBER · @dax_brigady
+    meta: pred 3 dňami
+    aria_label: Profil a príspevok používateľa dax_brigady na sociálnej sieti Záber
+    lines:
+      - style: sender
+        segments:
+          - text: Dax · Kvapka Partners · 48,2 tis. sledovateľov
+            decoy: Sledovatelia sa dajú kúpiť. Nedokazujú nič dobré ani zlé. Sleduj, čo chce.
+      - segments:
+          - text: "[profilová fotka: mladý muž v slnečných okuliaroch, opretý o auto]"
+            decoy: Fotka nič nedokazuje. Môže byť cudzia aj vyrobená.
+      - segments:
+          - text: Hľadám 3 ľudí z Lipovca na brigádu z mobilu. 150 € týždenne za 10 minút denne.
+            clue:
+              id: pay
+              hint: "Stopa: veľa peňazí za takmer nič. Ponuka rýchlych a ľahkých peňazí od neznámeho je typický začiatok."
+      - segments:
+          - text: Netreba skúsenosti, všetko z mobilu.
+            clue:
+              id: noexp
+              hint: "Stopa: žiadne skúsenosti a všetko len online. Spolu s ľahkými peniazmi je to typický znak."
+      - segments:
+          - text: Stačí mať 15+ a vlastný účet v banke. Píš DM.
+            clue:
+              id: account
+              hint: "Stopa: hlavná podmienka je tvoj bankový účet. Taká „práca“ nie je brigáda."
+      - style: meta
+        segments:
+          - "Komentáre (14)"
+      - speaker: "@patrik_9b"
+        segments:
+          - text: Robím to druhý týždeň, výplata vždy prišla 👌
+            decoy: Pochvala pod príspevkom nič nedokazuje, ani dobré, ani zlé. Kto ju naozaj napísal, sa dá overiť len mimo Záberu.
+      - speaker: "@kristian_9b"
+        segments:
+          - "koľko ľudí ešte hľadáte?"
+
+  - kind: chat
+    label: Dôkaz B · Správy od Daxa
+    header: BZUK · Dax (Kvapka Partners)
+    meta: "21:12"
+    aria_label: Súkromné správy od Daxa Kristiánovi v aplikácii Bzuk
+    lines:
+      - speaker: Dax
+        segments:
+          - text: Čau Kristián, videl som tvoj komentár 🙂
+            decoy: Priateľský tón je normálny. Nič neprezrádza.
+      - speaker: Dax
+        segments:
+          - "Sme Kvapka Partners, robíme platby pre e-shopy v zahraničí. Banky nám obmedzujú prevody, tak potrebujeme lokálne účty."
+      - speaker: Dax
+        segments:
+          - text: Na tvoj účet príde platba. 90 % pošleš ďalej na účet, ktorý ti dám, 10 % je tvojich.
+            clue:
+              id: forward
+              hint: "Stopa: cudzie peniaze na tvojom účte, ktoré máš poslať ďalej. Takéto peniaze často pochádzajú z podvodov."
+      - speaker: Dax
+        segments:
+          - text: Zmluvu ani pohovor netreba, všetko vybavíme cez chat.
+            clue:
+              id: online
+              hint: "Stopa: všetko len cez chat. Žiadny pohovor, nikto, koho by sa dalo stretnúť."
+      - speaker: Dax
+        segments:
+          - text: Pošli fotku občianky a prihlasovacie údaje do bankovej appky, nastavím to za teba.
+            clue:
+              id: login
+              hint: "Stopa: prihlasovacie údaje do banky nepatria nikomu. Ani zamestnávateľovi."
+      - speaker: Dax
+        segments:
+          - text: Výplata každý piatok.
+            decoy: Pravidelná výplata je normálna. Stopa je v tom, čo máš robiť s cudzími peniazmi.
+      - speaker: Dax
+        segments:
+          - "A nikomu o tom nehovor, nech nám to konkurencia neskopíruje 😉"
+
+scan:
+  min_clues: 4
+  prompt: Ťukni na to, čo nesedí. Nie každý detail je stopa, niektoré sú len neutrálne.
+  button: Rozhodnúť
+
+decision:
+  title: Čo poradíš Kristiánovi?
+  prompt:
+    - speaker: kristian
+      text: Tak čo, mám Daxovi odpísať?
+  next_button: "Ďalej: ako to overiť"
+  options:
+    - id: try-once
+      text: Skúsiť to raz s malou sumou a potom skončiť.
+      outcome: bad
+      label: Jeden pokus stačí
+      consequence: Na Kristiánov účet príde 480 € od cudzej ženy. Dax píše, nech ich do hodiny pošle ďalej.
+      later: O dva dni banka účet zablokuje a pýta sa, odkiaľ sú peniaze. Žena ich poslala za tovar, ktorý nikdy nedostala.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes to povedať rodičovi a spolu zavolať do banky."
+    - id: number-only
+      text: Poslať Daxovi len číslo účtu. Prihlasovacie údaje nie.
+      outcome: bad
+      label: Číslo účtu stačí
+      consequence: Číslo účtu stačí. Peniaze prídu rovnako.
+      later: Dax začne tlačiť, nech ich pošle ďalej, a píše čoraz častejšie.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: Daxovi neodpovedať a povedať to dospelému."
+    - id: contract
+      text: Vyžiadať si od Daxa zmluvu a názov firmy.
+      outcome: ok
+      label: Papier nič nezmení
+      consequence: Dax pošle pekné PDF so zmluvou a logom.
+      later: Vyrobiť ho je ľahké. A o Kristiánov účet tu ide stále.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: overovať mimo Daxa a povedať to dospelému."
+    - id: refuse
+      text: Odmietnuť. Daxa zablokovať a nahlásiť v Zábere. Povedať to rodičovi alebo pani Bielikovej. Varovať Ota.
+      outcome: best
+      label: Odmietnuté
+      consequence: Kristián Daxovi neodpíše a profil nahlási. Doma to povie mame. Zostáva Oto, ktorý už poslal údaje.
+      calm: Presne tak. Keď je podmienkou tvoj účet, nie je to brigáda.
+
+verify:
+  title: Ako zistiť, či komentár naozaj napísal Patrik?
+  prompt:
+    - speaker: sara
+      text: Pod príspevkom Patrik z 9.B píše, že výplata vždy prišla. Kristián ho pozná zo školy.
+  next_button: "Ďalej: Oto už povedal áno"
+  options:
+    - id: reply-comment
+      text: Odpísať Patrikovi pod komentár na Záberi.
+      outcome: bad
+      label: Ten istý kanál
+      consequence: Odpovie ten, kto komentár napísal. Ak je účet falošný, všetko potvrdí.
+      calm: Overuje sa inou cestou.
+    - id: ask-dax
+      text: Napísať Daxovi, nech pošle Patrikov kontakt.
+      outcome: bad
+      label: Kontakt od Daxa
+      consequence: Kontakt od Daxa vedie späť k Daxovi.
+      calm: Overuje sa inou cestou, nie cez toho, koho overuješ.
+    - id: ask-in-person
+      text: Opýtať sa Patrika osobne v škole.
+      outcome: best
+      label: Iná cesta
+      consequence: Patrik nemá o ničom tušenie. Taký komentár nikdy nenapísal. Niekto použil jeho meno a fotku.
+      calm: Presne tak. Osobne alebo na čísle, ktoré už poznáš.
+    - id: followers
+      text: Pozrieť, koľko má Patrikov profil sledovateľov.
+      outcome: bad
+      label: Čísla nič neoveria
+      consequence: Počet sledovateľov nepovie, kto komentár napísal.
+      calm: Overuje sa inou cestou.
+
+lock_up:
+  title: Oto už povedal áno
+  prompt: Oto poslal Daxovi údaje a na jeho účet už prišli peniaze. V akom poradí to má riešiť?
+  steps:
+    - id: stop
+      text: "Prestať: cez svoj účet už žiadne peniaze neposielať a Daxovi neodpovedať."
+      rank: 1
+    - id: tell-adult
+      text: Ešte dnes to povedať rodičovi alebo inému dospelému, ktorému Oto dôveruje.
+      rank: 2
+      hint: Najprv zastaviť. Kým idú peniaze ďalej, rastie problém.
+    - id: call-bank
+      text: S dospelým zavolať do banky na číslo zo zadnej strany karty alebo z aplikácie a zmeniť prihlasovacie údaje.
+      rank: 3
+      hint: Do banky volá Oto spolu s dospelým. Najprv mu to musí povedať.
+    - id: police
+      text: S dospelým to oznámiť polícii.
+      rank: 4
+      hint: Polícia príde na rad, keď už vie dospelý aj banka.
+  distractors:
+    - id: send-on
+      text: Peniaze, ktoré už prišli, rýchlo poslať ďalej, nech je pokoj.
+      hint: Toto nie. Peniaze už nikam neposielať a riešiť to s bankou.
+    - id: give-card
+      text: Poslať Daxovi aj kartu, nech si to vybaví sám.
+      hint: Toto nie. Účet, kartu ani prihlásenie nikomu.
+  correct: Presne tak. Zastaviť, dospelý, banka, polícia. Čím skôr, tým lepšie.
+
+debrief:
+  rule: Keď za ľahkú prácu chcú tvoj účet, tak odmietni a povedz to dospelému.
+  clues:
+    - text: Ľahké peniaze od neznámeho.
+      clue: pay
+    - text: Podmienkou je tvoj bankový účet.
+      clue: account
+    - text: Cudzie peniaze máš poslať ďalej.
+      clue: forward
+    - text: Chce prihlasovacie údaje do banky.
+      clue: login
+    - text: Žiadne skúsenosti netreba.
+      clue: noexp
+    - text: Všetko len cez chat, bez pohovoru.
+      clue: online
+  note: >-
+    Posielať cez svoj účet peniaze za niekoho iného je trestný čin, aj keď to človek nevedel.
+    Ak sa to už stalo, skorá pomoc je správny krok. Ak ťa niekto tlačí pokračovať, je to dôvod hľadať pomoc hneď.
+  if_it_happened:
+    - "Prestaň: cez svoj účet už žiadne peniaze neposielaj a neodpovedaj."
+    - Ešte dnes to povedz rodičovi alebo inému dospelému, ktorému dôveruješ.
+    - S dospelým zavolaj do banky na číslo zo zadnej strany karty alebo z aplikácie. Zmeň prihlasovacie údaje.
+    - S dospelým to oznám polícii.
+    - Profil nahlás priamo v aplikácii a varuj kamarátov.
+  story_clue:
+    title: "Do spisu: 1"
+    text: Na platby Dax odkazuje na kontakt @kvapka_desk v Bzuku. Zapisujeme.
+
+stars:
+  - type: clues
+    min: 5
+    max_decoys: 2
+    label: Aspoň 5 stôp a najviac 2 neutrálne detaily
+  - type: decision_and_verify_best
+    label: Najlepšia rada aj overenie na prvý pokus
+  - type: lock_up
+    max_errors: 1
+    label: Postup pre Ota najviac s 1 chybou

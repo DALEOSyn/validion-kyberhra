@@ -80,16 +80,16 @@ test('help is reachable from every screen and returns to the same place', async 
   await expect(page.getByTestId('clue-count')).toHaveText('1/5');
 });
 
-test('teen track renders in its own theme and plays its placeholder case to the arc scene', async ({ page }) => {
+test('teen track renders in its own theme and plays T1 to the debrief', async ({ page }) => {
   await page.goto('./');
   await page.locator('[data-track="teen"]').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'teen');
   await axe(page);
-  await page.locator('[data-case="t1-placeholder"]').click();
+  await page.locator('[data-case="t1-lahka-brigada"]').click();
   await page.getByRole('button', { name: 'Otvoriť spis' }).click();
   await page.getByRole('button', { name: 'Tip' }).click();
   await expect(page.locator('.tip')).toContainText('Dôkaz A');
-  for (const id of ['pay', 'account', 'forward', 'secret']) await page.locator(`[data-clue="${id}"]`).click();
+  for (const id of ['pay', 'noexp', 'account', 'forward', 'login']) await page.locator(`[data-clue="${id}"]`).click();
   await axe(page);
   await page.getByRole('button', { name: 'Rozhodnúť' }).click();
   await page.locator('[data-option="refuse"]').click();
@@ -102,19 +102,16 @@ test('teen track renders in its own theme and plays its placeholder case to the 
   await page.locator('[data-option="ask-in-person"]').click();
   await page.getByRole('button', { name: /Oto už povedal áno/ }).click();
 
-  // lock-up: one distractor tap (1 error), then the steps in order; equal ranks in either order
-  await page.locator('[data-card="delete-chat"]').click();
-  await expect(page.locator('.tip')).toContainText('Chat nemaž');
-  for (const id of ['stop', 'tell-adult', 'call-bank', 'report-profile', 'police']) await page.locator(`[data-card="${id}"]`).click();
+  // lock-up: one distractor tap (1 error), then the steps in order
+  await page.locator('[data-card="send-on"]').click();
+  await expect(page.locator('.tip')).toContainText('Peniaze už nikam neposielať');
+  for (const id of ['stop', 'tell-adult', 'call-bank', 'police']) await page.locator(`[data-card="${id}"]`).click();
   await expect(page.locator('.tip')).toContainText('Presne tak.');
   await axe(page);
   await page.getByRole('button', { name: 'Uzavrieť prípad' }).click();
   await expect(page.getByText('UZAVRETÉ')).toBeVisible();
   // the first verify pick was wrong, so 2 of 3 stars
   await expect(page.getByRole('img', { name: 'Hviezdy: 2 z 3' })).toBeVisible();
-  await axe(page);
-  await page.getByRole('button', { name: /Záver príbehu/ }).click();
-  await expect(page.getByText('Spomaľ. Over si to inou cestou. Povedz to niekomu.')).toBeVisible();
   await axe(page);
 });
 
