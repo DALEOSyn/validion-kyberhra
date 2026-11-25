@@ -196,6 +196,7 @@ Calm help cards only, never cases. Each advice line below was checked against a 
 | kybersikana | save messages as evidence | sk-minv-kybersikanovanie-brochure, sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018 |
 | kybersikana | block | sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024, sk-zodpovedne-kybersikanovanie |
 | kybersikana | tell a trusted adult, 116 111 | sk-minv-kybersikanovanie-brochure, sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018 |
+| cudzi-tajomstvo (grooming) | "Nie je to tvoja chyba."; tell a trusted adult; 116 111 anonymous | sk-ldi-home, eu-bik-sextortion-teachers, sk-ochranma-home (grooming reports). **Open:** the warning signs named on the card (secrecy, photos, meeting) still need a source opened by fraud-researcher before release; "darčeky" was removed for lack of one (producer, 2026-11-25). |
 | je-mi-tazko | 116 111 nonstop and free; tell an adult; 112 if in danger now | sk-ldi-home, sk-minedu-krizove-linky-2025 (crisis lines for psychological support), eu-youreurope-emergency-faq-sk |
 
 Gaps: no Slovak official page with step-by-step sextortion advice for children was found (Polícia SR, NKS, Ochráň ma, IPčko, UNICEF SK guide checked). The sextortion steps rest on EU sources (BIK, and EU national police relaying Europol's "Say No!"). The Europol campaign page itself did not render. Contacts on the cards are only those already verified in the table above.
