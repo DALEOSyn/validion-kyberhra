@@ -11,6 +11,7 @@ track: teen
 number: 4
 title: Nové číslo
 summary: Prípad o falošnej správe od člena rodiny. Sárinej mame píše „Sára“ z nového čísla.
+risk: [money, stranger]
 sources:
   - eu-esas-ai-scams-factsheet-sk
   - sk-nbs-pozor-na-podvody
@@ -19,11 +20,17 @@ sources:
   - eu-bik-ie-scams-young-2026
   - sk-news-sita-ahoj-mami-2025
 
+recall:
+  question: "Z minulého spisu. Ako pokračuje pravidlo? „Keď zmizne signál a príde nečakaná obnova hesla, …“"
+  options:
+    - { id: restart, text: "tak reštartuj mobil a počkaj do rána." }
+    - { id: operator, text: "tak s rodičom hneď volaj operátorovi.", correct: true }
+    - { id: support, text: "tak napíš podpore, ktorá sa ti ozvala." }
+  feedback: "Keď zmizne signál a príde nečakaná obnova hesla, tak s rodičom hneď volaj operátorovi."
+
 intro:
   stamp: Spis č. 4 · Nové číslo
   lines:
-    - speaker: matej
-      text: "Z minulého spisu: keď zmizne signál a príde nečakaná obnova hesla, tak s rodičom hneď volaj operátorovi."
     - speaker: bielikova
       text: Pani Lacková, pošlite nám, čo vám prišlo. Sáru medzitým skúsime nájsť.
     - speaker: lackova
@@ -121,11 +128,12 @@ decision:
       later: Otázka môže pomôcť, ale odpoveď sa dá nájsť aj na sociálnych sieťach.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: overiť cez staré číslo alebo osobne."
     - id: wait-old
-      text: Neplatiť, novému číslu neodpisovať a počkať na Sáru zo starého čísla.
+      text: Neplatiť, neodpisovať, povedať to otcovi a čakať na Sárino staré číslo.
       outcome: best
+      tells_adult: true
       label: Peniaze ostali doma
       consequence: O šesť minút vchádza Sára s fľašou vody. Zavolá mame zo svojho čísla.
-      later: Mama nové číslo zablokuje a nahlási.
+      later: Mama to povie Sárinmu otcovi, nové číslo zablokuje a nahlási.
       calm: Presne tak. Nové číslo a peniaze, tak overiť cez staré číslo.
 
 verify:

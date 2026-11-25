@@ -8,6 +8,7 @@ track: teen
 number: 3
 title: Bez signálu
 summary: Večer pred nahrávaním Sárin mobil stratí signál. Hneď nato jej píše „obnova účtu“.
+risk: [threat, stranger]
 sources:
   - eu-enisa-sim-swapping-2021
   - sk-skcert-hacked-accounts-2018
@@ -15,11 +16,17 @@ sources:
   - sk-skcert-online-games-2020
   - sk-news-teraz-eset-simswap-2025
 
+recall:
+  question: "Z minulého spisu. Ako pokračuje pravidlo? „Keď ponúkajú cheat mimo oficiálneho obchodu, …“"
+  options:
+    - { id: no-run, text: "tak ho nesťahuj ani nespúšťaj.", correct: true }
+    - { id: av-off, text: "tak ho spusti, ale najprv vypni antivírus." }
+    - { id: comments, text: "tak ho stiahni, ak má dobré komentáre." }
+  feedback: "Keď ponúkajú cheat mimo oficiálneho obchodu, tak ho nesťahuj ani nespúšťaj."
+
 intro:
   stamp: Spis č. 3 · Bez signálu
   lines:
-    - speaker: matej
-      text: "Z minulého spisu: keď ponúkajú cheat mimo oficiálneho obchodu, tak ho nesťahuj ani nespúšťaj. Dnes je to inak."
     - speaker: sara
       text: "Píšem z notebooku. Mobil nemá signál desať minút, mama vedľa mňa ho má. A teraz píše nejaká obnova účtu."
     - speaker: matej
@@ -144,6 +151,7 @@ decision:
     - id: tell-mum
       text: Hneď to povedať mame, nech volá operátorovi. Záber otvoriť len vlastnou cestou.
       outcome: best
+      tells_adult: true
       label: Číslo aj účet ostali Sárine
       consequence: Mama volá operátorovi z iného telefónu. Sára otvorí Záber sama, zmení heslo, odstráni neznáme zariadenia a „podporu“ nahlási.
       later: Operátor cudziu SIM zablokuje a s mamou dohodne, ako Sárino číslo vrátiť. Účet ostal Sárin.

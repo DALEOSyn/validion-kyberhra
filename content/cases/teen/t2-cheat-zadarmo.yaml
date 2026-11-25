@@ -8,6 +8,7 @@ track: teen
 number: 2
 title: Cheat zadarmo
 summary: Matej si stiahol pomôcku na mierenie do Kovoboja. Ráno jeho účty robia veci, ktoré on nerobí.
+risk: [stranger]
 sources:
   - sk-skcert-online-games-2020
   - eu-europol-iocta-2026
@@ -19,11 +20,17 @@ sources:
   - sk-skcert-tech-support-2020
   - ch-ncsc-mods-cheats-2024
 
+recall:
+  question: "Z minulého spisu. Ako pokračuje pravidlo? „Keď za ľahkú prácu chcú tvoj účet, …“"
+  options:
+    - { id: contract, text: "tak si vypýtaj zmluvu a skús to raz." }
+    - { id: refuse, text: "tak odmietni a povedz to dospelému.", correct: true }
+    - { id: number, text: "tak im daj len číslo účtu, nie heslo." }
+  feedback: "Keď za ľahkú prácu chcú tvoj účet, tak odmietni a povedz to dospelému."
+
 intro:
   stamp: Spis č. 2 · Cheat zadarmo
   lines:
-    - speaker: sara
-      text: "Z minulého spisu: keď za ľahkú prácu chcú tvoj účet, tak odmietni a povedz to dospelému. Dnes máme nový prípad."
     - speaker: matej
       text: Včera som stiahol cheat na Kovoboj. Nefungoval. A dnes ráno toto.
     - speaker: sara
@@ -160,6 +167,7 @@ decision:
     - id: clean-start
       text: Povedať to dospelému a heslá meniť z iného, čistého zariadenia, najprv e-mail.
       outcome: best
+      tells_adult: true
       label: Čistý štart
       consequence: Do večera majú účty nové heslá z čistého zariadenia a dvojstupňové overenie.
       later: Počítač dá otec obnoviť do pôvodného stavu.

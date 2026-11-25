@@ -4,6 +4,7 @@ track: junior
 number: 1
 title: Drak zadarmo
 summary: Lea vraj vyhrala draka do hry. Stačí sa prihlásiť cez odkaz.
+risk: [stranger]
 # Facts: docs/SOURCES.md J1. ch-ncsc-gamer-phishing-2024 is supporting only (non-EU).
 sources:
   - sk-skcert-online-games-2020
@@ -96,6 +97,7 @@ decision:
     - id: verify
       text: Neklikať, otvoriť Kryptoriu priamo, účet nahlásiť a ukázať to dospelému.
       outcome: best
+      tells_adult: true
       label: Prípad vyriešený
       consequence: Lea otvorí Kryptoriu vlastnou cestou. V hre žiadna výhra nie je. Správu ukáže mame a účet v Bzuku nahlási. Tieň odchádza naprázdno.
       calm: Presne tak. Overiť vlastnou cestou a povedať to dospelému.
@@ -147,7 +149,7 @@ debrief:
 stars:
   - type: clues
     min: 4
-    label: Nájsť aspoň 4 stopy
+    label: Nájsť aspoň 4 stopy, neťukať na všetko
   - type: decision_best
     label: Vybrať najbezpečnejšiu radu
   - type: trust_or_trap

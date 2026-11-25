@@ -6,6 +6,7 @@ track: junior
 number: 2
 title: Kód pre kamaráta
 summary: Tomáš v chate pýta kód, ktorý práve prišiel na tvoj mobil.
+risk: [stranger]
 sources:
   - sk-skcert-whatsapp-vote-2026
   - sk-skcert-nova-vlna-2025
@@ -13,11 +14,17 @@ sources:
   - sk-skcert-report-incident
   - sk-skcert-hacked-accounts-2018
 
+recall:
+  question: "Pamätáš si pravidlo z minulého prípadu? Vyber koniec vety. „Keď výhra chce prihlásenie cez odkaz, …“"
+  options:
+    - { id: own-way, text: "tak otvor hru vlastnou cestou.", correct: true }
+    - { id: ask, text: "tak sa odosielateľa opýtaj, či je to pravé." }
+    - { id: hurry, text: "tak sa prihlás rýchlo, kým výhra platí." }
+  feedback: "Keď výhra chce prihlásenie cez odkaz, tak otvor hru vlastnou cestou."
+
 intro:
   stamp: Prípad č. 2 · Kód pre kamaráta
   lines:
-    - speaker: mira
-      text: "Pamätáš si pravidlo z minulého prípadu? Keď výhra chce prihlásenie cez odkaz, tak otvor hru vlastnou cestou."
     - speaker: fuzik
       text: Haf. Tvoj mobil zabzučal. Dve správy naraz.
     - speaker: mira
@@ -105,6 +112,7 @@ decision:
     - id: verify
       text: Kód neposlať, Tomášovi zavolať na známe číslo, povedať to Babi Zore.
       outcome: best
+      tells_adult: true
       label: Prípad vyriešený
       consequence: "Ešte kým vytáčaš, otvoria sa dvere. Tomáš: „Niekto mi ukradol Bzuk. Neviem sa prihlásiť.“ S Babi Zorou obnoví účet a kamarátov varuje inou cestou."
       calm: Presne tak. Kód si nechať a overiť inou cestou.
@@ -153,7 +161,7 @@ debrief:
 stars:
   - type: clues
     min: 4
-    label: Nájsť aspoň 4 stopy
+    label: Nájsť aspoň 4 stopy, neťukať na všetko
   - type: decision_best
     label: Vybrať najbezpečnejšiu radu
   - type: trust_or_trap

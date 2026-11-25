@@ -8,6 +8,7 @@ track: junior
 number: 4
 title: Kričiaca obrazovka
 summary: Tablet Babi Zory kričí, že má vírusy, a chce nainštalovať čistič.
+risk: [threat, stranger]
 sources:
   - sk-skcert-malicious-app-2025
   - sk-skcert-fakeapps-2018
@@ -16,11 +17,17 @@ sources:
   - ch-ncsc-fake-virus-alert-2025
   - sk-eset-kb-fake-virus-android
 
+recall:
+  question: "Pamätáš si pravidlo z minulého prípadu? Vyber koniec vety. „Keď nastavuješ heslo, …“"
+  options:
+    - { id: short, text: "tak daj krátke, nech si ho zapamätáš." }
+    - { id: same, text: "tak daj všade rovnaké, nech sa nepomýliš." }
+    - { id: long, text: "tak daj dlhé, iné a zapni druhý zámok.", correct: true }
+  feedback: "Keď nastavuješ heslo, tak daj dlhé, iné a zapni druhý zámok."
+
 intro:
   stamp: Prípad č. 4 · Kričiaca obrazovka
   lines:
-    - speaker: mira
-      text: "Pamätáš si pravidlo z minulého prípadu? Keď nastavuješ heslo, tak daj dlhé, iné a zapni druhý zámok."
     - speaker: babi-zora
       text: Deti, tablet kričal, že má vírusy. Ťukla som na Stiahnuť a teraz sa ma na niečo pýta.
     - speaker: mira
@@ -123,10 +130,11 @@ decision:
       consequence: Nič zlé sa nestalo. Ale otázka na obrazovke ostáva.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: inštaláciu zrušiť a okno zavrieť."
     - id: cancel
-      text: Zrušiť inštaláciu, nič nepovoliť a okno zavrieť.
+      text: Zrušiť inštaláciu, okno zavrieť a tablet ukázať niekomu z rodiny.
       outcome: best
+      tells_adult: true
       label: Prípad vyriešený
-      consequence: Babi ťukne na Zrušiť a zavrie okno. Nič sa nenainštalovalo. Čistič netreba. Šišky sa dopečú načas.
+      consequence: Babi ťukne na Zrušiť a zavrie okno. Nič sa nenainštalovalo. Čistič netreba. Večer tablet ukáže synovi.
       calm: Presne tak. Okno zavrieť a nič neinštalovať.
 
 trust_or_trap:
@@ -198,7 +206,7 @@ arc_scene:
 stars:
   - type: clues
     min: 4
-    label: Nájsť aspoň 4 stopy
+    label: Nájsť aspoň 4 stopy, neťukať na všetko
   - type: decision_best
     label: Vybrať najbezpečnejšiu radu
   - type: trust_or_trap

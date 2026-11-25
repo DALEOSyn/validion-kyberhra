@@ -14,11 +14,17 @@ sources:
   - sk-skcert-hacked-accounts-2018
   - sk-zodpovedne-osobne-udaje
 
+recall:
+  question: "Pamätáš si pravidlo z minulého prípadu? Vyber koniec vety. „Keď niekto chce kód z tvojho telefónu, …“"
+  options:
+    - { id: friend, text: "tak ho pošli, ak je to kamarát." }
+    - { id: nobody, text: "tak ho nepošli nikomu.", correct: true }
+    - { id: ask, text: "tak sa najprv v chate opýtaj, načo ho chce." }
+  feedback: "Keď niekto chce kód z tvojho telefónu, tak ho nepošli nikomu."
+
 intro:
   stamp: Prípad č. 3 · Zámok na účte
   lines:
-    - speaker: mira
-      text: "Pamätáš si pravidlo z minulého prípadu? Keď niekto chce kód z tvojho telefónu, tak ho nepošli nikomu."
     - speaker: simkova
       text: Dobrý deň. Náš klubový účet píše deťom čudné výhry a má obrázok draka. My sme to nepísali.
     - speaker: fuzik
@@ -115,6 +121,7 @@ decision:
 trust_or_trap:
   title: Výcvik · Dobrý zámok alebo slabé miesto
   start_button: "Výcvik: Dobrý zámok alebo slabé miesto"
+  prompt: Dobrý zámok, alebo slabé miesto?
   trust_label: Dobrý zámok
   trap_label: Slabé miesto
   items:
@@ -191,7 +198,7 @@ debrief:
 stars:
   - type: clues
     min: 3
-    label: Nájsť aspoň 3 slabé miesta
+    label: Nájsť aspoň 3 slabé miesta, neťukať na všetko
   - type: decision_best
     label: Vybrať najbezpečnejšiu radu
   - type: lock_up

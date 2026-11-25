@@ -67,3 +67,29 @@ entries:
     name: Tiesňová linka
     phone: "112"
     text: Ak ti alebo niekomu inému hrozí nebezpečenstvo práve teraz.
+
+  # Topic cards (Red Line 8): never played as cases, shown after the contacts. docs/PSYCHOLOGY.md §3.
+  # Contacts are only the ones verified above. Viac ako NI(c)K covers „zosmiešňovanie na internete, vydieranie“
+  # (sk-viacakonick-home); Ochráň ma takes reports of grooming and image-based sexual abuse (sk-ochranma-home).
+  # The advice lines (neplať, nemaž, zablokuj, nepreposielaj) still need a fraud-researcher source.
+  - id: pomoc-vydieranie
+    topic: vydieranie
+    name: Niekto ma vydiera alebo chce intímne fotky
+    text: >-
+      Nie je to tvoja chyba. Neplať a nič ďalšie neposielaj. Správy nemaž, sú to dôkazy, ale nikomu ich nepreposielaj.
+      Odosielateľa zablokuj. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na 116 111.
+    contacts: [linka-detskej-istoty, viac-ako-nick, ochran-ma, policia]
+  - id: pomoc-kybersikana
+    topic: kybersikana
+    name: Niekto ma šikanuje online
+    text: >-
+      Nie je to tvoja chyba. Neodpovedaj. Správy si ulož ako dôkaz a odosielateľa zablokuj.
+      Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na 116 111.
+    contacts: [linka-detskej-istoty, viac-ako-nick, ipcko]
+  - id: pomoc-je-mi-tazko
+    topic: je-mi-tazko
+    name: Je mi veľmi ťažko
+    text: >-
+      S tým netreba zostať osamote. Zavolaj na 116 111, nonstop a zadarmo. Povedz to aj dospelému, ktorému dôveruješ.
+      Ak ti hrozí nebezpečenstvo práve teraz, volaj 112.
+    contacts: [linka-detskej-istoty, ipcko, viac-ako-nick, tiesnova-linka-112]

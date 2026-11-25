@@ -7,6 +7,7 @@ track: teen
 number: 1
 title: Ľahká brigáda
 summary: Dax ponúka 150 € týždenne za pár minút z mobilu. Kristiánov kamarát Oto už súhlasil.
+risk: [money, stranger]
 sources:
   - eu-europol-mule-jobs
   - sk-nbs-crypto-mule-2025
@@ -143,6 +144,7 @@ decision:
     - id: refuse
       text: Odmietnuť, Daxa nahlásiť a povedať to dospelému. Varovať Ota.
       outcome: best
+      tells_adult: true
       label: Odmietnuté
       consequence: Kristián Daxa zablokuje a nahlási. Doma to povie mame. Zostáva Oto, ktorý už poslal údaje.
       calm: Presne tak. Keď je podmienkou tvoj účet, nie je to brigáda.
