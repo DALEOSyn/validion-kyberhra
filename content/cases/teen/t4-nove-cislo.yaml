@@ -35,8 +35,6 @@ intro:
       text: Pani Lacková, pošlite nám, čo vám prišlo. Sáru medzitým skúsime nájsť.
     - speaker: lackova
       text: Je to jej hlas. Ale nedvíha mi.
-    - speaker: bielikova
-      text: Screenshoty už máme.
     - speaker: matej
       text: Overovací stôl, toto je tvoje. Rýchlo, ale pokojne.
   button: Otvoriť spis
@@ -66,22 +64,22 @@ evidence:
           - text: staré si zmaž.
             clue:
               id: delete
-              hint: "Stopa: príkaz zmazať staré číslo. Práve cez staré číslo sa to overí."
+              hint: "Stopa: príkaz zmazať staré číslo, cez ktoré by sa to overilo."
       - segments:
           - text: "[hlasová správa 0:14] „Mami, prosím ťa, potrebujem rýchlo zaplatiť za opravu mobilu, inak mi ho nevrátia.“"
-            decoy: Hlas sám nič nedokazuje, ani že je pravý, ani že je falošný. Sleduj, čo správa chce.
+            decoy: Hlas sám nič nedokazuje. Sleduj, čo správa chce.
       - segments:
           - text: Pošli mi prosím 290 € na účet kamarátky, ja zatiaľ nemám appku. Mám to len do 15:00.
             clue:
               id: hurry
-              hint: "Stopa: naliehavá prosba o peniaze s termínom. Varovný znak, aj keď píše rodina."
+              hint: "Stopa: naliehavá prosba o peniaze s termínom, aj keď píše rodina."
       - segments:
           - "SK00 0000 0000 0026 9812 3456 · Vanesa K."
       - segments:
           - text: Nevolaj, mikrofón na novom mobile nejde, len píšem.
             clue:
               id: nocall
-              hint: "Stopa: zavolať sa vraj nedá. Práve hovor na známe číslo by to overil."
+              hint: "Stopa: zavolať sa vraj nedá. Hovor by to overil."
       - segments:
           - "A ocinovi to nehovor, poviem mu to sama."
 
@@ -92,7 +90,7 @@ evidence:
     lines:
       - segments:
           - text: Sára (mobil) · odchádzajúci · neprijatý · 13:52
-            decoy: Že Sára nedvíha, nie je dôkaz, že správa je pravá. Mobil môže byť v taške.
+            decoy: Že Sára nedvíha, nič nedokazuje. Mobil môže byť v taške.
 
 scan:
   min_clues: 3
@@ -125,7 +123,7 @@ decision:
       outcome: ok
       label: Otázka nestačí
       consequence: "Odpoveď: „mami, nemám čas na kvízy, ponáhľam sa“."
-      later: Otázka môže pomôcť, ale odpoveď sa dá nájsť aj na sociálnych sieťach.
+      later: Odpoveď na otázku sa dá nájsť aj na sociálnych sieťach.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: overiť cez staré číslo alebo osobne."
     - id: wait-old
       text: Neplatiť, neodpisovať, povedať to otcovi a čakať na Sárino staré číslo.
@@ -174,7 +172,7 @@ trust_or_trap:
     - source: Záber · reklama, tvár známej tvorkyne videí
       text: Z 50 € som mala za týždeň 900 €. Klikni a začni aj ty.
       answer: trap
-      why: Zaručené vysoké zisky a známa tvár v reklame sú varovný znak. Tvár aj hlas sa dajú zneužiť. Ukáž to dospelému.
+      why: Zaručené zisky a známa tvár sú varovný znak. Tvár aj hlas sa dajú zneužiť. Ukáž to dospelému.
     - source: Plagát v kaviarni Pod Lipou
       text: Hľadáme pomoc na leto. Pohovor v pondelok o 16:00 tu na mieste, potrebný súhlas rodiča.
       answer: trust
@@ -216,15 +214,13 @@ arc_scene:
   stamp: Spis uzavretý. Odvysielané.
   lines:
     - speaker: matej
-      text: Daxovu profilovú fotku sme s pani Bielikovou dali do spätného vyhľadávania obrázkov. Tá istá tvár. Štyri profily, štyri mená.
+      text: Daxova fotka v spätnom vyhľadávaní obrázkov. Tá istá tvár, štyri profily, štyri mená.
     - speaker: sara
       text: "Spájame špendlíky. @kvapka_desk pri brigáde aj pri cheate. Moje verejné číslo a dátum narodenia. Môj hlas z podcastu."
     - speaker: bielikova
       text: Spis odovzdáme polícii. Spolu s rodičmi. To je ich práca, nie naša.
     - speaker: sara
       text: Dax nie je skutočný človek. Je to maska. Za ňou je skupina ľudí ďaleko odtiaľto. Stačí im, keď sa ponáhľame.
-    - speaker: matej
-      text: "Červené svetlo svieti: NAHRÁVAME. Epizóda 5, „Požičané ja“."
     - speaker: sara
       text: Spomaľ. Over si to inou cestou. Povedz to niekomu.
   closing: >-

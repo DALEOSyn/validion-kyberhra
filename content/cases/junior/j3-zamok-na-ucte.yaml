@@ -13,6 +13,7 @@ sources:
   - sk-csirt-passwords-infographic-2024
   - sk-skcert-hacked-accounts-2018
   - sk-zodpovedne-osobne-udaje
+risk: [stranger]
 
 recall:
   question: "Pamätáš si pravidlo z minulého prípadu? Vyber koniec vety. „Keď niekto chce kód z tvojho telefónu, …“"
@@ -26,11 +27,11 @@ intro:
   stamp: Prípad č. 3 · Zámok na účte
   lines:
     - speaker: simkova
-      text: Dobrý deň. Náš klubový účet píše deťom čudné výhry a má obrázok draka. My sme to nepísali.
+      text: Náš klubový účet píše deťom čudné výhry, s drakom. My sme to nepísali.
     - speaker: fuzik
-      text: Haf. Z fóra Kotol minulý mesiac unikli heslá. Kotol je vymyslený, úniky hesiel nie.
+      text: Haf. Z fóra Kotol unikli heslá. Kotol je vymyslený, úniky nie.
     - speaker: mira
-      text: Tieň sa dostal dnu. Nájdi aspoň 3 slabé miesta.
+      text: Tieň je dnu. Nájdi aspoň 3 slabé miesta.
   button: Vziať lupu
 
 evidence:
@@ -48,7 +49,7 @@ evidence:
           - "Kryptoria: nové prihlásenie"
       - segments:
           - text: Nové prihlásenie do účtu HernyKlubLipovec z neznámeho zariadenia. Ak ste to neboli vy, zmeňte heslo v aplikácii.
-            decoy: Toto je dobrý pomocník. Nemá odkaz na prihlásenie a radí zmeniť heslo v aplikácii.
+            decoy: Dobrý pomocník. Nemá odkaz a radí zmeniť heslo v aplikácii.
       - style: meta
         segments:
           - "Stav zabezpečenia · "
@@ -81,7 +82,7 @@ evidence:
           - text: (rovnaké aj na e-mail klubu a na fórum Kotol)
             clue:
               id: same
-              hint: "Slabé miesto: jedno heslo na troch miestach. Únik z fóra otvoril aj ostatné."
+              hint: "Slabé miesto: jedno heslo na troch miestach."
       - style: meta
         segments:
           - text: "[malý smajlík nakreslený perom]"
@@ -89,7 +90,7 @@ evidence:
 
 scan:
   min_clues: 3
-  prompt: Ťukni na slabé miesto. Tu nehľadáš podvod, ale dieru v zámku.
+  prompt: Ťukni na slabé miesto, dieru v zámku.
   button: Poradiť pani učiteľke
 
 decision:
@@ -109,13 +110,14 @@ decision:
       text: Dať klubovému účtu nové dlhé heslo a zapnúť druhý zámok. E-mail a fórum nechať tak.
       outcome: ok
       label: Skoro
-      consequence: Klubový účet je bezpečnejší. Ale e-mail má stále staré heslo. Kto má e-mail, vie zmeniť aj ostatné heslá.
+      consequence: Hra je bezpečnejšia. Ale kto má e-mail, vie zmeniť aj ostatné heslá.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: začať e-mailom."
     - id: lock
       text: S pani učiteľkou dať každému účtu iné dlhé heslo, začať e-mailom.
       outcome: best
+      tells_adult: true
       label: Prípad vyriešený
-      consequence: Najprv e-mail, potom hra a fórum, každé iným heslom. K tomu druhý zámok a odhlásiť cudzie zariadenie. Na účte je znova logo klubu, nie drak.
+      consequence: Najprv e-mail, potom hra a fórum, každé iným heslom, a druhý zámok. Na účte je znova logo klubu.
       calm: Presne tak. Dlhé heslo, pre každý účet iné, a k tomu druhý zámok.
 
 trust_or_trap:
@@ -132,11 +134,7 @@ trust_or_trap:
     - source: Cvičné heslo pre klubový účet
       text: dáždnik fialová žirafa polievka
       answer: trust
-      why: Štyri slová, viac ako 12 znakov, o klube nič neprezradí. Je len cvičné, svoje skutočné heslo nikde neukazuj.
-    - source: Plán pani učiteľky
-      text: Jedno nové dlhé heslo pre Kryptoriu, e-mail aj fórum.
-      answer: trap
-      why: Keď unikne z jedného miesta, otvorí aj ostatné. Pre každý účet iné heslo.
+      why: Štyri slová, dlhé, o klube nič neprezradí. Svoje skutočné heslo nikde neukazuj.
     - source: Prihlásenie do Kryptorie
       text: Okrem hesla chce aj kód z aplikácie v telefóne.
       answer: trust
@@ -161,12 +159,9 @@ lock_up:
       text: Zapnúť druhý zámok, dvojstupňové overenie.
       rank: 3
     - id: warn
-      text: Napísať členom klubu, nech na čudné správy z účtu nereagujú.
+      text: Varovať členov klubu, nech na čudné správy nereagujú.
       rank: 3
   distractors:
-    - id: sticky
-      text: Napísať nové heslo na lístok a nalepiť ho na počítač.
-      hint: Toto nie. Lístok na spoločnom počítači vidí každý.
     - id: group-chat
       text: Poslať nové heslo všetkým členom do skupinového chatu.
       hint: Toto nie. Heslo nikomu neposielaj. Účet spravuje pani učiteľka.

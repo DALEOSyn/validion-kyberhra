@@ -59,7 +59,7 @@ Owner: `learning-psychologist` · Status: v0.1 draft (2026-11-25) · Related: `C
 
 **"Tell a trusted adult" without babying 15-year-olds.**
 - Junior: *Povedz to dospelému, ktorému dôveruješ.* Keep it direct and warm.
-- Teen: give a reason, not a rule. *Pri peniazoch, účtoch a vyhrážkach to rieš s dospelým, ktorému dôveruješ. Dvaja ľudia konajú rýchlejšie a banka aj polícia sa často chcú rozprávať s dospelým.* (`fraud-researcher` checks the second clause.) Name concrete options: rodič, iný dospelý z rodiny, tréner, triedny učiteľ, výchovný poradca. Model it in the story: a respected teen character does it without drama.
+- Teen: give a reason, not a rule. *Pri peniazoch, účtoch a vyhrážkach to rieš s dospelým, ktorému dôveruješ. Dvaja ľudia konajú rýchlejšie a dospelý ti pomôže zavolať do banky aj ísť na políciu.* Name concrete options: rodič, iný dospelý z rodiny, tréner, triedny učiteľ, výchovný poradca. Model it in the story: a respected teen character does it without drama.
 - Asking an adult is always a valid, scored choice where money, threats or strangers are involved (Red Line 8). It is never the "weak" option.
 
 **Help-card placement.**

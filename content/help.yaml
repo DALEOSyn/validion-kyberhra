@@ -71,14 +71,26 @@ entries:
   # Topic cards (Red Line 8): never played as cases, shown after the contacts. docs/PSYCHOLOGY.md §3.
   # Contacts are only the ones verified above. Viac ako NI(c)K covers „zosmiešňovanie na internete, vydieranie“
   # (sk-viacakonick-home); Ochráň ma takes reports of grooming and image-based sexual abuse (sk-ochranma-home).
-  # The advice lines (neplať, nemaž, zablokuj, nepreposielaj) still need a fraud-researcher source.
+  # Advice sources (docs/SOURCES.md "Help topic cards"): vydieranie: ie-garda-say-no-2017, eu-bik-sextortion-parents-2025,
+# eu-bik-sextortion-teachers, sk-ochranma-ibsa; kybersikana: sk-minv-kybersikanovanie-brochure, sk-vudpap-kybersikanovanie-2024,
+# sk-zodpovedne-kybersikanovanie, sk-skcert-cyberbullying-2018; je-mi-tazko: sk-ldi-home, sk-minedu-krizove-linky-2025.
   - id: pomoc-vydieranie
     topic: vydieranie
     name: Niekto ma vydiera alebo chce intímne fotky
     text: >-
-      Nie je to tvoja chyba. Neplať a nič ďalšie neposielaj. Správy nemaž, sú to dôkazy, ale nikomu ich nepreposielaj.
+      Nie je to tvoja chyba. Neplať a nič ďalšie neposielaj. Správy nemaž, sú to dôkazy.
       Odosielateľa zablokuj. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na 116 111.
     contacts: [linka-detskej-istoty, viac-ako-nick, ochran-ma, policia]
+  # Grooming (sceptic-mvp re-review minor 3, psych-mvp H1). Only already-sourced advice: tell a trusted adult and
+  # 116 111 (sk-ldi-home, eu-bik-sextortion-teachers); anonymity of 116 111 (sk-ldi-home); Ochráň ma takes grooming
+  # reports (sk-ochranma-home). fraud-researcher: please add this card's rows to docs/SOURCES.md "Help topic cards".
+  - id: pomoc-cudzi-tajomstvo
+    topic: grooming
+    name: Cudzí človek mi píše a chce, aby to zostalo tajomstvo
+    text: >-
+      Nie je to tvoja chyba. Ak ťa niekto cudzí online žiada o tajnosť, darčeky, fotky alebo stretnutie,
+      povedz to dospelému, ktorému dôveruješ, alebo zavolaj na 116 111. Nikto ťa tam nesúdi a nemusíš povedať meno.
+    contacts: [linka-detskej-istoty, viac-ako-nick, ochran-ma]
   - id: pomoc-kybersikana
     topic: kybersikana
     name: Niekto ma šikanuje online

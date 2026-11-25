@@ -72,6 +72,7 @@ evidence:
 
 scan:
   min_clues: 3
+  pre_found: [sender]
   prompt: Ťukni na časť správy, ktorá ti nesedí.
   button: Poradiť Lei
 

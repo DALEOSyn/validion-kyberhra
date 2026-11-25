@@ -31,7 +31,7 @@ intro:
     - speaker: babi-zora
       text: Deti, tablet kričal, že má vírusy. Ťukla som na Stiahnuť a teraz sa ma na niečo pýta.
     - speaker: mira
-      text: Ešte nič nepovoľujte. Pozrime sa na obe obrazovky. Nájdi aspoň 3 stopy.
+      text: Ešte nič nepovoľujte. Nájdi aspoň 3 stopy na oboch obrazovkách.
   button: Vziať lupu
 
 evidence:
@@ -44,7 +44,7 @@ evidence:
       - style: title
         segments:
           - text: "[štít] Bezpečnostné centrum"
-            decoy: Štít a slovo „bezpečnosť“ si nakreslí ktokoľvek. Samo to nič nedokazuje.
+            decoy: Štít si nakreslí ktokoľvek. Nič nedokazuje.
       - segments:
           - text: "⚠ VÁŠ TABLET JE NAKAZENÝ (5 VÍRUSOV) · Do 00:59 sa poškodia fotky"
             clue:
@@ -60,7 +60,7 @@ evidence:
           - text: "Alebo volajte technika: 0900 ••• •••"
             clue:
               id: call
-              hint: "Stopa: číslo na „technika“ priamo vo varovaní. Na číslo z takého okna nevolaj."
+              hint: "Stopa: číslo na „technika“ priamo v okne. Také číslo nevolaj."
       - style: meta
         segments:
           - text: "[za oknom: recept Lipovecké šišky]"
@@ -115,13 +115,13 @@ decision:
       text: Povoliť všetko, nech čistič rýchlo vymaže tých päť vírusov.
       outcome: bad
       label: Čistič je dnu
-      consequence: Čistič sa nainštaluje a hneď chce ďalšie povolenia. Babi už nevie, čo všetko v tablete robí.
+      consequence: Čistič sa nainštaluje a chce ďalšie povolenia. Čo v tablete robí, nikto nevie.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: aplikáciu odinštalovať a ukázať tablet niekomu, kto sa vyzná."
     - id: call
       text: Zavolať technikovi z okna, nech poradí, čo presne treba povoliť.
       outcome: bad
       label: Milý hlas
-      consequence: Milý hlas chce, aby Babi nainštalovala ešte jednu aplikáciu. Na Babinu otázku odpovedá „Verte mi.“
+      consequence: Milý hlas chce, aby Babi nainštalovala ešte jednu aplikáciu.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: zložiť a nič neinštalovať."
     - id: wait
       text: Nechať tablet tak a počkať, kým sa to samo vyrieši.
@@ -134,7 +134,7 @@ decision:
       outcome: best
       tells_adult: true
       label: Prípad vyriešený
-      consequence: Babi ťukne na Zrušiť a zavrie okno. Nič sa nenainštalovalo. Čistič netreba. Večer tablet ukáže synovi.
+      consequence: Babi ťukne na Zrušiť a zavrie okno. Nič sa nenainštalovalo. Večer tablet ukáže synovi.
       calm: Presne tak. Okno zavrieť a nič neinštalovať.
 
 trust_or_trap:
@@ -148,7 +148,7 @@ trust_or_trap:
     - source: Oficiálny obchod s aplikáciami
       text: "Kryptoria · vývojár Kryptoria Studio · 4,6 ★ · 120 tis. hodnotení · Inštalovať"
       answer: trust
-      why: Oficiálny obchod, známy vývojár a veľa hodnotení. Aj tak pozri, aké povolenia chce.
+      why: Oficiálny obchod, známy vývojár, veľa hodnotení. Aj tak pozri povolenia.
     - source: Bzuk · neznámy účet
       text: Zadaj heslo do Kryptorie na kryst-bonus.example a dostaneš 1 000 kryštálov.
       answer: trap
@@ -190,9 +190,7 @@ arc_scene:
     - speaker: babi-zora
       text: Toto zanesieme spolu s vašimi rodičmi na políciu.
     - speaker: mira
-      text: Prišla odpoveď. Polícia ďakuje. Tieň nie je jeden zloduch z Lipovca.
-    - speaker: mira
-      text: Je to skupina podvodníkov ďaleko odtiaľto. Kto presne, to už je práca polície.
+      text: Polícia ďakuje. Tieň je skupina podvodníkov ďaleko odtiaľto. Ďalej je to práca polície.
     - speaker: mira
       text: Tieň nevyhrá, keď ľudia vedia, na čo si dať pozor. Teraz to vieš aj ty.
   closing: >-

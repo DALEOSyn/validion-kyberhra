@@ -110,6 +110,7 @@ evidence:
 
 scan:
   min_clues: 4
+  pre_found: [pay]
   prompt: Ťukni na to, čo nesedí. Nie každý detail je stopa, niektoré sú len neutrálne.
   button: Rozhodnúť
 

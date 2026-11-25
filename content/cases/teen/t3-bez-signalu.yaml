@@ -135,11 +135,11 @@ decision:
       later: O pár minút má Záber nové heslo a Sára je odhlásená. Kamarátom z jej profilu idú odkazy.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to mame a s ňou otvoriť oficiálne obnovenie účtu v aplikácii."
     - id: sleep
-      text: Reštartovať mobil a ísť spať. Ráno sa uvidí.
+      text: Reštartovať mobil, ísť spať a ráno to povedať mame.
       outcome: ok
       label: Noc je dlhá
-      consequence: Signál sa nevráti.
-      later: Ráno sú v e-maile ďalšie správy o zmene hesiel.
+      consequence: Signál sa nevráti. Mama je správna voľba, ale ráno je neskoro.
+      later: Cez noc môže niekto s jej číslom prijímať kódy. Ráno sú v e-maile ďalšie správy o zmene hesiel.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes to povedať mame, nech zavolá operátorovi."
     - id: their-link
       text: Napísať operátorovi cez odkaz od „podpory“ a nahlásiť, že nejde signál.

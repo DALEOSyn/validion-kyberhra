@@ -158,11 +158,11 @@ decision:
       later: Heslo sa menilo na napadnutom počítači, e-mail ostal starý. V noci odídu z Matejovho Bzuku ďalšie odkazy.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to dospelému a z čistého zariadenia zmeniť heslá."
     - id: warn-tomorrow
-      text: Napísať kamarátom, nech na odkaz neklikajú, a zvyšok riešiť zajtra.
+      text: Varovať kamarátov a zajtra to povedať otcovi.
       outcome: ok
       label: Polovica práce
-      consequence: Varovanie pomôže, kamaráti sú opatrnejší.
-      later: Kým sa veci odkladajú, cudzí človek je stále v Matejových účtoch.
+      consequence: Varovanie pomôže, kamaráti sú opatrnejší. Dospelý je dobrý nápad, ale zajtra je neskoro.
+      later: Celú noc je cudzí človek v Matejových účtoch. Môže zmeniť aj heslo k e-mailu.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes začať heslom k e-mailu."
     - id: clean-start
       text: Povedať to dospelému a heslá meniť z iného, čistého zariadenia, najprv e-mail.
