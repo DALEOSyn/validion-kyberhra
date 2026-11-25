@@ -270,16 +270,30 @@ p {
   box-shadow: 0 3px 0 var(--paper-line);
 }
 .track-card:hover,
-.case-card:not(:disabled):hover {
+.case-card:not(.locked):hover {
   border-color: var(--accent);
 }
-.track-card.teen-preview {
-  background: #272c34;
-  color: #eceef1;
-  border-color: #414955;
+/* Each start card wears its own track's tokens (data-theme on the card). */
+.track-card {
+  font-family: var(--f-body);
 }
-.track-card.teen-preview .muted {
-  color: #b3bac4;
+.track-card .name {
+  color: var(--ink);
+}
+.track-card .track-age,
+.track-card .track-progress {
+  color: var(--muted);
+  font-weight: 700;
+}
+.track-card.track-junior {
+  background: var(--paper);
+  border-color: var(--desk);
+  box-shadow: 0 3px 0 var(--desk-edge);
+}
+.track-card.track-teen {
+  background: var(--paper);
+  border-color: var(--paper-line);
+  box-shadow: 0 3px 0 var(--desk-edge);
 }
 .track-card .name,
 .case-card .name {
@@ -298,11 +312,11 @@ p {
 .case-card {
   width: 100%;
 }
-.case-card:disabled {
+.case-card.locked {
   cursor: not-allowed;
-  opacity: 0.75;
   box-shadow: none;
   border-style: dashed;
+  background: var(--paper-2);
 }
 .case-card .status {
   font-size: 0.85rem;
@@ -444,8 +458,11 @@ p {
   border-bottom: 2px dotted var(--muted);
   text-decoration: inherit;
 }
-.tap:hover {
-  background: var(--hit-bg);
+/* Only real hover devices: on touch a sticky hover looked like a found clue (QA F6). */
+@media (hover: hover) {
+  .tap:hover {
+    background: var(--hit-bg);
+  }
 }
 .tap.hit {
   background: var(--hit-bg);
@@ -462,7 +479,9 @@ p {
 }
 .mag {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
+  min-width: 0;
 }
 .mag i {
   width: 22px;
@@ -483,6 +502,31 @@ p {
 }
 .tip.flag {
   border-left-color: var(--bad);
+}
+/* Scan meter, hint and buttons stay at the bottom of the viewport (QA F1). */
+.scan-bar,
+.sticky-tip {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+.scan-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--paper);
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 12px -8px rgba(0, 0, 0, 0.3);
+}
+.scan-bar .tip {
+  min-height: 2.6em;
+}
+.scan-bar .btn {
+  min-height: 44px;
+  padding: 8px 16px;
+}
+.sticky-tip {
+  box-shadow: 0 -8px 12px -8px rgba(0, 0, 0, 0.3);
 }
 
 /* choices + results */
@@ -599,6 +643,8 @@ p {
 }
 .dots {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 6px;
   list-style: none;
   padding: 0;
@@ -683,13 +729,18 @@ p {
   flex-direction: column;
   gap: 12px;
 }
+.closed-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+/* Teaching screens carry no alarm colour (PSYCHOLOGY finding 18). */
 .closed .rubber {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   transform: rotate(8deg);
-  border: 3px solid var(--bad);
-  color: var(--bad);
+  border: 3px solid var(--accent);
+  color: var(--accent);
   font-family: var(--f-type);
   font-size: 0.85rem;
   padding: 2px 8px;
@@ -700,7 +751,6 @@ p {
   font-weight: 800;
   font-size: 1.25rem;
   color: var(--accent);
-  padding-right: 6.5rem;
   text-wrap: balance;
 }
 ul,
@@ -793,6 +843,69 @@ ol {
   font-weight: 800;
   font-size: 1.5rem;
   color: var(--accent);
+}
+
+/* "Leave the case?" confirmation (QA F7). */
+.leave {
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.leave-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.skip-link {
+  align-self: flex-end;
+  background: none;
+  border: 0;
+  color: var(--link);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 4px;
+  min-height: 44px;
+}
+.choice.right {
+  border-color: var(--good);
+  border-width: 3px;
+}
+.choice.wrong {
+  border-style: dashed;
+}
+.choice[aria-disabled='true'] {
+  cursor: default;
+}
+/* Help topic cards: calm, same quiet colours as the contacts. */
+.help-topics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.help-topic {
+  border-left: 6px solid var(--accent);
+}
+.help-topic h4 {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Teacher on a projector (QA F13): a wider column and larger text above 1600px. */
+@media (min-width: 1600px) {
+  html {
+    font-size: clamp(22px, 0.9vw + 6px, 30px);
+  }
+  .hud,
+  .folder,
+  .foot {
+    max-width: 44rem;
+  }
 }
 
 .foot {

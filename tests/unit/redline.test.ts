@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { denyMatchers, denylistIssues, domainIssues, exclaimIssues, genderIssues, lintValue, parseDenylist } from '../../scripts/lib/redline.ts';
+import { denyMatchers, denylistIssues, domainIssues, exclaimIssues, genderIssues, ibanIssues, ibanValid, lintValue, parseDenylist, phoneIssues } from '../../scripts/lib/redline.ts';
 
 const matchers = denyMatchers(parseDenylist(readFileSync(resolve(import.meta.dirname, '../../scripts/redline-denylist.txt'), 'utf8')));
 
@@ -32,10 +32,12 @@ describe('denylist', () => {
 });
 
 describe('gendered forms', () => {
-  it.each(['Ak si klikol na odkaz', 'Klikla si na odkaz.', 'Keď si to zadal, zmeň heslo.', 'Bol(a) si opatrný.', 'Si pripravený?', 'Ahoj hráč', 'Mal/a by si'])('flags "%s"', (t) => {
+  it.each(['Ak si klikol na odkaz', 'Klikla si na odkaz.', 'Keď si to zadal, zmeň heslo.', 'Bol(a) si opatrný.', 'Si pripravený?', 'Ahoj hráč', 'Mal/a by si',
+    // sceptic MVP review, finding 6
+    'Ak si to už poslal', 'Ak si ho už nainštaloval', 'Keď si už heslo zadal', 'Dobre si to zvládla', 'a klikol si', 'Buď opatrný', 'Zostaň pokojná', 'si skvelý detektív', 'Teraz si skvelý detektív'])('flags "%s"', (t) => {
     expect(genderIssues(t)).not.toEqual([]);
   });
-  it.each(['Ak klikneš na odkaz, zmeň heslo.', 'Kto ťa ženie, nechce, aby si to niekto stihol overiť.', 'Si medzi 50 výhercami.', 'Lea si zmenila heslo.', 'Pozri si to.', 'vraj som vyhrala draka'])('passes "%s"', (t) => {
+  it.each(['Ak klikneš na odkaz, zmeň heslo.', 'Kto ťa ženie, nechce, aby si to niekto stihol overiť.', 'Si medzi 50 výhercami.', 'Lea si zmenila heslo.', 'Pozri si to.', 'vraj som vyhrala draka', 'Pozri si nový telefón.', 'aby si to Lea stihla', 'Buď pokojne doma.'])('passes "%s"', (t) => {
     expect(genderIssues(t)).toEqual([]);
   });
 });
@@ -51,5 +53,26 @@ describe('lintValue', () => {
     const v = { entries: [{ text: 'Linka detskej istoty, https://www.ldi.sk, aj Google' }] };
     expect(lintValue(v, matchers, true)).toEqual([]);
     expect(lintValue(v, matchers, false).map((h) => h.rule).sort()).toEqual(['denylist', 'domains', 'domains']);
+  });
+});
+
+describe('phone numbers and IBANs (Red Line 3)', () => {
+  it('flags unmasked phone-like numbers, not masked ones or amounts', () => {
+    expect(phoneIssues('Volaj 0905 123 456')).toHaveLength(1);
+    expect(phoneIssues('+421 905 123 456')).toHaveLength(1);
+    expect(phoneIssues('0905123456')).toHaveLength(1);
+    expect(phoneIssues('0905 xxx xxx, +421 9•• ••• •12, 5 000 kryštálov, 1 000 000 €, o 19:41, kód 482 913')).toEqual([]);
+  });
+  it('flags only IBANs that pass mod-97', () => {
+    expect(ibanValid('DE89 3704 0044 0532 0130 00')).toBe(true);
+    expect(ibanValid('SK00 0000 0000 0026 9812 3456')).toBe(false);
+    expect(ibanIssues('IBAN DE89 3704 0044 0532 0130 00')).toHaveLength(1);
+    expect(ibanIssues('IBAN SK00 0000 0000 0026 9812 3456')).toEqual([]);
+    expect(phoneIssues('SK00 0000 0000 0026 9812 3456 · Vanesa K.')).toEqual([]);
+  });
+  it('lintValue checks phones outside help/sources and IBANs everywhere', () => {
+    expect(lintValue({ text: 'Zavolaj 0905 123 456' }, matchers, false).map((h) => h.rule)).toEqual(['phone']);
+    expect(lintValue({ text: 'Zavolaj 0905 123 456' }, matchers, true)).toEqual([]);
+    expect(lintValue({ text: 'GB82WEST12345698765432' }, matchers, true).map((h) => h.rule)).toEqual(['iban']);
   });
 });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
-import { caseIssues, loadContent, trackIssues } from '../../scripts/lib/content.ts';
-import { CaseSchema } from '../../src/content/schema.ts';
+import { caseIssues, helpIssues, loadContent, trackIssues } from '../../scripts/lib/content.ts';
+import { CaseSchema, HelpEntrySchema, RecallSchema } from '../../src/content/schema.ts';
 
 const CONTENT = resolve(import.meta.dirname, '../../content');
 const res = loadContent(CONTENT);
@@ -114,5 +114,49 @@ describe('cross-reference checks', () => {
   it('the schema rejects unknown fields (typos)', () => {
     if (!j1) throw new Error('fixtures missing');
     expect(CaseSchema.safeParse({ ...JSON.parse(JSON.stringify(j1)), debreif: {} }).success).toBe(false);
+  });
+});
+
+describe('help.yaml rules (Red Line 8)', () => {
+  const help = res.content?.help;
+  it('116 111 is the first entry (shown under every debrief)', () => {
+    if (!help) throw new Error('help missing');
+    expect(help.entries[0]?.phone?.replace(/\D/g, '')).toBe('116111');
+    expect(helpIssues(help)).toEqual([]);
+    const reordered = { ...help, entries: [...help.entries.slice(1), ...help.entries.slice(0, 1)] };
+    expect(helpIssues(reordered).join('\n')).toMatch(/first entry/);
+  });
+  it('topic cards are optional, must point to 116 111 and may list contacts', () => {
+    if (!help) throw new Error('help missing');
+    const first = help.entries[0];
+    if (!first) throw new Error('help empty');
+    const topic = HelpEntrySchema.parse({ id: 'vydieranie', name: 'Vydieranie', topic: 'vydieranie', text: 'Nie je to tvoja chyba.' });
+    expect(helpIssues({ ...help, entries: [...help.entries, topic] }).join('\n')).toMatch(/must point to 116 111/);
+    expect(helpIssues({ ...help, entries: [...help.entries, { ...topic, contacts: [first.id] }] })).toEqual([]);
+    expect(helpIssues({ ...help, entries: [...help.entries, { ...topic, text: 'Zavolaj na 116 111.' }] })).toEqual([]);
+    expect(helpIssues({ ...help, entries: [...help.entries, { ...topic, contacts: ['nope'] }] }).join('\n')).toMatch(/"nope" is not an entry id/);
+  });
+});
+
+describe('optional case fields', () => {
+  const tracks = res.content?.tracks ?? [];
+  const junior = tracks.find((t) => t.id === 'junior');
+  const j1 = res.content?.cases['j1-drak-zadarmo'];
+  const sources = new Map(res.sources.map((s) => [s.id, s]));
+
+  it('recall: 2-3 options, exactly one correct', () => {
+    const ok = { question: 'Ako pokračuje pravidlo?', options: [{ id: 'a', text: 'A', correct: true }, { id: 'b', text: 'B' }], feedback: 'Keď…, tak…' };
+    expect(RecallSchema.safeParse(ok).success).toBe(true);
+    expect(RecallSchema.safeParse({ ...ok, options: [{ id: 'a', text: 'A' }, { id: 'b', text: 'B' }] }).success).toBe(false);
+    expect(RecallSchema.safeParse({ ...ok, options: [{ id: 'a', text: 'A', correct: true }] }).success).toBe(false);
+  });
+
+  it('risk needs a best or ok option that tells a trusted adult; pre_found ids must exist', () => {
+    if (!j1 || !junior) throw new Error('fixtures missing');
+    const risky = { ...j1, risk: ['stranger' as const], decision: { ...j1.decision, options: j1.decision.options.map((o) => ({ ...o, tells_adult: false })) } };
+    expect(caseIssues(risky, junior, sources).join('\n')).toMatch(/tells_adult/);
+    const fixed = { ...risky, decision: { ...risky.decision, options: risky.decision.options.map((o) => ({ ...o, tells_adult: o.outcome === 'best' })) } };
+    expect(caseIssues(fixed, junior, sources)).toEqual([]);
+    expect(caseIssues({ ...j1, scan: { ...j1.scan, pre_found: ['nope'] } }, junior, sources).join('\n')).toMatch(/pre_found "nope"/);
   });
 });

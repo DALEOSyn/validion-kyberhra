@@ -69,10 +69,12 @@ tracks:
 | `id`, `track`, `number` | yes | id = file name; `number` = position in `tracks.yaml` |
 | `title`, `summary` | yes | case card on the list |
 | `placeholder` | no | `true` shows a PLACEHOLDER banner |
+| `risk` | no | list of `money`, `threat`, `stranger`. When set, the decision or verify step needs a `best` or `ok` option with `tells_adult: true` (Red Line 8); the validator checks it |
+| `recall` | no | „Pamätáš si?“ question before the brief (§4a) |
 | `sources` | yes, ≥ 1 | ids from `sources.yaml`; at least one must be SK or EU and tier 1–3 (Red Line 6) |
 | `intro` | yes | `stamp` (optional heading), `lines` (dialogue), `button` (default „Vziať lupu“) |
 | `evidence` | yes, 1–3 | the artefacts to scan (§5) |
-| `scan` | yes | `min_clues` (button appears), `prompt` (first tip text), `button` |
+| `scan` | yes | `min_clues` (button appears), `prompt` (first tip text), `button`; optional `tip` (question added to the Tip hint, e.g. „Čo od teba chcú a kto to píše?“) and `pre_found` (clue ids already marked as found: the worked example explained in the brief) |
 | `decision` | yes | 3–4 options, exactly one `best` (§6) |
 | `verify` | no | teen "how to verify" step; same shape as `decision`; wrong picks may be retried, the first pick scores |
 | `trust_or_trap` | one of these two | quick round (§7) |
@@ -81,9 +83,29 @@ tracks:
 | `arc_scene` | no | story scene after the debrief, for the last case of a track (§10) |
 | `stars` | yes, 1–3 | one star per rule (§11) |
 
-Stage order: intro → scan → decision → its consequence → [verify → feedback] → [trust_or_trap] → [lock_up] → debrief → [arc_scene].
+Stage order: [recall] → intro → scan → decision → its consequence → [verify → feedback] → [trust_or_trap] → [lock_up] → debrief → [arc_scene].
 
 **Dialogue line:** `{ speaker: <cast id>, text: ... }`.
+
+## 4a. recall (optional, „Pamätáš si?“)
+
+One unscored retrieval question about the rule of an earlier case (GDD §4, PSYCHOLOGY C13), shown before the brief.
+The player picks one option, sees „Správne.“ or „Tentoraz nie.“ plus `feedback`, then goes on. No stars depend on it.
+Once a case has a recall, cut the restated rule from its `intro.lines`.
+
+```yaml
+recall:
+  title: Pamätáš si?                      # default
+  question: Pamätáš si pravidlo z minulého prípadu? Vyber koniec vety. „Keď ti niekto sľúbi výhru za prihlásenie, …“
+  options:                                # 2–3, exactly one correct: true
+    - { id: open-direct, text: "tak neklikaj a otvor hru priamo.", correct: true }
+    - { id: ask-sender, text: "tak sa toho účtu opýtaj, či je to pravda." }
+    - { id: hurry, text: "tak sa prihlás rýchlo, kým výhra platí." }
+  feedback: Keď ti niekto sľúbi výhru za prihlásenie, tak neklikaj a otvor hru priamo.   # say the full rule
+  button: Ďalej                           # default
+```
+
+Teen prompt suggestion (PSYCHOLOGY finding 7): „Z minulého spisu. Ako pokračuje pravidlo?“
 
 ## 5. Evidence
 
@@ -114,7 +136,9 @@ evidence:
   `style: button` for a fake button (it is never clickable as a button, only tappable as a clue/decoy if you make it one).
 - Images are not supported yet. Describe them as text, e.g. a decoy `"[fotka: mladý muž pri aute]"`.
 - The scan has a **Tip** button: it names the artefact that still holds an unfound clue. No content needed.
-- Teen decoy taps are counted (each decoy once) for the `clues` star rule with `max_decoys`.
+- Decoy taps are counted (each decoy once) for the `clues` star rule in both tracks (§11).
+- On a phone the meter, the hint and the buttons stay in a bar at the bottom of the screen; keep hints to one or two
+  short sentences so the bar stays small.
 
 ## 6. Decision and verify
 
@@ -145,6 +169,7 @@ trust_or_trap:
   start_button: "Rýchly výcvik: Dôvera alebo pasca"   # default; used by the button before the round
   trust_label: Dôvera                        # default; teen may use "Bezpečné"
   trap_label: Pasca                          # default
+  prompt: Je to v poriadku, alebo je to pasca?   # default; the question under each unanswered card (J3: „Dobrý zámok, alebo slabé miesto?“)
   items:                                     # 3–8; must include both answers (GDD: 2–3 of each in 5)
     - source: Bzuk · kamarát Tomáš
       text: čau, prišiel ti teraz SMS kód? ...
@@ -196,8 +221,14 @@ debrief:
   next_teaser: Prípad č. 2 ... pribudne v ďalšej verzii.   # optional
 ```
 
-The debrief also shows the stars, the star checklist (labels from §11), a „Nový odznak: …“ line when the badge
-changes, and the help line (first entry of `help.yaml`).
+The debrief is shown as four short pages, each scannable on a phone (PSYCHOLOGY C3):
+1. **Pravidlo:** the stars, the „UZAVRETÉ“ stamp, `rule`, `note`, the „Nový odznak: …“ line and, when the decision was
+   not best, `calm`;
+2. **Stopy:** found clues and „Prehliadnuté stopy“;
+3. **Ak sa to už stalo:** `if_it_happened` and the help line (first entry of `help.yaml`);
+4. **Stopa v príbehu:** `story_clue`, the star checklist (labels from §11), `next_teaser`, the help line and the buttons.
+
+`note` therefore sits next to the rule: keep it to one or two sentences.
 
 ## 10. arc_scene (optional)
 
@@ -214,14 +245,37 @@ arc_scene:
 
 | Rule | Fields | Star when |
 |---|---|---|
-| `clues` | `min`, optional `max_decoys` | at least `min` clues found (and at most `max_decoys` different decoys tapped) |
+| `clues` | `min`, optional `max_decoys` | at least `min` clues found and at most `max_decoys` different decoys tapped. Without `max_decoys` the limit is half the case's decoys, rounded down, at least 1, so tapping everything never earns the star (QA L1). Write the label to match, e.g. „Nájsť aspoň 4 stopy, nie všetko naraz“ |
 | `decision_best` | | the decision was `best` |
 | `verify_best` | | the first verify pick was `best` |
 | `decision_and_verify_best` | | both of the above, as one star |
 | `trust_or_trap` | `min` | at least `min` quick-round answers right |
 | `lock_up` | `max_errors` (default 1) | lock-up finished with at most that many errors |
 
-Every rule may have a `label` (shown in the debrief checklist); otherwise a default label is used.
+Every rule may have a `label` (shown in the debrief checklist); otherwise a default label is used. When the clue star
+is missed because of decoys, the checklist adds „Označené neutrálne detaily: n, najviac m.“
+
+## 11a. help.yaml: contacts and topic cards
+
+`help.yaml` has `title`, `intro`, `trusted_adult`, optional `topics_title` (default „Keď ide o niečo ťažké“) and
+`entries`. An entry is a **contact** (`id`, `name`, `text`, optional `phone`, `url`, `url_label`) or, with `topic`,
+a **topic card** for things that are never played as cases (Red Line 8: sextortion, grooming, cyberbullying,
+self-harm).
+
+- The **first entry must be the Linka detskej istoty contact, phone 116 111**: the debrief help line shows it. The
+  validator fails otherwise.
+- `topic` is a free kebab-case id (e.g. `vydieranie`, `kybersikana`, `grooming`). Topic cards are listed after the
+  contacts under `topics_title`, in the same calm colours; `trusted_adult` is repeated under each.
+- Every topic card must point to 116 111: in its `phone`, in its `text`, or through `contacts`.
+- `contacts` (topic cards only) lists contact ids shown as „Kam sa obrátiť: …“.
+
+```yaml
+  - id: vydieranie
+    topic: vydieranie
+    name: Niekto ťa vydiera fotkou alebo videom
+    text: Nie je to tvoja chyba. Neplať a nič ďalšie neposielaj.
+    contacts: [linka-detskej-istoty, policia]
+```
 
 ## 12. Complete example: J1
 
@@ -236,6 +290,13 @@ number: 1
 title: Drak zadarmo
 summary: Lea vraj vyhrala draka do hry. Stačí sa prihlásiť cez odkaz.
 sources: [sk-skcert-online-games-2020, eu-bik-gaming-teachers, eu-bik-ie-scams-young-2026, sk-skcert-hacked-accounts-2018]
+risk: [stranger]
+recall:
+  question: Čo urobíš, keď ti príde správa s odkazom na prihlásenie?
+  options:
+    - { id: direct, text: "Otvoriť aplikáciu priamo, nie cez odkaz.", correct: true }
+    - { id: link, text: "Kliknúť, ak správa vyzerá úradne." }
+  feedback: Prihlasuj sa len v aplikácii alebo v hre, nikdy cez odkaz zo správy.
 intro:
   stamp: Prípad č. 1 · Drak zadarmo
   lines:
@@ -277,7 +338,8 @@ decision:
         calm: "Toto sa môže stať komukoľvek. Ďalší krok: otvoriť hru priamo a zmeniť heslo." }
     - { id: ask, text: Odpísať tomu účtu a opýtať sa., outcome: ok, label: Skoro,
         consequence: Podvodník sa neprizná., calm: "Ďalší krok: overovať inou cestou." }
-    - { id: verify, text: Neklikať. Otvoriť hru priamo. Účet nahlásiť., outcome: best, label: Prípad vyriešený,
+    - { id: verify, text: Neklikať. Otvoriť hru priamo. Účet nahlásiť a ukázať to dospelému., outcome: best,
+        label: Prípad vyriešený, tells_adult: true,
         consequence: V hre žiadna výhra nie je., calm: Presne tak. }
 trust_or_trap:
   items:
@@ -307,9 +369,12 @@ Reads every YAML value in `content/` (comments and keys are ignored). Rules live
 |---|---|---|---|
 | domains | all files except `sources.yaml`, `help.yaml` | any domain, e-mail host or URL whose TLD is not `.example`/`.test`/`.invalid` (also `GDD.md`, `@name.desk`) | use a reserved TLD, or write handles with `_` |
 | denylist | same | real brands in `scripts/redline-denylist.txt`; case-insensitive, diacritics ignored; names of 5+ letters also in Slovak forms (`Robloxe`, `Slovenskej sporiteľne`) | use a fictional brand from the cast/world; add new real names to the denylist |
-| gender | everywhere (not source titles) | `(a)`, `/a` endings; `hráč`; `ak si klikol`, `klikla si`, `si pripravený` (a "si" + past participle or adjective after a sentence start or a conjunction) | present tense, imperative, infinitive, noun phrase |
-| exclaim | teaching text: `hint`, `decoy`, `why`, `consequence`, `later`, `calm`, `correct`, `wrong_order_hint`, the whole `debrief` | `!` | a full stop |
+| gender | everywhere (not source titles) | `(a)`, `/a` endings; `hráč`; `ak si klikol`, `ak si to už poslal`, `keď si už heslo zadal`, `dobre si to zvládla`, `a klikol si`, `klikla si`, `si pripravený`, `buď opatrný`, `zostaň pokojná` | present tense, imperative, infinitive, noun phrase |
+| exclaim | teaching text: `hint`, `decoy`, `why`, `consequence`, `later`, `calm`, `correct`, `wrong_order_hint`, `feedback`, the whole `debrief` | `!` | a full stop |
+| phone | all files except `sources.yaml`, `help.yaml` | an unmasked phone-like number: 9+ digits in one run of digits, spaces, `-`, `/`, optional `+` | mask digits: `0900 xxx xxx`, `+421 9•• ••• •12` |
+| iban | everywhere | an IBAN that passes the mod-97 check | use check digits that fail it, e.g. `SK00 …` |
 
 The gender rule is a heuristic: it misses unusual shapes and may, rarely, flag a third-person sentence. Rephrase rather
-than argue with it; reviewers still read for tone. In-world artefacts are linted too: a scammer's message must not
+than argue with it; reviewers still read for tone. Known false positive: a third-person „… a zmenila si heslo“ after
+„a“; rewrite as „… a zmení si heslo“ or name the person again. In-world artefacts are linted too: a scammer's message must not
 gender the player either.

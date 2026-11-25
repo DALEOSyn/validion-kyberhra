@@ -23,12 +23,24 @@ npm run lint        # ESLint
 npm test            # Vitest: content schema + cross-references, scoring, progress, red-line rules
 npm run redline     # red-line linter over content/
 npm run validate    # content schema check only
-npm run e2e         # Playwright smoke play-through + axe (uses installed Chromium; runs with --trace off)
+npm run e2e         # Playwright: smoke tests + every case's best path, axe, offline (installed Chromium; --trace off)
 ```
 
 The build is a static site (`dist/`) with relative paths, a web app manifest and a service worker that precaches
 only the game's own files, so the game works offline after the first visit. Fonts (Baloo 2, Nunito, Special Elite,
 SIL Open Font License) are bundled from `@fontsource`; nothing is loaded from a CDN.
+
+## CI
+
+`.github/workflows/ci.yml` runs on Roman's self-hosted runner: typecheck, lint, content validation, Vitest, red-line
+lint and build, then the Playwright e2e job (`--trace off`, one retry in CI).
+
+- **Runner prerequisites:** Node 22 and a Playwright Chromium that matches `@playwright/test` (set
+  `PLAYWRIGHT_BROWSERS_PATH`, e.g. `/opt/pw-browsers`). If none is found, the job runs `npx playwright install chromium`
+  (no `--with-deps`, no sudo); the system libraries must already be on the runner.
+- **Fork safety:** jobs run only on pushes and on pull requests from branches of this repository, never on fork PRs.
+  Before the repository is made public, also turn on "Require approval for all outside collaborators"
+  (Settings > Actions > General).
 
 ## Add a case
 

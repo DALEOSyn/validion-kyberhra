@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import type { Case, Track } from '../content/schema.ts';
 import { isUnlocked, trackStars, type Progress } from '../engine/progress.ts';
 import { maxStars, rankFor } from '../engine/scoring.ts';
@@ -16,6 +16,7 @@ interface Props {
 export function TrackScreen({ track, cases, progress, onOpen, onReset, onBack }: Props) {
   const [confirm, setConfirm] = useState(false);
   const [resetMsg, setResetMsg] = useState('');
+  const resetBtn = useRef<HTMLButtonElement>(null);
   const total = trackStars(progress, track);
   const rank = rankFor(track.ranks, total);
   const planned = Math.max(track.planned_cases ?? 0, track.cases.length);
@@ -35,7 +36,7 @@ export function TrackScreen({ track, cases, progress, onOpen, onReset, onBack }:
           if (!c || !id) {
             return (
               <li key={`planned-${i}`}>
-                <button type="button" class="case-card" disabled>
+                <button type="button" class="case-card locked" aria-disabled="true">
                   <span class="name">Prípad č. {i + 1}</span>
                   <span class="status">Pribudne v ďalšej verzii.</span>
                 </button>
@@ -46,7 +47,8 @@ export function TrackScreen({ track, cases, progress, onOpen, onReset, onBack }:
           const cp = progress.cases[id];
           return (
             <li key={id}>
-              <button type="button" class="case-card" disabled={!open} data-case={id} onClick={() => onOpen(id)}>
+              {/* Locked cases stay focusable (aria-disabled), so keyboard users hear why they are locked (QA F12). */}
+              <button type="button" class={`case-card${open ? '' : ' locked'}`} aria-disabled={!open} data-case={id} onClick={() => open && onOpen(id)}>
                 <span class="name">
                   Prípad č. {c.number}: {c.title}
                 </span>
@@ -68,7 +70,7 @@ export function TrackScreen({ track, cases, progress, onOpen, onReset, onBack }:
           Zmeniť trasu
         </button>
         {!confirm ? (
-          <button type="button" class="btn alt" onClick={() => setConfirm(true)}>
+          <button type="button" class="btn alt" ref={resetBtn} onClick={() => setConfirm(true)}>
             Vymazať postup
           </button>
         ) : (
@@ -81,11 +83,20 @@ export function TrackScreen({ track, cases, progress, onOpen, onReset, onBack }:
                 onReset();
                 setConfirm(false);
                 setResetMsg('Postup je vymazaný.');
+                // The confirm buttons unmount: keep focus in place (QA F10).
+                requestAnimationFrame(() => resetBtn.current?.focus());
               }}
             >
               Áno, vymazať
             </button>
-            <button type="button" class="btn alt" onClick={() => setConfirm(false)}>
+            <button
+              type="button"
+              class="btn alt"
+              onClick={() => {
+                setConfirm(false);
+                requestAnimationFrame(() => resetBtn.current?.focus());
+              }}
+            >
               Nie
             </button>
           </>

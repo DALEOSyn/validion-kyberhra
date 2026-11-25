@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from 'preact/hooks';
-import type { Case, CastMember, Decision, DialogueLine, Option, Track } from '../content/schema.ts';
-import { clueIds, emptyLockUp, nextAllowed, nextStage, shuffledOrder, tapLockUp, type Stage } from '../engine/flow.ts';
-import { bestOptionId, computeStars, emptyRun, maxStars, rankFor, ruleMet, ruleLabel, type CaseRun } from '../engine/scoring.ts';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import type { Case, CastMember, Decision, DialogueLine, Option, Recall, Track } from '../content/schema.ts';
+import { clueIds, emptyLockUp, firstStage, inProgress, nextAllowed, nextStage, shuffledOrder, tapLockUp, type Stage } from '../engine/flow.ts';
+import { bestOptionId, computeStars, emptyRun, maxDecoysFor, maxStars, rankFor, ruleMet, ruleLabel, type CaseRun } from '../engine/scoring.ts';
 import { recordCase, trackStars, type Progress } from '../engine/progress.ts';
 import { Avatar } from './Avatar.tsx';
 import { Evidence, type TapResult } from './Evidence.tsx';
@@ -99,7 +99,7 @@ function ScanStep({ c, run, setRun, onNext }: { c: Case; run: CaseRun; setRun: (
   /** Points to the artefact with the nearest unfound clue, without giving the clue away. */
   const showTip = () => {
     const ev = c.evidence.find((e) => e.lines.some((l) => l.segments.some((sg) => sg.clue && !found.has(sg.clue.id))));
-    setTip({ text: ev ? `Tip: pozri sa ešte raz na „${ev.label}“. Čo od teba chcú a kto to píše?` : 'Všetky stopy sú nájdené. Môžeš pokračovať.', flag: false });
+    setTip({ text: ev ? `Tip: pozri sa ešte raz na „${ev.label}“.${c.scan.tip ? ` ${c.scan.tip}` : ''}` : 'Všetky stopy sú nájdené. Môžeš pokračovať.', flag: false });
   };
   const n = found.size;
   return (
@@ -110,6 +110,8 @@ function ScanStep({ c, run, setRun, onNext }: { c: Case; run: CaseRun; setRun: (
           <Evidence evidence={ev} found={found} missed={missed} onTap={onTap} index={i} />
         </div>
       ))}
+      {/* Sticky at the bottom of the viewport, so the hint and the count are visible right after a tap (QA F1). */}
+      <div class="scan-bar">
       <div class="meter">
         <span>Stopy</span>
         <span class="mag" aria-hidden="true">
@@ -138,6 +140,7 @@ function ScanStep({ c, run, setRun, onNext }: { c: Case; run: CaseRun; setRun: (
           Tip
         </button>
       </div>
+      </div>
     </section>
   );
 }
@@ -150,6 +153,7 @@ function TrustTrapStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setR
   const current = answered ? idx - 1 : idx;
   const item = items[current];
   const nextRef = useRef<HTMLButtonElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   if (!item || !tt) return null;
   const last = run.trustTrap[current];
   const answer = (a: 'trust' | 'trap') => {
@@ -161,7 +165,11 @@ function TrustTrapStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setR
   };
   const next = () => {
     if (current >= items.length - 1) onDone();
-    else setAnswered(false);
+    else {
+      setAnswered(false);
+      // Keep keyboard and screen-reader focus on the new card (WCAG 2.4.3, QA F2).
+      requestAnimationFrame(() => cardRef.current?.focus());
+    }
   };
   return (
     <section class="screen">
@@ -172,7 +180,7 @@ function TrustTrapStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setR
           return <li key={i} class={r === true ? 'y' : r === false ? 'n' : i === current ? 'c' : ''} />;
         })}
       </ol>
-      <div class="card">
+      <div class="card" tabIndex={-1} ref={cardRef} role="group" aria-label={`Karta ${current + 1} z ${items.length}`}>
         <p class="src">{item.source}</p>
         <p>{item.text}</p>
       </div>
@@ -187,7 +195,7 @@ function TrustTrapStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setR
         </div>
       )}
       <p class={`tip${answered && !last ? ' flag' : ''}`} aria-live="polite">
-        {answered ? `${last ? 'Správne.' : 'Tentoraz nie.'} ${item.answer === 'trust' ? tt.trust_label : tt.trap_label}. ${item.why}` : 'Je to v poriadku, alebo je to pasca?'}
+        {answered ? `${last ? 'Správne.' : 'Tentoraz nie.'} ${item.answer === 'trust' ? tt.trust_label : tt.trap_label}. ${item.why}` : tt.prompt}
       </p>
       {answered && (
         <button type="button" class="btn" ref={nextRef} onClick={next}>
@@ -204,6 +212,8 @@ function LockUpStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setRun:
   const [st, setSt] = useState(emptyLockUp);
   const [msg, setMsg] = useState<{ text: string; flag: boolean }>({ text: '', flag: false });
   const [shake, setShake] = useState<string | null>(null);
+  const rootRef = useRef<HTMLElement>(null);
+  const doneRef = useRef<HTMLButtonElement>(null);
   if (!lock) return null;
   const done = st.placed.length === lock.steps.length;
   const text = (id: string) => [...lock.steps, ...lock.distractors].find((x) => x.id === id)?.text ?? id;
@@ -214,6 +224,11 @@ function LockUpStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setRun:
     if (r.kind === 'placed') {
       beep(660, 0.08);
       setShake(null);
+      // The placed card leaves the DOM: move focus to the next card, or to "Uzavrieť prípad" (WCAG 2.4.3, QA F2).
+      requestAnimationFrame(() => {
+        if (r.done) doneRef.current?.focus();
+        else rootRef.current?.querySelector<HTMLButtonElement>('.lock-card:not([aria-disabled="true"])')?.focus();
+      });
       if (r.done) {
         setRun({ ...run, lockUpErrors: next.errors });
         setMsg({ text: lock.correct, flag: false });
@@ -226,7 +241,7 @@ function LockUpStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setRun:
     }
   };
   return (
-    <section class="screen">
+    <section class="screen" ref={rootRef}>
       <StageHeading>{lock.title}</StageHeading>
       <p>{lock.prompt}</p>
       <ol class="steps" aria-label="Poradie krokov">
@@ -266,12 +281,57 @@ function LockUpStep({ c, run, setRun, onDone }: { c: Case; run: CaseRun; setRun:
           </div>
         </>
       )}
-      <p class={`tip${msg.flag ? ' flag' : ''}`} aria-live="polite">
+      <p class={`tip sticky-tip${msg.flag ? ' flag' : ''}`} aria-live="polite">
         {msg.text || 'Začni krokom, ktorý treba urobiť ako prvý.'}
       </p>
       {done && (
-        <button type="button" class="btn" onClick={onDone}>
+        <button type="button" class="btn" ref={doneRef} onClick={onDone}>
           Uzavrieť prípad
+        </button>
+      )}
+    </section>
+  );
+}
+
+/** "Pamätáš si?" (GDD §4): one unscored retrieval question before the brief. */
+function RecallStep({ recall, onNext }: { recall: Recall; onNext: () => void }) {
+  const [picked, setPicked] = useState<string | null>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const right = recall.options.find((o) => o.correct);
+  const ok = picked !== null && picked === right?.id;
+  const pick = (id: string) => {
+    if (picked !== null) return;
+    setPicked(id);
+    beep(id === right?.id ? 880 : 300, 0.12);
+    requestAnimationFrame(() => nextRef.current?.focus());
+  };
+  return (
+    <section class="screen">
+      <StageHeading>{recall.title}</StageHeading>
+      <p>{recall.question}</p>
+      <div class="choices">
+        {recall.options.map((o, i) => (
+          <button
+            key={o.id}
+            type="button"
+            class={`choice${picked !== null && o.correct ? ' right' : ''}${picked === o.id && !o.correct ? ' wrong' : ''}`}
+            data-recall={o.id}
+            aria-disabled={picked !== null}
+            onClick={() => pick(o.id)}
+          >
+            <span class="k" aria-hidden="true">
+              {LETTERS[i]}
+            </span>
+            <span>{o.text}</span>
+          </button>
+        ))}
+      </div>
+      <p class="tip" aria-live="polite">
+        {picked === null ? 'Vyber jednu možnosť. Za túto otázku sa nedávajú hviezdy.' : `${ok ? 'Správne.' : 'Tentoraz nie.'} ${recall.feedback}`}
+      </p>
+      {picked !== null && (
+        <button type="button" class="btn" ref={nextRef} onClick={onNext}>
+          {recall.button}
         </button>
       )}
     </section>
@@ -284,103 +344,158 @@ interface DebriefInfo {
   rankAfter: string;
 }
 
-function DebriefStep(props: { c: Case; track: Track; run: CaseRun; info: DebriefInfo; help: Help; nextCase: Case | null; onScene: () => void; onNext: () => void; onAgain: () => void; onList: () => void }) {
+const DEBRIEF_PAGES = ['Pravidlo', 'Stopy', 'Ak sa to už stalo', 'Stopa v príbehu'] as const;
+
+/**
+ * The closed case file, in four short pages (PSYCHOLOGY C3, GDD §4.7): the rule, the clues, "Ak sa to už stalo"
+ * and the story clue with the star checklist. Stars are already saved when the first page appears.
+ */
+function DebriefStep(props: { c: Case; track: Track; run: CaseRun; info: DebriefInfo; help: Help; nextCase: Case | null; startPage?: number; onScene: () => void; onNext: () => void; onAgain: () => void; onList: () => void }) {
   const { c, track, run, info, help, nextCase } = props;
+  const [page, setPage] = useState(props.startPage ?? 0);
   const d = c.debrief;
   const found = new Set(run.found);
   const seen = d.clues.filter((x) => !x.clue || found.has(x.clue));
   const missed = d.clues.filter((x) => x.clue && !found.has(x.clue));
   const best = run.decision === bestOptionId(c.decision.options);
+  const decoys = new Set(run.decoys).size;
+  const last = page === DEBRIEF_PAGES.length - 1;
   return (
-    <section class="screen">
-      <StageHeading>Spis prípadu č. {c.number}</StageHeading>
-      <Stars count={info.stars} max={maxStars(c)} big />
-      <div class="closed">
-        <span class="rubber" aria-hidden="true">
-          UZAVRETÉ
-        </span>
-        <p class="sr-only">Prípad je uzavretý.</p>
-        <h3 class="rule">{d.rule}</h3>
-        <div>
-          <b>Stopy v tomto prípade</b>
-          <ul>
-            {seen.map((x, i) => (
-              <li key={i}>
-                {x.text}
-                {x.clue && <span class="sr-only"> (nájdená)</span>}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {missed.length > 0 && (
+    <section class="screen debrief" data-page={page}>
+      <StageHeading key={page}>
+        Spis prípadu č. {c.number} · {DEBRIEF_PAGES[page]}
+      </StageHeading>
+      <ol class="dots" aria-label={`Časť ${page + 1} z ${DEBRIEF_PAGES.length}`}>
+        {DEBRIEF_PAGES.map((_, i) => (
+          <li key={i} class={i === page ? 'c' : i < page ? 'y' : ''} />
+        ))}
+      </ol>
+      {page === 0 && (
+        <>
+          <div class="closed">
+            <div class="closed-top">
+              <Stars count={info.stars} max={maxStars(c)} big />
+              <span class="rubber" aria-hidden="true">
+                UZAVRETÉ
+              </span>
+            </div>
+            <p class="sr-only">Prípad je uzavretý.</p>
+            <h3 class="rule">{d.rule}</h3>
+            {d.note && <p>{d.note}</p>}
+          </div>
+          {info.rankAfter !== info.rankBefore && (
+            <p class="rank" role="status">
+              Nový {track.rank_label.toLowerCase()}: {info.rankAfter}.
+            </p>
+          )}
+          {!best && <p class="calm">{d.calm}</p>}
+        </>
+      )}
+      {page === 1 && (
+        <div class="closed">
           <div>
-            <b>Prehliadnuté stopy</b>
+            <b>Stopy v tomto prípade</b>
             <ul>
-              {missed.map((x, i) => (
-                <li key={i}>{x.text}</li>
+              {seen.map((x, i) => (
+                <li key={i}>
+                  {x.text}
+                  {x.clue && <span class="sr-only"> (nájdená)</span>}
+                </li>
               ))}
             </ul>
           </div>
-        )}
-        {d.note && <p>{d.note}</p>}
-        <div>
-          <b>Ak sa to už stalo</b>
+          {missed.length > 0 && (
+            <div>
+              <b>Prehliadnuté stopy</b>
+              <ul>
+                {missed.map((x, i) => (
+                  <li key={i}>{x.text}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      {page === 2 && (
+        <div class="closed">
           <ol>
             {d.if_it_happened.map((t, i) => (
               <li key={i}>{t}</li>
             ))}
           </ol>
         </div>
-        <div>
-          <b>Hviezdy</b>
-          <ul class="checklist">
-            {c.stars.map((r, i) => (
-              <li key={i} class={ruleMet(c, r, run) ? 'met' : ''}>
-                {ruleLabel(r)}
-                <span class="sr-only">{ruleMet(c, r, run) ? ' (splnené)' : ' (zatiaľ nie)'}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div class="story-clue">
-        <svg viewBox="0 0 54 54" width="54" height="54" aria-hidden="true">
-          <rect x="4" y="8" width="46" height="38" rx="4" fill="#fffaf0" />
-          <rect x="4" y="8" width="46" height="8" fill="#ffe066" />
-          <circle cx="24" cy="30" r="8" fill="none" stroke="#1f2330" stroke-width="3" />
-          <path d="M30 36 L38 44" stroke="#1f2330" stroke-width="4" stroke-linecap="round" />
-        </svg>
-        <div>
-          <b>{d.story_clue.title}</b>
-          {d.story_clue.text}
-        </div>
-      </div>
-      {info.rankAfter !== info.rankBefore && (
-        <p class="rank" role="status">
-          Nový {track.rank_label.toLowerCase()}: {info.rankAfter}.
-        </p>
       )}
-      {!best && <p class="calm">{d.calm}</p>}
+      {page === 3 && (
+        <>
+          <div class="story-clue">
+            <svg viewBox="0 0 54 54" width="54" height="54" aria-hidden="true">
+              <rect x="4" y="8" width="46" height="38" rx="4" fill="#fffaf0" />
+              <rect x="4" y="8" width="46" height="8" fill="#ffe066" />
+              <circle cx="24" cy="30" r="8" fill="none" stroke="#1f2330" stroke-width="3" />
+              <path d="M30 36 L38 44" stroke="#1f2330" stroke-width="4" stroke-linecap="round" />
+            </svg>
+            <div>
+              <b>{d.story_clue.title}</b>
+              {d.story_clue.text}
+            </div>
+          </div>
+          <div>
+            <b>Hviezdy</b>
+            <ul class="checklist">
+              {c.stars.map((r, i) => {
+                const met = ruleMet(c, r, run);
+                const max = r.type === 'clues' ? maxDecoysFor(c, r) : 0;
+                return (
+                  <li key={i} class={met ? 'met' : ''}>
+                    {ruleLabel(r, c)}
+                    <span class="sr-only">{met ? ' (splnené)' : ' (zatiaľ nie)'}</span>
+                    {r.type === 'clues' && !met && decoys > max && (
+                      <span class="muted small" data-testid="decoy-note">
+                        {' '}
+                        Označené neutrálne detaily: {decoys}, najviac {max}.
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          {d.next_teaser && <p class="muted small">{d.next_teaser}</p>}
+        </>
+      )}
       <div class="row">
-        {c.arc_scene && (
-          <button type="button" class="btn" onClick={props.onScene}>
-            {c.arc_scene.button}
+        {page > 0 && (
+          <button type="button" class="btn alt" onClick={() => setPage(page - 1)}>
+            Späť
           </button>
         )}
-        {nextCase && (
-          <button type="button" class={c.arc_scene ? 'btn alt' : 'btn'} onClick={props.onNext}>
-            Ďalší prípad: {nextCase.title}
+        {!last && (
+          <button type="button" class="btn" onClick={() => setPage(page + 1)}>
+            Ďalej: {DEBRIEF_PAGES[page + 1]}
           </button>
         )}
-        <button type="button" class={nextCase ? 'btn alt' : 'btn'} onClick={props.onAgain}>
-          Hrať znova
-        </button>
-        <button type="button" class="btn alt" onClick={props.onList}>
-          Späť na prípady
-        </button>
       </div>
-      {d.next_teaser && <p class="muted small">{d.next_teaser}</p>}
-      <HelpLine help={help} />
+      {last && (
+        <div class="row">
+          {c.arc_scene && (
+            <button type="button" class="btn" onClick={props.onScene}>
+              {c.arc_scene.button}
+            </button>
+          )}
+          {nextCase && (
+            <button type="button" class={c.arc_scene ? 'btn alt' : 'btn'} onClick={props.onNext}>
+              Ďalší prípad: {nextCase.title}
+            </button>
+          )}
+          <button type="button" class={nextCase || c.arc_scene ? 'btn alt' : 'btn'} onClick={props.onAgain}>
+            Hrať znova
+          </button>
+          <button type="button" class="btn alt" onClick={props.onList}>
+            Späť na prípady
+          </button>
+        </div>
+      )}
+      {(page === 2 || last) && <HelpLine help={help} />}
     </section>
   );
 }
@@ -395,14 +510,26 @@ export interface CaseViewProps {
   onNextCase: () => void;
   onAgain: () => void;
   onList: () => void;
+  /** Set while rendering: true when leaving now would lose an unfinished run (QA F7). */
+  busyRef?: { current: boolean };
 }
 
 /** Plays one case: intro, scan, decision, (verify), trust-or-trap, (lock-up), debrief. */
 export function CaseView(props: CaseViewProps) {
   const { c, track } = props;
-  const [stage, setStage] = useState<Stage>('intro');
-  const [run, setRun] = useState<CaseRun>(emptyRun);
+  const [stage, setStage] = useState<Stage>(() => firstStage(c));
+  // Worked example: clues explained in the brief start as found.
+  const [run, setRun] = useState<CaseRun>(() => ({ ...emptyRun(), found: [...c.scan.pre_found] }));
   const [info, setInfo] = useState<DebriefInfo | null>(null);
+  const [debriefPage, setDebriefPage] = useState(0);
+  const { busyRef } = props;
+  if (busyRef) busyRef.current = inProgress(stage);
+  useEffect(
+    () => () => {
+      if (busyRef) busyRef.current = false;
+    },
+    [busyRef],
+  );
 
   const advance = (r: CaseRun = run) => {
     const next = nextStage(c, stage);
@@ -434,11 +561,18 @@ export function CaseView(props: CaseViewProps) {
   const chosen = (d: Decision | undefined, id: string | null) => d?.options.find((o) => o.id === id);
 
   switch (stage) {
+    case 'recall':
+      return c.recall ? <RecallStep recall={c.recall} onNext={() => advance()} /> : null;
     case 'intro':
       return (
         <section class="screen">
           <StageHeading>{c.intro.stamp ?? `Prípad č. ${c.number} · ${c.title}`}</StageHeading>
           {c.placeholder && <p class="placeholder-banner">PLACEHOLDER: tento prípad nahradí scenárista.</p>}
+          {c.intro.lines.length > 2 && (
+            <button type="button" class="skip-link" onClick={() => advance()}>
+              Preskočiť úvod
+            </button>
+          )}
           <Dialogue lines={c.intro.lines} cast={track.cast} />
           <button type="button" class="btn" onClick={() => advance()}>
             {c.intro.button}
@@ -468,7 +602,7 @@ export function CaseView(props: CaseViewProps) {
       return <LockUpStep c={c} run={run} setRun={setRun} onDone={() => advance()} />;
     case 'debrief':
       return info ? (
-        <DebriefStep c={c} track={track} run={run} info={info} help={props.help} nextCase={props.nextCase} onScene={() => setStage('arc-scene')} onNext={props.onNextCase} onAgain={props.onAgain} onList={props.onList} />
+        <DebriefStep c={c} track={track} run={run} info={info} help={props.help} nextCase={props.nextCase} startPage={debriefPage} onScene={() => { setDebriefPage(3); setStage('arc-scene'); }} onNext={props.onNextCase} onAgain={props.onAgain} onList={props.onList} />
       ) : null;
     case 'arc-scene':
       return c.arc_scene ? (

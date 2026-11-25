@@ -10,11 +10,15 @@
  *              past or adjective forms such as "klikol si", "ak si klikla", "si pripravený". A heuristic:
  *              it catches the common shapes, not every one. Reviewers still read for tone.
  * 4. exclaim   Exclamation marks in teaching text (Red Line 5): hints, decoys, why, consequence, later, calm,
- *              lock-up feedback and the whole debrief.
+ *              lock-up feedback, recall feedback and the whole debrief.
+ * 5. phone     An unmasked phone-like number: 9 or more digits in one run of digits, spaces, dashes or slashes, with
+ *              an optional "+" (Red Line 3). Mask digits with x or • ("0900 xxx xxx"). Not checked in sources.yaml
+ *              and help.yaml, where real help lines are listed on purpose.
+ * 6. iban      An IBAN whose check digits pass mod-97 (Red Line 3: IBANs must fail the checksum). Checked everywhere.
  */
 
 export interface Hit {
-  rule: 'domains' | 'denylist' | 'gender' | 'exclaim';
+  rule: 'domains' | 'denylist' | 'gender' | 'exclaim' | 'phone' | 'iban';
   path: string;
   message: string;
 }
@@ -82,24 +86,33 @@ export function denylistIssues(text: string, matchers: DenyMatcher[]): string[] 
   return matchers.filter((m) => m.re.test(t)).map((m) => `real brand "${m.name}" (use a fictional brand)`);
 }
 
-const CONJ = '(?:ak|keď|že|či|aby|keby|už|ešte|kým|lebo|tak|čo|kde|ako|odkedy|kedy|potom|ty)';
-const OBJ = '(?:(?:to|už|ho|ju|ich|mu|jej|tam|sa)\\s+)?';
+const CONJ_WORDS = 'ak|keď|že|či|aby|keby|už|ešte|kým|lebo|tak|čo|kde|ako|odkedy|kedy|potom|ty|dobre|skvele|výborne|super|fajn|naozaj|určite|teraz|tentoraz|vždy|zase|znova';
+const OBJ_WORDS = 'to|už|ho|ju|ich|mu|jej|tam|sa|ešte|všetko|niečo|nič|sem|tu|vtedy|včera|dnes';
+const CONJ = `(?:${CONJ_WORDS})`;
+const OBJ = `(?:(?:${OBJ_WORDS})\\s+)?`;
 const L_PART = '\\p{L}+(?:ol|al|il|el|ul|yl|la|li)';
 const START = `(?:^|[.!?…:;]\\s*|\\b${CONJ}\\s+)`;
+/** Case-insensitive first letter only, for the one rule that needs case (names are capitalised). */
+const ci = (alts: string) => alts.split('|').map((w) => `[${w[0] ?? ''}${(w[0] ?? '').toUpperCase()}]${w.slice(1)}`).join('|');
+/** A second, lowercase word after an object word ("si už heslo zadal"), but not a new subject ("aby si to niekto stihol", "aby si to Lea stihla"). */
+const FREE_WORD = '(?!(?:niekto|nikto|niečo|nič|každý|ktokoľvek|on|ona|ono|oni|ony|mama|otec|brat|sestra|kamarát|kamarátka)(?![\\p{L}]))\\p{Ll}+';
+const START_CS = `(?:^|[.!?…:;]\\s*|\\b(?:${ci(CONJ_WORDS)})\\s+)`;
 const GENDER_RULES: [RegExp, string][] = [
   [/\p{L}\((?:a|la|á|ka|ia|ova)\)/iu, 'a "(a)" ending'],
   [/\p{L}\/(?:a|la|á|ka|ia)(?![\p{L}])/iu, 'a "/a" ending'],
   [/(?<![\p{L}])hráč/iu, '"hráč/hráčka" (address the player as ty)'],
   [new RegExp(`${START}si\\s+${OBJ}${L_PART}(?![\\p{L}])`, 'iu'), 'a gendered past form with "si" (e.g. "ak si klikol")'],
-  [new RegExp(`(?:^|[.!?…:;,]\\s*)${L_PART}\\s+si(?![\\p{L}])`, 'iu'), 'a gendered past form (e.g. "klikla si")'],
+  [new RegExp(`(?:^|[.!?…:;,]\\s*|\\b(?:a|aj|no|ale)\\s+)${L_PART}\\s+si(?![\\p{L}])`, 'iu'), 'a gendered past form (e.g. "klikla si")'],
   [new RegExp(`${START}si\\s+\\p{L}+[ýá](?![\\p{L}])`, 'iu'), 'a gendered adjective with "si" (e.g. "si pripravený")'],
+  [new RegExp(`${START_CS}[sS]i\\s+(?:${ci(OBJ_WORDS)})\\s+${FREE_WORD}\\s+${L_PART}(?![\\p{L}])`, 'u'), 'a gendered past form with "si" (e.g. "keď si už heslo zadal")'],
+  [/(?<![\p{L}])(?:buď|zostaň|ostaň|buďte)\s+\p{L}{3,}[ýá](?![\p{L}])/iu, 'a gendered adjective with an imperative (e.g. "buď opatrný")'],
 ];
 
 export function genderIssues(text: string): string[] {
   return GENDER_RULES.filter(([re]) => re.test(text)).map(([, what]) => `${what}: use present tense, an imperative or a noun phrase`);
 }
 
-const TEACHING_KEYS = new Set(['hint', 'decoy', 'why', 'consequence', 'later', 'calm', 'correct', 'wrong_order_hint', 'debrief']);
+const TEACHING_KEYS = new Set(['hint', 'decoy', 'why', 'consequence', 'later', 'calm', 'correct', 'wrong_order_hint', 'debrief', 'feedback']);
 
 /** True when a value at this path is teaching text (no exclamation marks). */
 export function isTeachingPath(path: (string | number)[]): boolean {
@@ -108,6 +121,40 @@ export function isTeachingPath(path: (string | number)[]): boolean {
 
 export function exclaimIssues(text: string): string[] {
   return text.includes('!') ? ['an exclamation mark in teaching text (keep it calm)'] : [];
+}
+
+const IBAN_RE = /(?<![\p{L}\p{N}])([A-Z]{2})(\d{2})((?:[ ]?[A-Z0-9]{4}){2,7}(?:[ ]?[A-Z0-9]{1,3})?)(?![\p{L}\p{N}])/gu;
+
+/** True when an IBAN (spaces allowed) passes the ISO 13616 mod-97 check. */
+export function ibanValid(iban: string): boolean {
+  const s = iban.replace(/\s+/g, '').toUpperCase();
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{8,30}$/.test(s)) return false;
+  const moved = s.slice(4) + s.slice(0, 4);
+  let rem = 0;
+  for (const ch of moved) {
+    const v = /\d/.test(ch) ? ch : String(ch.charCodeAt(0) - 55);
+    for (const d of v) rem = (rem * 10 + Number(d)) % 97;
+  }
+  return rem === 1;
+}
+
+/** IBANs that pass the checksum (they must fail it). */
+export function ibanIssues(text: string): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(IBAN_RE)) if (ibanValid(m[0])) out.push(`IBAN "${m[0]}" passes the mod-97 check (use check digits that fail it, e.g. 00)`);
+  return out;
+}
+
+const PHONE_RE = /(?<![\p{L}\p{N}])\+?\d[\d \-/]*\d(?![\p{N}])/gu;
+
+/** Phone-like numbers with 9 or more visible digits (IBANs are left to ibanIssues). */
+export function phoneIssues(text: string): string[] {
+  const out: string[] = [];
+  const rest = text.replace(IBAN_RE, ' ');
+  for (const m of rest.matchAll(PHONE_RE)) {
+    if (m[0].replace(/\D/g, '').length >= 9) out.push(`unmasked number "${m[0].trim()}" (mask digits: "0900 xxx xxx")`);
+  }
+  return out;
 }
 
 /** Every string value in parsed YAML with its path. */
@@ -128,7 +175,9 @@ export function lintValue(value: unknown, matchers: DenyMatcher[], realNamesAllo
     if (!realNamesAllowed) {
       for (const m of domainIssues(text)) hits.push({ rule: 'domains', path: p, message: m });
       for (const m of denylistIssues(text, matchers)) hits.push({ rule: 'denylist', path: p, message: m });
+      for (const m of phoneIssues(text)) hits.push({ rule: 'phone', path: p, message: m });
     }
+    for (const m of ibanIssues(text)) hits.push({ rule: 'iban', path: p, message: m });
     // Source titles are other people's words; everything else speaks to the player.
     if (!(realNamesAllowed && path[0] === 'sources')) for (const m of genderIssues(text)) hits.push({ rule: 'gender', path: p, message: m });
     if (isTeachingPath(path)) for (const m of exclaimIssues(text)) hits.push({ rule: 'exclaim', path: p, message: m });

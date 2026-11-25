@@ -82,6 +82,11 @@ export function caseIssues(c: Case, track: Track | undefined, sources: Map<strin
     if ((r.type === 'verify_best' || r.type === 'decision_and_verify_best') && !c.verify) out.push(`${where}: star rule ${r.type} needs a verify step`);
     if (r.type === 'lock_up' && !c.lock_up) out.push(`${where}: star rule lock_up needs a lock_up step`);
   }
+  for (const pf of c.scan.pre_found) if (!clueIds.includes(pf)) out.push(`${where}: scan.pre_found "${pf}" is not a clue id in the evidence`);
+  if (c.risk.length > 0) {
+    const opts = [...c.decision.options, ...(c.verify?.options ?? [])];
+    if (!opts.some((o) => o.tells_adult && o.outcome !== 'bad')) out.push(`${where}: risk (${c.risk.join(', ')}) needs a best or ok option with tells_adult: true (Red Line 8)`);
+  }
   for (const dc of c.debrief.clues) if (dc.clue && !clueIds.includes(dc.clue)) out.push(`${where}: debrief clue "${dc.clue}" is not a clue id in the evidence`);
   if (c.trust_or_trap) {
     const kinds = new Set(c.trust_or_trap.items.map((i) => i.answer));
@@ -95,6 +100,35 @@ export function isPrimarySource(s: Source): boolean {
   const regionOk = s.region === undefined || ['SK', 'EU'].includes(s.region.toUpperCase());
   const tierOk = s.tier === undefined || s.tier <= 3;
   return regionOk && tierOk;
+}
+
+const digits = (s: string | undefined) => (s ?? '').replace(/\D/g, '');
+const CHILD_LINE = '116111';
+
+/**
+ * help.yaml rules (Red Line 8): the first entry is Linka detskej istoty 116 111 (HelpLine shows entries[0] under every
+ * debrief), and every topic card points to 116 111. Entry ids are unique; topic contacts exist.
+ */
+export function helpIssues(help: Help): string[] {
+  const out: string[] = [];
+  const first = help.entries[0];
+  if (!first || digits(first.phone) !== CHILD_LINE || first.topic) out.push('help.yaml: the first entry must be the Linka detskej istoty contact with phone 116 111 (Red Line 8)');
+  const ids = help.entries.map((e) => e.id);
+  if (new Set(ids).size !== ids.length) out.push('help.yaml: entry ids must be unique');
+  for (const e of help.entries) {
+    for (const cid of e.contacts) {
+      const target = help.entries.find((x) => x.id === cid);
+      if (!target) out.push(`help.yaml: entry ${e.id}: contact "${cid}" is not an entry id`);
+      else if (target.topic) out.push(`help.yaml: entry ${e.id}: contact "${cid}" is a topic card, not a contact`);
+    }
+    if (e.contacts.length > 0 && !e.topic) out.push(`help.yaml: entry ${e.id}: contacts are only for topic cards`);
+    if (e.topic) {
+      const linked = e.contacts.some((cid) => digits(help.entries.find((x) => x.id === cid)?.phone) === CHILD_LINE);
+      const named = digits(e.phone) === CHILD_LINE || /116\s?111/.test(e.text);
+      if (!linked && !named) out.push(`help.yaml: topic card ${e.id} must point to 116 111 (phone, text or contacts) (Red Line 8)`);
+    }
+  }
+  return out;
 }
 
 export function trackIssues(t: Track): string[] {
@@ -115,6 +149,7 @@ export function loadContent(root: string): LoadResult {
   const sourcesFile = parseFile(SourcesFileSchema, join(root, 'sources.yaml'), root, errors, files);
   const help: Help | null = parseFile(HelpFileSchema, join(root, 'help.yaml'), root, errors, files);
 
+  if (help) errors.push(...helpIssues(help));
   const sources = sourcesFile?.sources ?? [];
   const sourceMap = new Map(sources.map((s) => [s.id, s]));
   if (sourceMap.size !== sources.length) errors.push('sources.yaml: source ids must be unique');

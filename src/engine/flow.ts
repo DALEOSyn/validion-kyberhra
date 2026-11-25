@@ -1,10 +1,11 @@
 /** The order of a case's stages. Optional stages (verify, lock_up) are skipped when the case has none. */
 import type { Case } from '../content/schema.ts';
 
-export type Stage = 'intro' | 'scan' | 'decision' | 'decision-result' | 'verify' | 'verify-result' | 'trust-or-trap' | 'lock-up' | 'debrief' | 'arc-scene';
+export type Stage = 'recall' | 'intro' | 'scan' | 'decision' | 'decision-result' | 'verify' | 'verify-result' | 'trust-or-trap' | 'lock-up' | 'debrief' | 'arc-scene';
 
 export function stagesFor(c: Case): Stage[] {
-  const s: Stage[] = ['intro', 'scan', 'decision', 'decision-result'];
+  const s: Stage[] = c.recall ? ['recall'] : [];
+  s.push('intro', 'scan', 'decision', 'decision-result');
   if (c.verify) s.push('verify', 'verify-result');
   if (c.trust_or_trap) s.push('trust-or-trap');
   if (c.lock_up) s.push('lock-up');
@@ -17,6 +18,15 @@ export function nextStage(c: Case, current: Stage): Stage {
   const s = stagesFor(c);
   const i = s.indexOf(current);
   return s[Math.min(i + 1, s.length - 1)] ?? 'debrief';
+}
+
+export function firstStage(c: Case): Stage {
+  return c.recall ? 'recall' : 'intro';
+}
+
+/** True while a case is being played and leaving would lose the run (before the debrief has saved it). */
+export function inProgress(stage: Stage): boolean {
+  return !['recall', 'intro', 'debrief', 'arc-scene'].includes(stage);
 }
 
 /** All clue ids of a case, in reading order. */

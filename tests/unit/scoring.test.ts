@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
 import { loadContent } from '../../scripts/lib/content.ts';
-import { computeStars, emptyRun, rankFor, ruleLabel } from '../../src/engine/scoring.ts';
-import { clueIds, emptyLockUp, nextAllowed, nextStage, shuffledOrder, stagesFor, tapLockUp } from '../../src/engine/flow.ts';
+import { computeStars, decoyCount, defaultMaxDecoys, emptyRun, rankFor, ruleLabel } from '../../src/engine/scoring.ts';
+import { clueIds, emptyLockUp, firstStage, inProgress, nextAllowed, nextStage, shuffledOrder, stagesFor, tapLockUp } from '../../src/engine/flow.ts';
 
 const content = loadContent(resolve(import.meta.dirname, '../../content')).content;
 const j1 = content?.cases['j1-drak-zadarmo'];
@@ -41,7 +41,21 @@ describe('stars', () => {
     expect(computeStars(t1, { ...base, lockUpErrors: null })).toBe(2);
   });
 
+  it('junior: tapping every decoy costs the clue star (QA L1, default limit half the decoys, at least 1)', () => {
+    const decoys = decoyCount(j1);
+    expect(decoys).toBeGreaterThanOrEqual(2);
+    expect(defaultMaxDecoys(j1)).toBe(Math.max(1, Math.floor(decoys / 2)));
+    const all = Array.from({ length: decoys }, (_, i) => `d${i}`);
+    const base = { ...emptyRun(), found: clueIds(j1) };
+    expect(computeStars(j1, { ...base, decoys: all.slice(0, defaultMaxDecoys(j1)) })).toBe(1);
+    expect(computeStars(j1, { ...base, decoys: all })).toBe(0);
+    // an explicit max_decoys wins over the default
+    const relaxed = { ...j1, stars: [{ type: 'clues' as const, min: 4, max_decoys: 9 }] };
+    expect(computeStars(relaxed, { ...base, decoys: all })).toBe(1);
+  });
+
   it('has a readable default label for every rule', () => {
+    expect(ruleLabel({ type: 'clues', min: 3 }, j1)).toMatch(/najviac 1 neutrálny detail/);
     expect(ruleLabel({ type: 'clues', min: 3 })).toMatch(/3/);
     expect(ruleLabel({ type: 'lock_up', max_errors: 1, label: 'X' })).toBe('X');
     expect(ruleLabel({ type: 'lock_up', max_errors: 2 })).toMatch(/2 chyby/);
@@ -112,5 +126,17 @@ describe('flow', () => {
     expect(r).toEqual({ kind: 'placed', done: true });
     expect(st.placed).toEqual(['a', 'c', 'b']);
     expect(st.errors).toBe(2);
+  });
+});
+
+describe('recall stage', () => {
+  it('comes first only when a case has a recall question, and is not "in progress"', () => {
+    expect(firstStage(j1)).toBe(j1.recall ? 'recall' : 'intro');
+    const withRecall = { ...j1, recall: { title: 'Pamätáš si?', question: 'Q', options: [{ id: 'a', text: 'A', correct: true }, { id: 'b', text: 'B', correct: false }], feedback: 'F', button: 'Ďalej' } };
+    expect(stagesFor(withRecall).slice(0, 2)).toEqual(['recall', 'intro']);
+    expect(nextStage(withRecall, 'recall')).toBe('intro');
+    expect(inProgress('recall')).toBe(false);
+    expect(inProgress('scan')).toBe(true);
+    expect(inProgress('debrief')).toBe(false);
   });
 });

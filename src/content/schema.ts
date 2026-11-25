@@ -126,6 +126,8 @@ export const OptionSchema = z.strictObject({
   later: text.optional(),
   /** Calm line under the result. For ok/bad: "Toto sa môže stať komukoľvek." plus one "Ďalší krok:" sentence. */
   calm: text,
+  /** True when this option includes telling a trusted adult (Red Line 8; checked when the case sets `risk`). */
+  tells_adult: z.boolean().optional(),
 });
 
 export const DecisionSchema = z
@@ -151,6 +153,8 @@ export const TrustTrapSchema = z.strictObject({
   start_button: text.default('Rýchly výcvik: Dôvera alebo pasca'),
   trust_label: text.default('Dôvera'),
   trap_label: text.default('Pasca'),
+  /** Question under each card before it is answered. */
+  prompt: text.default('Je to v poriadku, alebo je to pasca?'),
   items: z.array(TrustTrapItemSchema).min(3).max(8),
 });
 
@@ -173,6 +177,21 @@ export const LockUpSchema = z
   .refine((l) => l.steps.every((st, i) => i === 0 || st.rank >= (l.steps[i - 1]?.rank ?? 0)), 'list lock_up steps in order: ranks must not go down')
   .refine((l) => new Set([...l.steps, ...l.distractors].map((x) => x.id)).size === l.steps.length + l.distractors.length, 'lock_up step and distractor ids must be unique');
 
+/**
+ * Recall ("Pamätáš si?", GDD §4): one unscored retrieval question at the start of a case, about the rule of an
+ * earlier case. 2-3 options, exactly one `correct: true`. `feedback` is shown after any answer (say the full rule).
+ */
+export const RecallSchema = z
+  .strictObject({
+    title: text.default('Pamätáš si?'),
+    question: text,
+    options: z.array(z.strictObject({ id, text, correct: z.boolean().default(false) })).min(2).max(3),
+    feedback: text,
+    button: text.default('Ďalej'),
+  })
+  .refine((r) => r.options.filter((o) => o.correct).length === 1, 'exactly one recall option has correct: true')
+  .refine((r) => new Set(r.options.map((o) => o.id)).size === r.options.length, 'recall option ids must be unique');
+
 /** A debrief clue line. With `clue: <id>` it is ticked when found and listed under "Prehliadnuté stopy" when not. */
 export const DebriefClueSchema = z.union([
   z.string().min(1).transform((t): { text: string; clue?: string | undefined } => ({ text: t })),
@@ -192,7 +211,11 @@ export const DebriefSchema = z.strictObject({
 });
 
 export const StarRuleSchema = z.discriminatedUnion('type', [
-  /** Found at least `min` clues (and, if given, tapped at most `max_decoys` decoys). */
+  /**
+   * Found at least `min` clues and tapped at most `max_decoys` decoys. Without `max_decoys` the limit is half the
+   * case's decoys, rounded down, at least 1 (see defaultMaxDecoys in src/engine/scoring.ts), so tapping
+   * everything does not earn the star.
+   */
   z.strictObject({ type: z.literal('clues'), min: z.number().int().min(1), max_decoys: z.number().int().min(0).optional(), label: text.optional() }),
   z.strictObject({ type: z.literal('decision_best'), label: text.optional() }),
   /** The first verify pick was the right channel. */
@@ -220,6 +243,13 @@ export const CaseSchema = z.strictObject({
   /** One line on the case card. */
   summary: text,
   placeholder: z.boolean().default(false),
+  /**
+   * What the case involves (Red Line 8). When any is given, the validator needs an option with `outcome: best` or
+   * `ok` and `tells_adult: true` in the decision or verify step.
+   */
+  risk: z.array(z.enum(['money', 'threat', 'stranger'])).default([]),
+  /** Optional "Pamätáš si?" question shown before the intro. */
+  recall: RecallSchema.optional(),
   /** Ids from content/sources.yaml. At least one (Red Line 6). */
   sources: z.array(id).min(1),
   intro: z.strictObject({
@@ -232,6 +262,10 @@ export const CaseSchema = z.strictObject({
     min_clues: z.number().int().min(1),
     prompt: text.default('Ťukni na časť dôkazu, ktorá ti nesedí.'),
     button: text.default('Pokračovať'),
+    /** Question added to the "Tip" hint, e.g. "Čo od teba chcú a kto to píše?". Without it the tip only names the artefact. */
+    tip: text.optional(),
+    /** Worked example: clue ids already marked as found when the scan starts (explained in the intro). */
+    pre_found: z.array(id).default([]),
   }),
   decision: DecisionSchema,
   /** Teen verify channel: a wrong pick explains why and lets the player pick again; only the first pick scores. */
@@ -276,6 +310,14 @@ export const HelpEntrySchema = z.strictObject({
   url_label: text.optional(),
   text,
   placeholder: z.boolean().default(false),
+  /**
+   * A topic card instead of a contact (Red Line 8: sextortion, grooming, cyberbullying, self-harm appear only here).
+   * Free kebab-case id, e.g. vydieranie, kybersikana, grooming. Topic cards are listed in their own calm section and
+   * must point to 116 111: in `phone`/`text`, or by listing the Linka detskej istoty entry in `contacts`.
+   */
+  topic: id.optional(),
+  /** Ids of contact entries shown under a topic card ("Kam sa obrátiť"). */
+  contacts: z.array(id).default([]),
 });
 
 export const HelpFileSchema = z.strictObject({
@@ -283,6 +325,8 @@ export const HelpFileSchema = z.strictObject({
   intro: text,
   entries: z.array(HelpEntrySchema).min(1),
   trusted_adult: text,
+  /** Heading of the topic-card section. */
+  topics_title: text.default('Keď ide o niečo ťažké'),
 });
 
 export type Avatar = z.output<typeof AvatarSchema>;
@@ -302,6 +346,7 @@ export type TrustTrapItem = z.output<typeof TrustTrapItemSchema>;
 export type TrustTrap = z.output<typeof TrustTrapSchema>;
 export type LockUp = z.output<typeof LockUpSchema>;
 export type Debrief = z.output<typeof DebriefSchema>;
+export type Recall = z.output<typeof RecallSchema>;
 export type Scene = z.output<typeof SceneSchema>;
 export type StarRule = z.output<typeof StarRuleSchema>;
 export type Case = z.output<typeof CaseSchema>;

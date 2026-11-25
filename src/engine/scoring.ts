@@ -29,10 +29,27 @@ function verifyBest(c: Case, run: CaseRun): boolean {
   return !!c.verify && run.verify !== null && run.verify === bestOptionId(c.verify.options);
 }
 
+/** Number of decoy segments in a case's evidence. */
+export function decoyCount(c: Case): number {
+  let n = 0;
+  for (const ev of c.evidence) for (const l of ev.lines) for (const seg of l.segments) if (seg.decoy) n++;
+  return n;
+}
+
+/** Default decoy limit of a clues star without `max_decoys`: half the decoys, rounded down, at least 1. */
+export function defaultMaxDecoys(c: Case): number {
+  return Math.max(1, Math.floor(decoyCount(c) / 2));
+}
+
+/** The decoy limit a clues star applies. */
+export function maxDecoysFor(c: Case, rule: Extract<StarRule, { type: 'clues' }>): number {
+  return rule.max_decoys ?? defaultMaxDecoys(c);
+}
+
 export function ruleMet(c: Case, rule: StarRule, run: CaseRun): boolean {
   switch (rule.type) {
     case 'clues':
-      return new Set(run.found).size >= rule.min && (rule.max_decoys === undefined || new Set(run.decoys).size <= rule.max_decoys);
+      return new Set(run.found).size >= rule.min && new Set(run.decoys).size <= maxDecoysFor(c, rule);
     case 'decision_best':
       return decisionBest(c, run);
     case 'verify_best':
@@ -64,11 +81,13 @@ export function rankFor(ranks: Rank[], totalStars: number): Rank {
 }
 
 /** Default label of a star rule, shown in the debrief checklist. */
-export function ruleLabel(rule: StarRule): string {
+export function ruleLabel(rule: StarRule, c?: Case): string {
   if (rule.label) return rule.label;
   switch (rule.type) {
-    case 'clues':
-      return rule.max_decoys === undefined ? `Nájsť aspoň ${rule.min} stopy` : `Nájsť aspoň ${rule.min} stopy a označiť najviac ${rule.max_decoys} neutrálne detaily`;
+    case 'clues': {
+      const max = rule.max_decoys ?? (c ? defaultMaxDecoys(c) : undefined);
+      return max === undefined ? `Nájsť aspoň ${rule.min} stopy` : `Nájsť aspoň ${rule.min} stopy a označiť najviac ${max} ${max === 1 ? 'neutrálny detail' : 'neutrálne detaily'}`;
+    }
     case 'decision_best':
       return 'Vybrať najbezpečnejšie riešenie';
     case 'verify_best':

@@ -83,10 +83,37 @@
   --hit-bg: rgba(240, 192, 96, 0.3);
   --clue-bg: #11151a;
   --clue-ink: #eceef1;
-  --dashed: #4f5864;
+  /* Empty clue-meter rings and evidence borders: at least 3:1 on --paper (QA F11). */
+  --dashed: #8a94a2;
   --foot-bg: rgba(39, 44, 52, 0.92);
   --radius: 6px;
   --radius-folder: 3px 8px 8px 8px;
   --f-display: 'Nunito', system-ui, sans-serif;
   color-scheme: dark;
+}
+
+/* Neutral start screen: frames both tracks without either track's branding (PSYCHOLOGY finding 3). */
+[data-theme='start'] {
+  --desk: #d9dee5;
+  --desk-dot-1: rgba(60, 72, 90, 0.12);
+  --desk-dot-2: rgba(255, 255, 255, 0.3);
+  --desk-edge: #9aa4b2;
+  --paper: #ffffff;
+  --paper-2: #eef1f5;
+  --paper-line: #d3d9e1;
+  --surface: #ffffff;
+  --surface-alt: #f2f4f7;
+  --ink: #1f2330;
+  --muted: #4f5666;
+  --accent: #2c5f8a;
+  --note-bg: #eef1f5;
+  --note-ink: #1f2330;
+  --note-tilt: 0deg;
+  --btn-bg: #2c5f8a;
+  --btn-ink: #ffffff;
+  --btn-shadow: #1d4264;
+  --focus: #1f2330;
+  --foot-bg: rgba(255, 255, 255, 0.92);
+  --f-display: 'Nunito', system-ui, sans-serif;
+  color-scheme: light;
 }

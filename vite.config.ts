@@ -1,13 +1,12 @@
 import { defineConfig, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { createHash } from 'node:crypto';
-import { readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { loadContent } from './scripts/lib/content.ts';
 import { serviceWorkerSource } from './scripts/lib/sw.ts';
 
 const CONTENT_DIR = resolve(import.meta.dirname, 'content');
-const PUBLIC_DIR = resolve(import.meta.dirname, 'public');
 const VIRTUAL_ID = 'virtual:content';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
 
@@ -45,21 +44,30 @@ function listFiles(dir: string): string[] {
   });
 }
 
-/** Writes sw.js that precaches exactly the build output and public/ files: the game's own assets, nothing else. */
+/**
+ * Writes sw.js that precaches exactly the build output and public/ files: the game's own assets, nothing else.
+ * Runs after every other file is written, and the cache version hashes the *bytes* of every file (index.html with
+ * its CSP, public/ files, chunks and assets), so any change in a new build gives a new cache name and replaces the
+ * old assets (sceptic 13a).
+ */
 function serviceWorkerPlugin(): Plugin {
+  let outDir = '';
   return {
     name: 'stopa-sw',
     apply: 'build',
-    generateBundle(_opts, bundle) {
-      const files = [
-        'index.html',
-        ...Object.keys(bundle),
-        ...listFiles(PUBLIC_DIR).map((p) => relative(PUBLIC_DIR, p).split('\\').join('/')),
-      ]
-        .filter((f, i, all) => f !== 'sw.js' && !f.endsWith('.map') && all.indexOf(f) === i)
+    enforce: 'post',
+    configResolved(cfg) {
+      outDir = resolve(cfg.root, cfg.build.outDir);
+    },
+    writeBundle() {
+      const files = listFiles(outDir)
+        .map((p) => relative(outDir, p).split('\\').join('/'))
+        .filter((f) => f !== 'sw.js' && !f.endsWith('.map'))
         .sort();
-      const version = createHash('sha256').update(files.join('\n')).update(JSON.stringify(Object.values(bundle).map((b) => ('code' in b ? b.code.length : 0)))).digest('hex').slice(0, 12);
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource(version, files) });
+      const hash = createHash('sha256');
+      for (const f of files) hash.update(f).update('\0').update(readFileSync(join(outDir, f))).update('\0');
+      const version = hash.digest('hex').slice(0, 12);
+      writeFileSync(join(outDir, 'sw.js'), serviceWorkerSource(version, files));
     },
   };
 }
@@ -69,7 +77,7 @@ function cspPlugin(): Plugin {
   const csp = [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self'",
     "connect-src 'self'",

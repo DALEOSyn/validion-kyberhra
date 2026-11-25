@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { resolve } from 'node:path';
+import { loadContent } from '../../scripts/lib/content.ts';
 
 async function axe(page: Page) {
   // Let the stamp and clue animations finish, so contrast is measured on the final colours.
@@ -8,7 +10,20 @@ async function axe(page: Page) {
   expect(r.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
 }
 
+const consoleErrors = new WeakMap<Page, string[]>();
+
+test.afterEach(async ({ page }) => {
+  // No console errors, which also catches CSP violations (style-src has no 'unsafe-inline').
+  expect(consoleErrors.get(page) ?? []).toEqual([]);
+});
+
 test.beforeEach(async ({ page }) => {
+  const errs: string[] = [];
+  consoleErrors.set(page, errs);
+  page.on('console', (m) => {
+    if (m.type() === 'error') errs.push(m.text());
+  });
+  page.on('pageerror', (e) => errs.push(e.message));
   // Nothing may leave the device: fail on any request to another origin.
   page.on('request', (req) => {
     const url = new URL(req.url());
@@ -18,7 +33,9 @@ test.beforeEach(async ({ page }) => {
 
 test('J1 "Drak zadarmo" plays from the start screen to the closed case file', async ({ page }) => {
   await page.goto('./');
-  await expect(page.getByRole('heading', { name: /Kancelária STOPA/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeVisible();
+  await expect(page.locator('[data-track="teen"]')).toHaveAttribute('data-theme', 'teen');
+  await expect(page.locator('[data-track="junior"]')).toContainText('Uzavreté: 0/');
   await axe(page);
 
   await page.locator('[data-track="junior"]').click();
@@ -46,13 +63,24 @@ test('J1 "Drak zadarmo" plays from the start screen to the closed case file', as
   for (const [i, a] of answers.entries()) {
     await page.getByRole('button', { name: a, exact: true }).click();
     await expect(page.locator('.tip')).toContainText('Správne.');
-    await page.getByRole('button', { name: i === answers.length - 1 ? 'Uzavrieť prípad' : 'Ďalej' }).click();
+    const last = i === answers.length - 1;
+    // keyboard: "Ďalej" has focus after an answer, and the next card gets focus after Enter (QA F2)
+    await expect(page.getByRole('button', { name: last ? 'Uzavrieť prípad' : 'Ďalej' })).toBeFocused();
+    await page.keyboard.press('Enter');
+    if (!last) await expect(page.locator('.card')).toBeFocused();
   }
 
+  // the debrief comes in four short pages
   await expect(page.getByText('UZAVRETÉ')).toBeVisible();
   await expect(page.getByRole('img', { name: 'Hviezdy: 3 z 3' })).toBeVisible();
   await expect(page.getByText('Nový odznak: Bronzová lupa.')).toBeVisible();
-  await expect(page.getByText('Ak sa to už stalo')).toBeVisible();
+  await axe(page);
+  await page.getByRole('button', { name: 'Ďalej: Stopy' }).click();
+  await expect(page.getByText('Stopy v tomto prípade')).toBeVisible();
+  await page.getByRole('button', { name: 'Ďalej: Ak sa to už stalo' }).click();
+  await expect(page.getByRole('heading', { name: /Ak sa to už stalo/ })).toBeFocused();
+  await expect(page.getByText('116 111')).toBeVisible();
+  await page.getByRole('button', { name: 'Ďalej: Stopa v príbehu' }).click();
   await expect(page.getByText('Stopa k Tieňovi č. 1')).toBeVisible();
   await axe(page);
 
@@ -78,6 +106,55 @@ test('help is reachable from every screen and returns to the same place', async 
   await expect(page.getByText('116 111')).toBeVisible();
   await page.getByRole('button', { name: 'Späť do hry' }).click();
   await expect(page.getByTestId('clue-count')).toHaveText('1/5');
+  // Escape closes help too (QA F9)
+  await page.getByRole('button', { name: 'Pomoc' }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Pomoc' })).toBeFocused();
+  await expect(page.getByTestId('clue-count')).toHaveText('1/5');
+});
+
+test('after a clue tap the hint and the count are on screen without scrolling (QA F1)', async ({ page }) => {
+  await page.goto('./');
+  for (const [track, caseId] of [['junior', 'j1-drak-zadarmo'], ['teen', 't2-cheat-zadarmo']] as const) {
+    await page.evaluate(() => localStorage.setItem('stopa.progress.v1', JSON.stringify({ version: 1, cases: { 't1-lahka-brigada': { stars: 1, closed: true } }, lastTrack: null, sound: false })));
+    await page.goto('./');
+    await page.locator(`[data-track="${track}"]`).click();
+    await page.locator(`[data-case="${caseId}"]`).click();
+    await page.locator('section.screen .btn').first().click();
+    const clue = page.locator('[data-clue]').first();
+    await clue.click();
+    await expect(page.locator('.scan-bar .tip')).toBeInViewport({ ratio: 1 });
+    await expect(page.getByTestId('clue-count')).toBeInViewport();
+    await expect(page.getByTestId('clue-count')).toHaveText(/^1\//);
+    await page.getByRole('button', { name: 'Úvod' }).click();
+    await page.getByRole('button', { name: 'Odísť' }).click();
+  }
+});
+
+test('leaving a case mid-play asks first, with the Úvod button and with browser Back (QA F7)', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('[data-track="junior"]').click();
+  await page.locator('[data-case="j1-drak-zadarmo"]').click();
+  await page.getByRole('button', { name: 'Vziať lupu' }).click();
+  await page.locator('[data-clue="sender"]').click();
+
+  await page.goBack();
+  await expect(page.getByRole('alertdialog')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Zostať v prípade' })).toBeFocused();
+  await page.getByRole('button', { name: 'Zostať v prípade' }).click();
+  await expect(page.getByTestId('clue-count')).toHaveText('1/5');
+
+  await page.getByRole('button', { name: 'Úvod' }).click();
+  await page.getByRole('button', { name: 'Odísť' }).click();
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeVisible();
+
+  // Back from a track goes to the start screen; Back from an unstarted case goes to its track without asking
+  await page.locator('[data-track="junior"]').click();
+  await page.locator('[data-case="j1-drak-zadarmo"]').click();
+  await page.goBack();
+  await expect(page.locator('[data-case="j1-drak-zadarmo"]')).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeVisible();
 });
 
 test('teen track renders in its own theme and plays T1 to the debrief', async ({ page }) => {
@@ -102,10 +179,15 @@ test('teen track renders in its own theme and plays T1 to the debrief', async ({
   await page.locator('[data-option="ask-in-person"]').click();
   await page.getByRole('button', { name: /Oto už povedal áno/ }).click();
 
-  // lock-up: one distractor tap (1 error), then the steps in order
+  // lock-up: one distractor tap (1 error), then the steps in order; focus stays on a card, then on the close button
   await page.locator('[data-card="send-on"]').click();
   await expect(page.locator('.tip')).toContainText('Peniaze už nikam neposielať');
-  for (const id of ['stop', 'tell-adult', 'call-bank', 'police']) await page.locator(`[data-card="${id}"]`).click();
+  for (const id of ['stop', 'tell-adult', 'call-bank']) {
+    await page.locator(`[data-card="${id}"]`).click();
+    await expect(page.locator('.lock-card:focus')).toHaveCount(1);
+  }
+  await page.locator('[data-card="police"]').click();
+  await expect(page.getByRole('button', { name: 'Uzavrieť prípad' })).toBeFocused();
   await expect(page.locator('.tip')).toContainText('Presne tak.');
   await axe(page);
   await page.getByRole('button', { name: 'Uzavrieť prípad' }).click();
@@ -124,7 +206,11 @@ test('reset progress asks first, then clears stars', async ({ page }) => {
   await page.getByRole('button', { name: 'Vymazať postup' }).click();
   await page.getByRole('button', { name: 'Áno, vymazať' }).click();
   await expect(page.locator('[data-case="j1-drak-zadarmo"]')).toContainText('Otvorený spis');
-  expect(await page.evaluate(() => localStorage.getItem('stopa.progress.v1'))).toBeNull();
+  await expect(page.getByRole('button', { name: 'Vymazať postup' })).toBeFocused();
+  // settings survive the reset, stars do not (sceptic 13c)
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('stopa.progress.v1') ?? 'null') as { cases: object; lastTrack: string } | null);
+  expect(stored?.cases).toEqual({});
+  expect(stored?.lastTrack).toBe('junior');
 });
 
 test('works offline after the first load', async ({ page, context }) => {
@@ -136,8 +222,64 @@ test('works offline after the first load', async ({ page, context }) => {
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole('heading', { name: /Kancelária STOPA/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeVisible();
   await page.locator('[data-track="junior"]').click();
   await expect(page.locator('[data-case="j1-drak-zadarmo"]')).toBeVisible();
   await context.setOffline(false);
 });
+
+// Every case's best path, data-driven from content/ (sceptic 13e).
+const loaded = loadContent(resolve(import.meta.dirname, '../../content'));
+for (const t of loaded.content?.tracks ?? []) {
+  for (const id of t.cases) {
+    const c = loaded.content?.cases[id];
+    if (!c) continue;
+    test(`best path: ${t.id} ${c.id}`, async ({ page }) => {
+      await page.goto('./');
+      // every case unlocked
+      const cases = Object.fromEntries(t.cases.map((x) => [x, { stars: 0, closed: true }]));
+      await page.evaluate((v) => localStorage.setItem('stopa.progress.v1', v), JSON.stringify({ version: 1, cases, lastTrack: null, sound: false }));
+      await page.goto('./');
+      await page.locator(`[data-track="${t.id}"]`).click();
+      await page.locator(`[data-case="${c.id}"]`).click();
+      const btn = page.locator('section.screen > .btn, section.screen > .row > .btn, .scan-bar .row > .btn').first();
+
+      if (c.recall) {
+        const right = c.recall.options.find((o) => o.correct);
+        await page.locator(`[data-recall="${right?.id}"]`).click();
+        await page.getByRole('button', { name: c.recall.button, exact: true }).click();
+      }
+      await page.getByRole('button', { name: c.intro.button, exact: true }).click();
+      for (const ev of c.evidence) for (const l of ev.lines) for (const sg of l.segments) if (sg.clue && !c.scan.pre_found.includes(sg.clue.id)) await page.locator(`[data-clue="${sg.clue.id}"]`).click();
+      await page.getByRole('button', { name: c.scan.button, exact: true }).click();
+
+      const best = c.decision.options.find((o) => o.outcome === 'best');
+      await page.locator(`[data-option="${best?.id}"]`).click();
+      await expect(page.locator('.result.best')).toBeVisible();
+      await btn.click();
+      if (c.verify) {
+        const vb = c.verify.options.find((o) => o.outcome === 'best');
+        await page.locator(`[data-option="${vb?.id}"]`).click();
+        await expect(page.locator('.result.best')).toBeVisible();
+        await btn.click();
+      }
+      if (c.trust_or_trap) {
+        const tt = c.trust_or_trap;
+        for (const item of tt.items) {
+          await page.getByRole('button', { name: item.answer === 'trust' ? tt.trust_label : tt.trap_label, exact: true }).click();
+          await expect(page.locator('.tip')).toContainText('Správne.');
+          await btn.click();
+        }
+      }
+      if (c.lock_up) {
+        for (const st of c.lock_up.steps) await page.locator(`[data-card="${st.id}"]`).click();
+        await page.getByRole('button', { name: 'Uzavrieť prípad' }).click();
+      }
+      await expect(page.getByRole('img', { name: `Hviezdy: ${c.stars.length} z ${c.stars.length}` })).toBeVisible();
+      await expect(page.getByText(c.debrief.rule)).toBeVisible();
+      for (const next of ['Stopy', 'Ak sa to už stalo', 'Stopa v príbehu']) await page.getByRole('button', { name: `Ďalej: ${next}` }).click();
+      await expect(page.getByText(c.debrief.story_clue.title)).toBeVisible();
+      await axe(page);
+    });
+  }
+}
