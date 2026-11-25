@@ -81,12 +81,21 @@ export function rankFor(ranks: Rank[], totalStars: number): Rank {
 }
 
 /** Default label of a star rule, shown in the debrief checklist. */
+function decoyPhrase(max: number): string {
+  return `najviac ${max} ${max === 1 ? 'neutrálny detail' : 'neutrálne detaily'}`;
+}
+
 export function ruleLabel(rule: StarRule, c?: Case): string {
-  if (rule.label) return rule.label;
+  if (rule.label) {
+    // A clues star always names its decoy limit, so "neťukať na všetko" is not read as "I tapped everything" (QA L4).
+    if (rule.type !== 'clues' || /najviac/.test(rule.label)) return rule.label;
+    const max = rule.max_decoys ?? (c ? defaultMaxDecoys(c) : undefined);
+    return max === undefined ? rule.label : `${rule.label} (${decoyPhrase(max)})`;
+  }
   switch (rule.type) {
     case 'clues': {
       const max = rule.max_decoys ?? (c ? defaultMaxDecoys(c) : undefined);
-      return max === undefined ? `Nájsť aspoň ${rule.min} stopy` : `Nájsť aspoň ${rule.min} stopy a označiť najviac ${max} ${max === 1 ? 'neutrálny detail' : 'neutrálne detaily'}`;
+      return max === undefined ? `Nájsť aspoň ${rule.min} stopy` : `Nájsť aspoň ${rule.min} stopy a označiť ${decoyPhrase(max)}`;
     }
     case 'decision_best':
       return 'Vybrať najbezpečnejšie riešenie';

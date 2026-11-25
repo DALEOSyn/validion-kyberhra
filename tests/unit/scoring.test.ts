@@ -58,6 +58,9 @@ describe('stars', () => {
     expect(ruleLabel({ type: 'clues', min: 3 }, j1)).toMatch(/najviac 1 neutrálny detail/);
     expect(ruleLabel({ type: 'clues', min: 3 })).toMatch(/3/);
     expect(ruleLabel({ type: 'lock_up', max_errors: 1, label: 'X' })).toBe('X');
+    // QA L4: an authored clues label that does not name the decoy limit gets it appended
+    expect(ruleLabel({ type: 'clues', min: 4, label: 'Nájsť aspoň 4 stopy, neťukať na všetko' }, j1)).toBe('Nájsť aspoň 4 stopy, neťukať na všetko (najviac 1 neutrálny detail)');
+    expect(ruleLabel({ type: 'clues', min: 4, max_decoys: 2, label: 'Aspoň 4 stopy a najviac 2 neutrálne detaily' }, j1)).toBe('Aspoň 4 stopy a najviac 2 neutrálne detaily');
     expect(ruleLabel({ type: 'lock_up', max_errors: 2 })).toMatch(/2 chyby/);
   });
 });

@@ -159,4 +159,12 @@ describe('optional case fields', () => {
     expect(caseIssues(fixed, junior, sources)).toEqual([]);
     expect(caseIssues({ ...j1, scan: { ...j1.scan, pre_found: ['nope'] } }, junior, sources).join('\n')).toMatch(/pre_found "nope"/);
   });
+
+  it('risk is required, and an explicit empty list is allowed (sceptic re-review minor 1)', () => {
+    if (!j1) throw new Error('fixtures missing');
+    const raw = JSON.parse(JSON.stringify(j1)) as Record<string, unknown>;
+    delete raw['risk'];
+    expect(CaseSchema.safeParse(raw).success).toBe(false);
+    expect(CaseSchema.safeParse({ ...raw, risk: [] }).success).toBe(true);
+  });
 });

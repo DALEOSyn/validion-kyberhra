@@ -46,8 +46,9 @@ test('J1 "Drak zadarmo" plays from the start screen to the closed case file', as
   // a decoy gives a hint but no clue
   await page.getByRole('button', { name: /GRATULUJEME/ }).click();
   await expect(page.locator('.tip')).toContainText('Toto samo osebe stopa nie je');
-  await expect(page.getByTestId('clue-count')).toHaveText('0/5');
-  for (const id of ['sender', 'prize', 'hurry', 'link']) await page.locator(`[data-clue="${id}"]`).click();
+  // the sender is the worked example from the brief (pre_found), so the count starts at 1
+  await expect(page.getByTestId('clue-count')).toHaveText('1/5');
+  for (const id of ['prize', 'hurry', 'link']) await page.locator(`[data-clue="${id}"]`).click();
   await expect(page.getByTestId('clue-count')).toHaveText('4/5');
   await axe(page);
 
@@ -137,6 +138,35 @@ test('after a clue tap the hint and the count are on screen without scrolling (Q
   }
 });
 
+test('keyboard focus on evidence is never hidden under the scan bar (QA F16, WCAG 2.4.11)', async ({ page }) => {
+  for (const size of [{ width: 640, height: 400 }, { width: 320, height: 568 }, { width: 360, height: 740 }]) {
+    await page.setViewportSize(size);
+    await page.goto('./');
+    await page.locator('[data-track="teen"]').click();
+    await page.locator('[data-case="t1-lahka-brigada"]').click();
+    await page.locator('section.screen .btn').first().click();
+    await expect(page.locator('.scan-bar')).toBeVisible();
+    // 200 % zoom (640×400): the bar stays a compact band
+    const barH = await page.locator('.scan-bar').evaluate((el) => el.getBoundingClientRect().height);
+    if (size.height <= 500) expect(barH).toBeLessThanOrEqual(size.height * 0.3);
+    const stops = await page.locator('.evidence .tap').count();
+    expect(stops).toBeGreaterThan(5);
+    await page.locator('.evidence .tap').first().focus();
+    for (let i = 0; i < stops; i++) {
+      if (i > 0) await page.keyboard.press('Tab');
+      const box = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        const r = el.getBoundingClientRect();
+        const bar = document.querySelector('.scan-bar')!.getBoundingClientRect();
+        return { tap: el.classList.contains('tap'), top: r.top, bottom: r.bottom, barTop: bar.top };
+      });
+      expect(box.tap, `stop ${i} at ${size.width}×${size.height}`).toBe(true);
+      expect(box.top, `stop ${i} at ${size.width}×${size.height}`).toBeGreaterThanOrEqual(0);
+      expect(box.bottom, `stop ${i} at ${size.width}×${size.height}`).toBeLessThanOrEqual(box.barTop);
+    }
+  }
+});
+
 test('leaving a case mid-play asks first, with the Úvod button and with browser Back (QA F7)', async ({ page }) => {
   await page.goto('./');
   await page.locator('[data-track="junior"]').click();
@@ -148,6 +178,15 @@ test('leaving a case mid-play asks first, with the Úvod button and with browser
   await expect(page.getByRole('alertdialog')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Zostať v prípade' })).toBeFocused();
   await page.getByRole('button', { name: 'Zostať v prípade' }).click();
+  await expect(page.getByTestId('clue-count')).toHaveText('1/5');
+
+  // QA F17: the dialog is modal (the case behind it is inert) and Escape means "Zostať"
+  await page.getByRole('button', { name: 'Úvod' }).click();
+  await expect(page.getByRole('alertdialog')).toHaveAttribute('aria-modal', 'true');
+  expect(await page.locator('[data-clue]').first().evaluate((el) => el.closest('[inert]') !== null)).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('alertdialog')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Úvod' })).toBeFocused();
   await expect(page.getByTestId('clue-count')).toHaveText('1/5');
 
   await page.getByRole('button', { name: 'Úvod' }).click();

@@ -1,6 +1,5 @@
 import type { Track, TrackId } from '../content/schema.ts';
 import type { Progress } from '../engine/progress.ts';
-import { StageHeading } from './Heading.tsx';
 
 /**
  * Neutral start screen that frames both tracks equally (PSYCHOLOGY finding 3). Each track card carries its own
@@ -9,7 +8,8 @@ import { StageHeading } from './Heading.tsx';
 export function StartScreen({ title, tracks, progress, onPick }: { title: string; tracks: Track[]; progress: Progress; onPick: (id: TrackId) => void }) {
   return (
     <section class="screen">
-      <StageHeading focus={false}>{title}</StageHeading>
+      {/* An eyebrow line, not a heading: the h1 comes first in the outline (QA F18). */}
+      <p class="stamp">{title}</p>
       <h1 class="logo">Vyber si trasu</h1>
       <p class="note">Na internete sa skrývajú falošné ponuky, ukradnuté účty a nastražené odkazy. Vyber si trasu.</p>
       <div class="tracks">

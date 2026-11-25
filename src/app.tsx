@@ -112,9 +112,19 @@ export function App() {
   // Escape closes the help screen (QA F9). Registered once and read through a ref, so it works right after opening.
   const helpOpenRef = useRef(helpOpen);
   helpOpenRef.current = helpOpen;
+  // Escape in the leave-case dialog means "Zostať v prípade" (QA F17).
+  const leaveOpenRef = useRef(false);
+  leaveOpenRef.current = leaveTo !== null;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || !helpOpenRef.current) return;
+      if (e.key !== 'Escape') return;
+      if (leaveOpenRef.current) {
+        e.preventDefault();
+        setLeaveTo(null);
+        requestAnimationFrame(() => homeBtn.current?.focus());
+        return;
+      }
+      if (!helpOpenRef.current) return;
       setHelpOpen(false);
       requestAnimationFrame(() => helpBtn.current?.focus());
     };
@@ -162,9 +172,16 @@ export function App() {
     }
   }
 
+  // Case and help screens get a page-level h1 for screen-reader navigation (QA F18); the start and track screens
+  // show their own visible h1.
+  const caseTitle = screen.name === 'case' ? content.cases[screen.caseId]?.title : undefined;
+  const pageH1 = helpOpen ? 'Pomoc' : track && caseTitle ? `${track.title}: ${caseTitle}` : null;
+  /** While the leave-case dialog is open, everything else is inert, so the dialog is truly modal (QA F17). */
+  const modal = leaveTo !== null;
+
   return (
     <div class="wrap">
-      <header class="hud">
+      <header class="hud" inert={modal}>
         <div class="hud-group">
           {screen.name !== 'start' && (
             <button type="button" ref={homeBtn} onClick={goHome}>
@@ -194,7 +211,7 @@ export function App() {
       <main class="folder">
         <span class="pin" aria-hidden="true" />
         {leaveTo && (
-          <div class="leave" role="alertdialog" aria-labelledby="leave-h" aria-describedby="leave-d">
+          <div class="leave" role="alertdialog" aria-modal="true" aria-labelledby="leave-h" aria-describedby="leave-d">
             <p id="leave-h" class="leave-title">
               Odísť z prípadu?
             </p>
@@ -209,10 +226,13 @@ export function App() {
             </div>
           </div>
         )}
-        {helpOpen && <HelpScreen help={content.help} onClose={closeHelp} />}
-        <div hidden={helpOpen}>{view}</div>
+        <div inert={modal}>
+          {pageH1 && <h1 class="sr-only">{pageH1}</h1>}
+          {helpOpen && <HelpScreen help={content.help} onClose={closeHelp} />}
+          <div hidden={helpOpen}>{view}</div>
+        </div>
       </main>
-      <footer class="foot">
+      <footer class="foot" inert={modal}>
         {track?.footer ?? 'Všetky aplikácie, hry, mená a adresy v hre sú vymyslené.'} Hra nič neodosiela.
       </footer>
     </div>

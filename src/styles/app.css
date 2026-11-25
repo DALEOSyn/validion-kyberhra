@@ -8,6 +8,8 @@ html {
   /* 17px on phones, grows to about 22px on a 1920px projector. */
   font-size: clamp(17px, 0.42vw + 14px, 22px);
   -webkit-text-size-adjust: 100%;
+  /* The scan step sets --scan-bar-h, so focus never scrolls under the sticky bar (WCAG 2.4.11, QA F16). */
+  scroll-padding-bottom: calc(var(--scan-bar-h, 0px) + 12px);
 }
 html,
 body {
@@ -527,6 +529,38 @@ p {
 }
 .sticky-tip {
   box-shadow: 0 -8px 12px -8px rgba(0, 0, 0, 0.3);
+}
+/* Short viewports (200 % zoom, phones in landscape): one compact band, so most of the screen stays for the
+   evidence (QA F16). Meter and buttons share a line, the hint sits below, the dots give way to the count. */
+@media (max-height: 500px) {
+  .scan-bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    padding-top: 4px;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px));
+    font-size: 0.85rem;
+  }
+  .scan-bar .mag {
+    display: none;
+  }
+  .scan-bar .row {
+    margin: 0 0 0 auto;
+    gap: 6px;
+  }
+  .scan-bar .tip {
+    order: 3;
+    flex: 1 1 100%;
+    min-height: 0;
+    padding: 4px 8px;
+  }
+  .scan-bar .btn {
+    padding: 4px 12px;
+  }
+}
+.decoy-note {
+  display: block;
 }
 
 /* choices + results */

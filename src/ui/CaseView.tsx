@@ -102,8 +102,33 @@ function ScanStep({ c, run, setRun, onNext }: { c: Case; run: CaseRun; setRun: (
     setTip({ text: ev ? `Tip: pozri sa ešte raz na „${ev.label}“.${c.scan.tip ? ` ${c.scan.tip}` : ''}` : 'Všetky stopy sú nájdené. Môžeš pokračovať.', flag: false });
   };
   const n = found.size;
+  const barRef = useRef<HTMLDivElement>(null);
+  // Keyboard focus must never sit under the sticky bar (WCAG 2.4.11, QA F16): publish the bar height for
+  // `scroll-padding-bottom`, and bring a focused part of the evidence back into view if the bar still covers it.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const root = document.documentElement;
+    const publish = () => root.style.setProperty('--scan-bar-h', `${Math.ceil(bar.getBoundingClientRect().height)}px`);
+    publish();
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(publish) : null;
+    ro?.observe(bar);
+    window.addEventListener('resize', publish);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', publish);
+      root.style.removeProperty('--scan-bar-h');
+    };
+  }, []);
+  const onFocusIn = (e: FocusEvent) => {
+    const el = e.target;
+    const bar = barRef.current;
+    if (!(el instanceof HTMLElement) || !bar || bar.contains(el)) return;
+    const r = el.getBoundingClientRect();
+    if (r.bottom > bar.getBoundingClientRect().top || r.top < 0) el.scrollIntoView({ block: 'center' });
+  };
   return (
-    <section class="screen">
+    <section class="screen" onFocusIn={onFocusIn}>
       {c.evidence.map((ev, i) => (
         <div key={i} class="screen">
           {i === 0 ? <StageHeading>{ev.label}</StageHeading> : <h2 class="stamp">{ev.label}</h2>}
@@ -111,7 +136,7 @@ function ScanStep({ c, run, setRun, onNext }: { c: Case; run: CaseRun; setRun: (
         </div>
       ))}
       {/* Sticky at the bottom of the viewport, so the hint and the count are visible right after a tap (QA F1). */}
-      <div class="scan-bar">
+      <div class="scan-bar" ref={barRef}>
       <div class="meter">
         <span>Stopy</span>
         <span class="mag" aria-hidden="true">
@@ -450,8 +475,7 @@ function DebriefStep(props: { c: Case; track: Track; run: CaseRun; info: Debrief
                     {ruleLabel(r, c)}
                     <span class="sr-only">{met ? ' (splnené)' : ' (zatiaľ nie)'}</span>
                     {r.type === 'clues' && !met && decoys > max && (
-                      <span class="muted small" data-testid="decoy-note">
-                        {' '}
+                      <span class="muted small decoy-note" data-testid="decoy-note">
                         Označené neutrálne detaily: {decoys}, najviac {max}.
                       </span>
                     )}

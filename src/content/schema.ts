@@ -244,10 +244,11 @@ export const CaseSchema = z.strictObject({
   summary: text,
   placeholder: z.boolean().default(false),
   /**
-   * What the case involves (Red Line 8). When any is given, the validator needs an option with `outcome: best` or
-   * `ok` and `tells_adult: true` in the decision or verify step.
+   * What the case involves (Red Line 8). Required, so every author decides; write `risk: []` when none applies
+   * (sceptic re-review minor 1). When any is given, the validator needs an option with `outcome: best` or `ok` and
+   * `tells_adult: true` in the decision or verify step.
    */
-  risk: z.array(z.enum(['money', 'threat', 'stranger'])).default([]),
+  risk: z.array(z.enum(['money', 'threat', 'stranger'])),
   /** Optional "Pamätáš si?" question shown before the intro. */
   recall: RecallSchema.optional(),
   /** Ids from content/sources.yaml. At least one (Red Line 6). */
