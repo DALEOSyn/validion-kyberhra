@@ -79,7 +79,7 @@ test('J1 "Drak zadarmo" plays from the start screen to the closed case file', as
   await expect(page.getByText('Stopy v tomto prípade')).toBeVisible();
   await page.getByRole('button', { name: 'Ďalej: Ak sa to už stalo' }).click();
   await expect(page.getByRole('heading', { name: /Ak sa to už stalo/ })).toBeFocused();
-  await expect(page.getByText('116 111')).toBeVisible();
+  await expect(page.getByText('116 111').first()).toBeVisible();
   await page.getByRole('button', { name: 'Ďalej: Stopa v príbehu' }).click();
   await expect(page.getByText('Stopa k Tieňovi č. 1')).toBeVisible();
   await axe(page);
@@ -94,7 +94,7 @@ test('help is reachable from every screen and returns to the same place', async 
   await page.goto('./');
   await page.getByRole('button', { name: 'Pomoc' }).click();
   await expect(page.getByRole('heading', { name: 'Kde nájsť pomoc' })).toBeVisible();
-  await expect(page.getByText('116 111')).toBeVisible();
+  await expect(page.getByText('116 111').first()).toBeVisible();
   await axe(page);
   await page.getByRole('button', { name: 'Späť do hry' }).click();
 
@@ -103,7 +103,7 @@ test('help is reachable from every screen and returns to the same place', async 
   await page.getByRole('button', { name: 'Vziať lupu' }).click();
   await page.locator('[data-clue="sender"]').click();
   await page.getByRole('button', { name: 'Pomoc' }).click();
-  await expect(page.getByText('116 111')).toBeVisible();
+  await expect(page.getByText('116 111').first()).toBeVisible();
   await page.getByRole('button', { name: 'Späť do hry' }).click();
   await expect(page.getByTestId('clue-count')).toHaveText('1/5');
   // Escape closes help too (QA F9)
@@ -120,6 +120,12 @@ test('after a clue tap the hint and the count are on screen without scrolling (Q
     await page.goto('./');
     await page.locator(`[data-track="${track}"]`).click();
     await page.locator(`[data-case="${caseId}"]`).click();
+    // cases 2+ open with a recall question: answer it with any option, then continue
+    const recall = page.locator('[data-recall]');
+    if (await recall.count()) {
+      await recall.first().click();
+      await page.locator('section.screen .btn').last().click();
+    }
     await page.locator('section.screen .btn').first().click();
     const clue = page.locator('[data-clue]').first();
     await clue.click();
