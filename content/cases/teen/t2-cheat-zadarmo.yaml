@@ -15,6 +15,8 @@ sources:
   - eu-bik-gaming-teachers
   - sk-skcert-hacked-accounts-2018
   - sk-skcert-whatsapp-vote-2026
+  - sk-skcert-malicious-app-2025
+  - sk-skcert-tech-support-2020
   - ch-ncsc-mods-cheats-2024
 
 intro:
@@ -26,8 +28,6 @@ intro:
       text: Včera som stiahol cheat na Kovoboj. Nefungoval. A dnes ráno toto.
     - speaker: sara
       text: Toto sa môže stať komukoľvek. Rozoberieme to od začiatku. Video, stránka, mobil.
-    - speaker: bielikova
-      text: A potom poradie krokov. Na poradí tu záleží.
   button: Otvoriť spis
 
 evidence:
@@ -41,7 +41,7 @@ evidence:
           - text: KOVOBOJ aim helper ZADARMO · funguje 2026
             clue:
               id: cheat
-              hint: "Stopa: cheat z neznámeho zdroja. Aj keby fungoval, za cheaty môže prísť trvalý zákaz účtu."
+              hint: "Stopa: cheat z neznámeho zdroja. Za cheaty môže prísť aj zákaz účtu."
       - style: meta
         segments:
           - text: 1,2 mil. zhliadnutí
@@ -54,7 +54,7 @@ evidence:
           - text: Stiahni z kovo-tools.example (v obchode to zakázali)
             clue:
               id: offstore
-              hint: "Stopa: mimo oficiálneho obchodu. Hry a doplnky len z oficiálneho obchodu alebo dôveryhodnej stránky."
+              hint: "Stopa: mimo oficiálneho obchodu. Doplnky len z oficiálneho obchodu alebo dôveryhodnej stránky."
       - style: meta
         segments:
           - "Komentáre"
@@ -85,7 +85,7 @@ evidence:
           - text: "Archív je zamknutý, heslo: 2026"
             clue:
               id: archive
-              hint: "Stopa: zamknutý archív s heslom pri cheate je ďalší varovný znak."
+              hint: "Stopa: zamknutý archív s heslom. Ďalší varovný znak."
       - style: meta
         segments:
           - text: Veľkosť 14 MB · aktualizované 2. 11.
@@ -142,13 +142,13 @@ decision:
       label: Nové heslá, starý problém
       consequence: Matej mení heslá na počítači, na ktorom bol cheat.
       later: O hodinu je cudzie prihlásenie späť, aj s novým heslom.
-      calm: "Toto sa môže stať komukoľvek. Ďalší krok: heslá meniť z iného, čistého zariadenia."
+      calm: "Toto sa môže stať komukoľvek. Podvod bol pripravený tak, aby vyzeral pravý. Ďalší krok: heslá meniť z iného, čistého zariadenia."
     - id: uninstall
-      text: Cheat odinštalovať a dúfať, že je hotovo.
+      text: Cheat odinštalovať, spustiť antivírus a zmeniť heslo k hre.
       outcome: bad
-      label: Zmizol len zo zoznamu
-      consequence: Cheat zmizne zo zoznamu programov.
-      later: Heslá má stále niekto cudzí. V noci odíde z Matejovho Bzuku ďalšia várka odkazov.
+      label: Upratané len navonok
+      consequence: Cheat zmizne zo zoznamu programov a heslo k hre je nové.
+      later: Heslo sa menilo na napadnutom počítači, e-mail ostal starý. V noci odídu z Matejovho Bzuku ďalšie odkazy.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to dospelému a z čistého zariadenia zmeniť heslá."
     - id: warn-tomorrow
       text: Napísať kamarátom, nech na odkaz neklikajú, a zvyšok riešiť zajtra.
@@ -158,10 +158,10 @@ decision:
       later: Kým sa veci odkladajú, cudzí človek je stále v Matejových účtoch.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes začať heslom k e-mailu."
     - id: clean-start
-      text: Povedať to dospelému. Na tom počítači sa už neprihlasovať. Z iného, čistého zariadenia zmeniť heslo k e-mailu, potom ostatné, a zapnúť dvojstupňové overenie.
+      text: Povedať to dospelému a heslá meniť z iného, čistého zariadenia, najprv e-mail.
       outcome: best
       label: Čistý štart
-      consequence: Do večera majú účty nové heslá a dvojstupňové overenie a neznáme zariadenia sú odstránené.
+      consequence: Do večera majú účty nové heslá z čistého zariadenia a dvojstupňové overenie.
       later: Počítač dá otec obnoviť do pôvodného stavu.
       calm: Presne tak. Najprv dospelý a čisté zariadenie, potom e-mail.
 
@@ -185,7 +185,7 @@ verify:
       consequence: Otvorením sa neoverí nič a riziko je zbytočné.
       calm: Overuje sa inou cestou.
     - id: call-matej
-      text: Zavolať Matejovi na číslo, ktoré má uložené, alebo sa ho opýtať v škole.
+      text: Zavolať Matejovi na uložené číslo alebo sa ho opýtať v škole.
       outcome: best
       label: Iná cesta
       consequence: Matej hneď potvrdí, že nič neposielal. Nela odkaz zmaže.
@@ -209,13 +209,9 @@ lock_up:
       rank: 2
       hint: Najprv dospelý a čisté zariadenie.
     - id: other-passwords
-      text: Zmeniť heslá k ostatným účtom, každé iné.
+      text: Zmeniť ostatné heslá, každé iné, a odstrániť neznáme zariadenia.
       rank: 3
       hint: Najprv e-mail, potom ostatné účty.
-    - id: remove-devices
-      text: V nastaveniach účtov odstrániť zariadenia, ktoré nepoznáš.
-      rank: 3
-      hint: Najprv e-mail. Potom účty a ich zariadenia.
     - id: two-step
       text: Zapnúť dvojstupňové overenie.
       rank: 4
@@ -225,9 +221,6 @@ lock_up:
       rank: 5
       hint: Počítač príde na rad nakoniec. Účty sú prednejšie.
   distractors:
-    - id: av-off
-      text: Vypnúť antivírus, aby neprekážal.
-      hint: Toto do postupu nepatrí. Ochranu nevypínaj.
     - id: same-pc
       text: Zmeniť heslá rovno na napadnutom počítači, je to rýchlejšie.
       hint: Toto do postupu nepatrí. Na napadnutom počítači sa už neprihlasuj.
@@ -252,10 +245,10 @@ debrief:
   if_it_happened:
     - Povedz to dospelému a na napadnutom počítači sa už nikam neprihlasuj.
     - Na inom, čistom zariadení zmeň najprv heslo k e-mailu.
-    - Potom zmeň heslá k ostatným účtom, každé iné, a odstráň zariadenia, ktoré nepoznáš.
-    - Zapni dvojstupňové overenie.
+    - Potom zmeň ostatné heslá, každé iné, a odstráň zariadenia, ktoré nepoznáš.
+    - Zapni dvojstupňové overenie. Kamarátov varuj, nech na odkazy z tvojho účtu nereagujú.
     - Napadnutý počítač nechaj dospelým obnoviť do pôvodného stavu.
-    - Daj vedieť kamarátom, nech na odkazy z tvojho účtu nereagujú.
+    - "Pri peniazoch alebo účte: banka cez rodiča, polícia 158. Viac v časti Pomoc."
   story_clue:
     title: "Do spisu: 2"
     text: Stránka kovo-tools.example má v časti Podpora kontakt @kvapka_desk. Ten istý ako pri Daxovi.

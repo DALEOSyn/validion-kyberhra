@@ -21,11 +21,9 @@ intro:
     - speaker: matej
       text: "Z minulého spisu: keď ponúkajú cheat mimo oficiálneho obchodu, tak ho nesťahuj ani nespúšťaj. Dnes je to inak."
     - speaker: sara
-      text: "21:20, píšem z notebooku. Mobil nemá signál už desať minút. Mama vedľa mňa signál má. A teraz mi píše nejaká obnova účtu."
+      text: "Píšem z notebooku. Mobil nemá signál desať minút, mama vedľa mňa ho má. A teraz píše nejaká obnova účtu."
     - speaker: matej
       text: Nič im neposielaj. Pošli screenshoty.
-    - speaker: bielikova
-      text: A povedz to mame hneď, nie ráno.
   button: Otvoriť spis
 
 evidence:
@@ -41,7 +39,7 @@ evidence:
           - text: Bez služby · od 21:10
             clue:
               id: nosignal
-              hint: "Stopa: mobil zrazu dlhšie nemá signál, hoci mama na tej istej sieti ho má. Môže to byť prvý znak, že Sárino číslo niekto preniesol na cudziu SIM."
+              hint: "Stopa: signál dlho chýba, hoci mama ho má. Môže to byť prvý znak, že číslo je na cudzej SIM."
           - " · hodiny "
           - text: "21:18"
             decoy: Čas sám nič neznamená. Dôležité je, že signál zmizol a nevracia sa.
@@ -54,10 +52,10 @@ evidence:
         segments:
           - "E-mail · Záber"
       - segments:
-          - text: "Záber: žiadosť o obnovenie hesla. Kód sme poslali na číslo +421 9•• ••• 214."
+          - text: "Záber: žiadosť o obnovenie hesla. Kód sme poslali na číslo +421 9•• ••• 214. Potvrdzovací kód je aj v tomto e-maile."
             clue:
               id: reset
-              hint: "Stopa: obnovenie hesla, o ktoré Sára nežiadala. Kód ide na jej číslo, ktoré práve u nej nefunguje."
+              hint: "Stopa: obnovenie hesla, o ktoré Sára nežiadala. Kód ide aj na jej číslo, ktoré práve u nej nefunguje."
       - "Ak ste o obnovenie nežiadali, otvorte aplikáciu Záber a skontrolujte zabezpečenie účtu."
 
   - kind: chat
@@ -74,15 +72,15 @@ evidence:
           - text: Záber Obnova účtu ✔ · profil vytvorený pred 2 dňami
             clue:
               id: fakesupport
-              hint: "Stopa: obyčajný nový profil, ktorý sa vydáva za podporu. Obnovu účtu otváraš len vlastnou cestou v aplikácii."
+              hint: "Stopa: nový obyčajný profil, ktorý sa vydáva za podporu."
       - segments:
           - text: Dobrý deň, vidíme pokus o prevzatie Vášho účtu. Pomôžeme Vám ho zachrániť.
             decoy: Zdvorilý tón nič nedokazuje, dobré ani zlé. Sleduj, čo chcú.
       - segments:
-          - text: Pošlite nám kód, ktorý Vám prišiel, a dátum narodenia na overenie.
+          - text: Pošlite nám kód z e-mailu, ktorý Vám prišiel, a dátum narodenia na overenie.
             clue:
               id: code
-              hint: "Stopa: pýtajú jednorazový kód. Kód nikomu, ani tomu, kto tvrdí, že je podpora alebo operátor."
+              hint: "Stopa: pýtajú jednorazový kód. Kód nikomu, ani „podpore“ či „operátorovi“."
       - "Máte 15 minút, inak účet nenávratne stratíte."
       - style: link
         segments:
@@ -103,12 +101,12 @@ evidence:
           - text: 🎂 3. 5. 2011
             clue:
               id: birthday
-              hint: "Stopa: dátum narodenia verejne. Podvodníci také údaje použijú, aby sa vydávali za teba."
+              hint: "Stopa: dátum narodenia verejne. Podvodníci ho použijú, aby sa vydávali za teba."
       - segments:
           - text: 📞 +421 9•• ••• 214 · píšte aj na Bzuk
             clue:
               id: phone
-              hint: "Stopa: telefónne číslo verejne v profile. Čím menej o sebe zverejníš, tým lepšie."
+              hint: "Stopa: telefónne číslo verejne v profile."
 
 scan:
   min_clues: 4
@@ -127,7 +125,7 @@ decision:
       outcome: bad
       label: Účet má niekto iný
       consequence: „Podpora“ poďakuje.
-      later: O pár minút má Záber nové heslo a nový e-mail a Sára je odhlásená. Z jej profilu idú kamarátom odkazy.
+      later: O pár minút má Záber nové heslo a Sára je odhlásená. Kamarátom z jej profilu idú odkazy.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to mame a s ňou otvoriť oficiálne obnovenie účtu v aplikácii."
     - id: sleep
       text: Reštartovať mobil a ísť spať. Ráno sa uvidí.
@@ -137,18 +135,18 @@ decision:
       later: Ráno sú v e-maile ďalšie správy o zmene hesiel.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: ešte dnes to povedať mame, nech zavolá operátorovi."
     - id: their-link
-      text: Napísať operátorovi cez odkaz, ktorý poslala „podpora“.
+      text: Napísať operátorovi cez odkaz od „podpory“ a nahlásiť, že nejde signál.
       outcome: bad
       label: Odkaz od tých istých ľudí
       consequence: Odkaz vedie na stránku, ktorá vyzerá ako Telko Lúč.
       later: Pýta kód a heslo. Signál sa nevráti.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: operátorovi volá mama na číslo zo zmluvy alebo z jeho aplikácie."
     - id: tell-mum
-      text: Hneď to povedať mame. Mama zavolá operátorovi z iného telefónu a skontroluje banku. Sára otvorí Záber vlastnou cestou, zmení heslo a odstráni neznáme zariadenia. „Podporu“ nahlási.
+      text: Hneď to povedať mame, nech volá operátorovi. Záber otvoriť len vlastnou cestou.
       outcome: best
       label: Číslo aj účet ostali Sárine
-      consequence: Operátor cudziu SIM zablokuje a Sárino číslo vráti. Účet ostal Sárin.
-      later: Sára prepne overenie zo SMS na aplikáciu a z profilu zmaže dátum narodenia aj číslo.
+      consequence: Mama volá operátorovi z iného telefónu. Sára otvorí Záber sama, zmení heslo, odstráni neznáme zariadenia a „podporu“ nahlási.
+      later: Operátor cudziu SIM zablokuje a s mamou dohodne, ako Sárino číslo vrátiť. Účet ostal Sárin.
       calm: Presne tak. Signál preč, tak rodič a operátor hneď. Účet len vlastnou cestou.
 
 verify:
@@ -168,13 +166,13 @@ verify:
       consequence: Číslo od toho, koho overuješ, nič neoverí.
       calm: Overuje sa inou cestou, nie cez kontakt od nich.
     - id: open-app
-      text: "Otvoriť aplikáciu Záber vlastnou cestou: oficiálne obnovenie účtu a zoznam prihlásených zariadení."
+      text: Otvoriť Záber vlastnou cestou a pozrieť obnovenie účtu a zariadenia.
       outcome: best
       label: Vlastná cesta
       consequence: V aplikácii žiadna „obnova“ nepíše. Je tam len žiadosť o heslo, ktorú Sára nespustila.
       calm: Presne tak. Pomoc s účtom sa hľadá v aplikácii, ktorú otváraš ty.
     - id: search
-      text: Vyhľadať „Záber podpora“ a zavolať na prvý výsledok.
+      text: Vyhľadať „Záber podpora“ na internete a zavolať na prvý výsledok.
       outcome: bad
       label: Prvý výsledok
       consequence: Neoverené číslo z vyhľadávania nie je istota. Pomoc hľadaj v aplikácii.
@@ -198,17 +196,13 @@ trust_or_trap:
       text: Zapnúť overenie cez aplikáciu namiesto SMS?
       answer: trust
       why: Overenie cez aplikáciu je silnejšie ako SMS. Ponuka prišla v nastaveniach, ktoré otváraš ty.
-    - source: Bzuk · kamarátka Nela
-      text: ahoj, prišiel ti kód? klikla som omylom na tvoje číslo, pošli mi ho
-      answer: trap
-      why: Kód nikomu, ani kamarátke. Ak je Nelin účet napadnutý, píše niekto iný. Over si to u Nely hovorom na jej známe číslo.
     - source: Tvoj mobil
-      text: Už hodinu „Bez služby“, hoci ostatní doma signál majú.
+      text: Už hodinu „Bez služby“ a v e-maile je obnova hesla, ktorú nerobíš.
       answer: trap
-      why: Môže to byť prvý znak prenesenia čísla. Povedz to hneď rodičovi, nech zavolá operátorovi z iného telefónu.
+      why: Spolu to môže byť prvý znak prenesenia čísla. Povedz to hneď rodičovi, nech zavolá operátorovi z iného telefónu.
 
 debrief:
-  rule: Keď mobil zrazu dlho nemá signál, tak to hneď povedz rodičovi.
+  rule: Keď zmizne signál a príde nečakaná obnova hesla, tak s rodičom hneď volaj operátorovi.
   clues:
     - text: Signál zmizol, hoci iní na tej istej sieti ho majú.
       clue: nosignal
@@ -222,17 +216,17 @@ debrief:
       clue: birthday
     - text: Telefónne číslo verejne v profile.
       clue: phone
-  note: Jednorazový kód nikomu, ani „podpore“ či „operátorovi“. Pomoc s účtom hľadaj len v aplikácii, ktorú otváraš ty.
+  note: Kód nikomu, ani „podpore“ či „operátorovi“. Pomoc s účtom hľadaj v aplikácii, ktorú otváraš ty.
   if_it_happened:
     - Povedz to rodičovi. Ten hneď kontaktuje operátora a skontroluje banku.
     - Otvor oficiálne obnovenie účtu vlastnou cestou v aplikácii.
     - Zmeň heslá a odstráň zariadenia, ktoré nepoznáš.
     - Daj vedieť kamarátom, nech na správy z tvojho účtu nereagujú.
-    - Kde sa dá, prihlasuj sa cez aplikáciu namiesto SMS.
-    - Zverejňuj o sebe menej. Dátum narodenia a číslo do verejného profilu nepatria.
+    - Prihlasuj sa cez aplikáciu namiesto SMS. Dátum narodenia a číslo do verejného profilu nepatria.
+    - "Pri peniazoch alebo účte: banka cez rodiča, polícia 158. Viac v časti Pomoc."
   story_clue:
     title: "Do spisu: 3"
-    text: "Útočníci poznali Sárino číslo a dátum narodenia z jej verejného profilu. Matej: „Do účtu sa nedostali. Ale Sárin hlas je verejne v štyridsiatich hodinách podcastu.“"
+    text: "Číslo a dátum narodenia mali útočníci zo Sárinho profilu. Matej: „Do účtu sa nedostali. Ale jej hlas je verejne v podcaste.“"
 
 stars:
   - type: clues
@@ -242,5 +236,5 @@ stars:
   - type: decision_and_verify_best
     label: Najlepší krok aj overenie na prvý pokus
   - type: trust_or_trap
-    min: 4
-    label: Aspoň 4 správne vo výcviku
+    min: 3
+    label: Aspoň 3 správne vo výcviku

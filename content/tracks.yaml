@@ -3,7 +3,7 @@ tracks:
   - id: junior
     title: Kancelária STOPA
     tagline: Detektívny klub · Lipovec
-    age: 11 – 12 rokov
+    age: odporúčame 11 – 12 rokov
     theme: junior
     intro: >-
       V meste niekto rozposiela falošné výhry, kradne účty a nastražuje podvodné odkazy.
@@ -47,7 +47,7 @@ tracks:
   - id: teen
     title: Ozvena
     tagline: Overovací stôl · školský podcast
-    age: 13 – 15 rokov
+    age: odporúčame 13 – 15 rokov
     theme: teen
     placeholder: false
     intro: >-

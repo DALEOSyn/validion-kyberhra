@@ -6,10 +6,6 @@ track: junior
 number: 2
 title: Kód pre kamaráta
 summary: Tomáš v chate pýta kód, ktorý práve prišiel na tvoj mobil.
-# The main J2 source is the SK-CERT note on the messenger "vote" campaign (2026): see docs/SOURCES.md J2 and the
-# entry in content/sources.yaml whose id starts "sk-skcert-" and ends "-vote-2026". It backs "call the friend on the
-# usual number" and "turn on two-step login". Its id contains a real messenger name, which the red-line denylist
-# rejects in case files, so it is cited here in a comment until the fraud-researcher renames the id.
 sources:
   - sk-skcert-whatsapp-vote-2026
   - sk-skcert-nova-vlna-2025
@@ -20,8 +16,6 @@ sources:
 intro:
   stamp: Prípad č. 2 · Kód pre kamaráta
   lines:
-    - speaker: mira
-      text: Dnes je pokoj. Aspoň zatiaľ.
     - speaker: mira
       text: "Pamätáš si pravidlo z minulého prípadu? Keď výhra chce prihlásenie cez odkaz, tak otvor hru vlastnou cestou."
     - speaker: fuzik
@@ -40,17 +34,17 @@ evidence:
       - style: sender
         segments:
           - text: BZUK
-            decoy: Toto je naozajstná SMS od Bzuku. Problém nie je SMS, ale kto ju od teba chce.
+            decoy: Kód je pravý. Problém nie je SMS, ale kto ju od teba chce.
       - segments:
           - text: "Bzuk: tvoj overovací kód na prihlásenie je 482 913."
             clue:
               id: unasked
-              hint: "Stopa: kód prišiel, hoci sa nikam neprihlasuješ. Niekto skúša vstúpiť do tvojho účtu."
+              hint: "Stopa: kód prišiel, hoci sa nikam neprihlasuješ. Niekto skúša vstúpiť do účtu."
       - segments:
           - text: Nikomu ho neposielaj, ani kamarátom.
             clue:
               id: warning
-              hint: "Stopa: sama SMS hovorí, komu kód patrí. Nikomu. Myslí to vážne."
+              hint: "Stopa: sama SMS hovorí, komu kód patrí. Nikomu."
 
   - kind: chat
     label: Dôkaz B · Chat s Tomášom
@@ -64,7 +58,7 @@ evidence:
             decoy: Meno a fotka sú naozaj Tomášove. Ukradnutý účet vyzerá presne ako ten pravý.
           - " · stav: "
           - text: 🐉
-            decoy: Podpis sám osebe nič nedokazuje. Skutoční podvodníci sa nepodpisujú. Ale tento drak je ti známy.
+            decoy: Podpis nič nedokazuje. Ale toho draka už poznáš.
       - segments:
           - text: ahoj, prišla ti teraz SMS s kódom? omylom som tam dal tvoje číslo, pošli mi ho sem
             clue:
@@ -74,10 +68,10 @@ evidence:
           - text: prosím, rýchlo, o 5 minút začína
             clue:
               id: hurry
-              hint: "Stopa: zhon. Kto sa ponáhľa, nechce, aby bol čas niečo overiť."
+              hint: "Stopa: zhon. Kto ťa ženie, nechce, aby bol čas na overenie."
           - " "
           - text: turnaj v Kryptorii
-            decoy: Tomáš Kryptoriu naozaj hrá. Kto ukradne účet, vidí aj staré správy a vie, čo kamaráti robia.
+            decoy: Tomáš Kryptoriu naozaj hrá. Kto ukradne účet, vidí aj staré správy.
       - segments:
           - text: nevolaj, som v autobuse a nemôžem hovoriť
             clue:
@@ -97,19 +91,19 @@ decision:
   next_button: "Rýchly výcvik: Dôvera alebo pasca"
   options:
     - id: send
-      text: Poslať kód. Veď je to Tomáš.
+      text: Poslať kód. Veď je to Tomáš a turnaj o chvíľu začína.
       outcome: bad
       label: Účet je preč
       consequence: Do tvojho Bzuku sa prihlási niekto cudzí. O chvíľu z neho idú rovnaké správy tvojim kamarátom.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: povedať to dospelému a v nastaveniach Bzuku odpojiť cudzie zariadenia."
     - id: ask
-      text: Opýtať sa v chate „Si to naozaj ty?“
+      text: Najprv sa ho v chate opýtať „Si to naozaj ty, Tomáš?“
       outcome: ok
       label: Skoro
       consequence: Odpoveď príde hneď, „jasné, že som to ja, rýchlo“. Kto ukradol účet, sa neprizná.
       calm: "Toto sa môže stať komukoľvek. Ďalší krok: overiť to inou cestou, napríklad hovorom."
     - id: verify
-      text: Kód neposlať. Zavolať Tomášovi na jeho známe číslo a povedať to Babi Zore.
+      text: Kód neposlať, Tomášovi zavolať na známe číslo, povedať to Babi Zore.
       outcome: best
       label: Prípad vyriešený
       consequence: "Ešte kým vytáčaš, otvoria sa dvere. Tomáš: „Niekto mi ukradol Bzuk. Neviem sa prihlásiť.“ S Babi Zorou obnoví účet a kamarátov varuje inou cestou."
@@ -132,11 +126,7 @@ trust_or_trap:
     - source: E-mail · Podpora Kryptoria
       text: Napíšte nám kód zo SMS, aby sme overili váš účet.
       answer: trap
-      why: Kód z SMS sa zadáva len do aplikácie. Nikomu ho nepíš, ani „podpore“. To je známy trik z prvého prípadu.
-    - source: Bzuk · neznáme číslo
-      text: Ahoj, to som ja, Tomáš, mám nové číslo. Pošli mi kód, čo ti príde.
-      answer: trap
-      why: Neznáme číslo a prosba o kód. Kód nikomu. Over si to u Tomáša na jeho starom čísle.
+      why: Kód zo SMS sa zadáva len do aplikácie. Nikomu ho nepíš, ani „podpore“.
 
 debrief:
   rule: Keď niekto chce kód z tvojho telefónu, tak ho nepošli nikomu.
@@ -149,13 +139,12 @@ debrief:
       clue: hurry
     - text: Nechce hovor. Práve hovor by to overil.
       clue: nocall
-  note: Kamarátovi zavolaj na jeho známe číslo. Kto ukradne účet, píše z neho všetkým kamarátom naraz.
+  note: Kamarátovi radšej zavolaj na jeho známe číslo.
   if_it_happened:
-    - Povedz to hneď dospelému, ktorému dôveruješ.
-    - V nastaveniach Bzuku odpoj všetky zariadenia, ktoré nepoznáš. Zmazať aplikáciu nestačí.
+    - Povedz to hneď dospelému, ktorému dôveruješ. Môže to aj nahlásiť.
+    - V nastaveniach Bzuku odpoj zariadenia, ktoré nepoznáš. Zmazať aplikáciu nestačí.
     - Zmeň heslo a zapni dvojstupňové overenie.
-    - Varuj kamarátov inou cestou, nech na správy a odkazy z tvojho účtu nereagujú.
-    - Dospelý to môže nahlásiť. Kam, nájdeš v časti Pomoc.
+    - Varuj kamarátov inou cestou, nech na správy z tvojho účtu nereagujú.
   story_clue:
     title: Stopa k Tieňovi č. 2
     text: V ukradnutom Tomášovom profile sa objavil drak 🐉. Tieň píše z ukradnutých účtov.
@@ -168,5 +157,5 @@ stars:
   - type: decision_best
     label: Vybrať najbezpečnejšiu radu
   - type: trust_or_trap
-    min: 4
-    label: Aspoň 4 správne vo výcviku
+    min: 3
+    label: Aspoň 3 správne vo výcviku

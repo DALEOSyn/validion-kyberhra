@@ -22,7 +22,7 @@ entries:
     name: Viac ako NI(c)K
     url: https://www.viacakonick.gov.sk/
     url_label: viacakonick.gov.sk (chat, formulár, aplikácia)
-    text: Chat pre deti a mladých, nonstop a anonymne. Je zvlášť pre deti do 12 rokov a od 12 rokov. Nemá telefón.
+    text: Chat pre deti a mladých, nonstop a anonymne. Je zvlášť pre deti do 12 rokov a od 12 rokov. Nemá telefón. Ak ti hrozí nebezpečenstvo, privolajú pomoc.
   # sk-ipcko-home, sk-minedu-krizove-linky-2025, sk-nks-kontakty-pomoci
   - id: ipcko
     name: IPčko
@@ -43,12 +43,12 @@ entries:
   - id: policia
     name: Polícia
     phone: "158"
-    text: Podvod sa dá oznámiť na čísle 158 alebo na policajnej stanici. Choď tam s rodičom alebo iným dospelým, ktorému dôveruješ.
-  # sk-skcert-report-incident
+    text: Podvod sa dá oznámiť na ktoromkoľvek oddelení polície. Choď tam s rodičom alebo iným dospelým, ktorému dôveruješ. Číslo polície je 158.
+  # sk-skcert-report-incident, sk-skcert-kedy-nas-kontaktovat
   - id: sk-cert
     name: SK-CERT (Národné centrum kybernetickej bezpečnosti)
     url: https://www.sk-cert.sk/en/tips-and-tricks/report-an-incident/index.html
-    url_label: sk-cert.sk, časť „Nahlásiť incident“
+    url_label: sk-cert.sk, stránka „Report an incident“ (v angličtine)
     text: Sem sa dá nahlásiť podvodná správa alebo ukradnutý účet. Formulár vyplní dospelý.
   # sk-nbs-pozor-na-podvody
   - id: banka
