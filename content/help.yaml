@@ -1,12 +1,69 @@
 # The "Kde nájsť pomoc" screen. Real organisations may be named only here (Red Line 1).
-# [PLACEHOLDER] The fraud-researcher provides the verified list.
+# Verified list: docs/SOURCES.md, section "Help screen", checked for Slovakia on 2026-11-25.
+# Order (docs/PSYCHOLOGY.md §3): talk to someone (116 111 first) → report it → emergency 112.
+# The first entry is also shown under every debrief. Web addresses are shown as text only, never as links.
+# Sources per entry: see the comment above each one (ids in content/sources.yaml).
 title: Kde nájsť pomoc
 intro: >-
   Trápi ťa niečo na internete? Nie je to tvoja chyba. O pomoc môžeš požiadať kedykoľvek.
+  Najprv sa s niekým porozprávaj. Potom to spolu s dospelým nahláste.
 trusted_adult: Povedz to dospelému, ktorému dôveruješ. Spolu to vyriešite pokojne.
 entries:
+  # Talk to someone
+  # sk-ldi-home, sk-justice-dolezite-kontakty, sk-minedu-krizove-linky-2025
   - id: linka-detskej-istoty
     name: Linka detskej istoty
     phone: 116 111
-    text: Bezplatne, anonymne a nonstop pre deti a mladých do 18 rokov.
-    placeholder: true
+    url: https://www.ldi.sk/
+    url_label: ldi.sk (chat každý deň 18.00 – 22.00)
+    text: Pre deti a mladých do 18 rokov. Telefón nonstop, zadarmo. Nemusíš povedať ani svoje meno.
+  # sk-viacakonick-home, eu-bik-sic-slovakia, sk-nks-kontakty-pomoci
+  - id: viac-ako-nick
+    name: Viac ako NI(c)K
+    url: https://www.viacakonick.gov.sk/
+    url_label: viacakonick.gov.sk (chat, formulár, aplikácia)
+    text: Chat pre deti a mladých, nonstop a anonymne. Je zvlášť pre deti do 12 rokov a od 12 rokov. Nemá telefón.
+  # sk-ipcko-home, sk-minedu-krizove-linky-2025, sk-nks-kontakty-pomoci
+  - id: ipcko
+    name: IPčko
+    phone: 0800 500 333
+    url: https://ipcko.sk/
+    url_label: ipcko.sk (chat)
+    text: Pomoc pre mladých v ťažkej situácii. Nonstop, zadarmo a anonymne.
+  # sk-linkadetskejdovery-home, sk-justice-dolezite-kontakty, sk-nks-kontakty-pomoci
+  - id: linka-detskej-dovery
+    name: Linka detskej dôvery
+    phone: 0800 221 021
+    url: https://www.linkadetskejdovery.sk/
+    url_label: linkadetskejdovery.sk (chat v pracovné dni 8.00 – 19.00)
+    text: Pre deti, mladých aj rodičov. Telefón v pracovné dni 8.00 – 20.00, zadarmo.
+
+  # Report it (with a parent or another adult you trust)
+  # sk-justice-dolezite-kontakty, sk-justice-trestne-konanie, sk-minv-pk-podvod-leaflet
+  - id: policia
+    name: Polícia
+    phone: "158"
+    text: Podvod sa dá oznámiť na čísle 158 alebo na policajnej stanici. Choď tam s rodičom alebo iným dospelým, ktorému dôveruješ.
+  # sk-skcert-report-incident
+  - id: sk-cert
+    name: SK-CERT (Národné centrum kybernetickej bezpečnosti)
+    url: https://www.sk-cert.sk/en/tips-and-tricks/report-an-incident/index.html
+    url_label: sk-cert.sk, časť „Nahlásiť incident“
+    text: Sem sa dá nahlásiť podvodná správa alebo ukradnutý účet. Formulár vyplní dospelý.
+  # sk-nbs-pozor-na-podvody
+  - id: banka
+    name: Banka (cez rodiča)
+    text: Ak išlo o kartu alebo peniaze, rodič hneď zavolá do banky. Číslo je na karte alebo v oficiálnej aplikácii banky.
+  # sk-ochranma-home, eu-bik-sic-slovakia
+  - id: ochran-ma
+    name: Ochráň ma
+    url: https://ochranma.sk/
+    url_label: ochranma.sk, časť „Nahlás to“
+    text: Sem sa dá nahlásiť nezákonný obsah na internete. Napríklad keď ti niekto cudzí posiela nevhodné veci. Povedz to aj dospelému.
+
+  # Emergency
+  # eu-youreurope-emergency-faq-sk
+  - id: tiesnova-linka-112
+    name: Tiesňová linka
+    phone: "112"
+    text: Ak ti alebo niekomu inému hrozí nebezpečenstvo práve teraz.

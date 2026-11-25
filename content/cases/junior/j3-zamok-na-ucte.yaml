@@ -1,0 +1,210 @@
+# J3 "Zámok na účte" (docs/CASE_SPECS.md J3). Schema: docs/CONTENT_SCHEMA.md
+# Facts: docs/SOURCES.md J3. The passphrase builder (GDD M4b) is not built yet, so part 1 is a
+# trust_or_trap round with custom labels ("Dobrý zámok" / "Slabé miesto"), and part 2 is the lock_up order.
+# Clues in this case are weak spots, not scam tells.
+id: j3-zamok-na-ucte
+track: junior
+number: 3
+title: Zámok na účte
+summary: Klubový účet v Kryptorii rozdáva čudné výhry. Ako sa Tieň dostal dnu?
+sources:
+  - sk-skcert-passwords-2018
+  - sk-skcert-online-games-2020
+  - sk-csirt-passwords-infographic-2024
+  - sk-skcert-hacked-accounts-2018
+  - sk-zodpovedne-osobne-udaje
+
+intro:
+  stamp: Prípad č. 3 · Zámok na účte
+  lines:
+    - speaker: mira
+      text: "Pamätáš si pravidlo z minulého prípadu? Keď niekto chce kód z tvojho telefónu, tak ho nepošli nikomu."
+    - speaker: simkova
+      text: Dobrý deň, Kancelária STOPA. Náš klubový účet píše deťom čudné výhry. My sme nič také nepísali.
+    - speaker: simkova
+      text: A namiesto loga klubu má zrazu obrázok draka.
+    - speaker: mira
+      text: Tieň sa dostal dnu. Nájdime, kade. Hľadáme slabé miesta, aspoň 3.
+    - speaker: fuzik
+      text: Haf. Fórum Kotol minulý mesiac vykradli. Unikli aj heslá. Fórum Kotol je vymyslené, únik hesiel nie.
+  button: Vziať lupu
+
+evidence:
+  - kind: email
+    label: Dôkaz A · E-mail od Kryptorie
+    header: Pošta klubu · Doručené
+    meta: "pondelok 02:14"
+    aria_label: E-mail od hry Kryptoria o novom prihlásení
+    lines:
+      - style: sender
+        segments:
+          - "Kryptoria · ucet@kryptoria.example"
+      - style: subject
+        segments:
+          - "Kryptoria: nové prihlásenie"
+      - segments:
+          - text: Nové prihlásenie do účtu HernyKlubLipovec z neznámeho zariadenia. Ak ste to neboli vy, zmeňte heslo v aplikácii.
+            decoy: Toto je dobrý pomocník. Upozornenie prišlo od Kryptorie, nemá odkaz na prihlásenie a radí zmeniť heslo v aplikácii.
+      - style: meta
+        segments:
+          - "Stav zabezpečenia · "
+          - text: "Dvojstupňové overenie: vypnuté"
+            clue:
+              id: no2fa
+              hint: "Slabé miesto: chýba druhý zámok. S ním by samotné heslo nestačilo."
+
+  - kind: profile
+    label: Dôkaz B · Lístok v klubovni
+    header: Žltý lístok · nalepený na monitore
+    meta: klubovňa
+    aria_label: Lístok s heslom nalepený na spoločnom počítači v klubovni
+    lines:
+      - style: title
+        segments:
+          - text: "[lístok nalepený na spoločnom počítači v klubovni]"
+            clue:
+              id: shared
+              hint: "Slabé miesto: heslo na lístku, ktorý vidí každý, kto ide okolo."
+      - segments:
+          - text: "meno: HernyKlubLipovec"
+            decoy: Meno účtu môže poznať každý. Chrániť treba heslo.
+      - segments:
+          - text: "heslo: klub1234"
+            clue:
+              id: short
+              hint: "Slabé miesto: krátke heslo z názvu klubu a čísel. Také sa skúša ako prvé."
+      - segments:
+          - text: (rovnaké aj na e-mail klubu a na fórum Kotol)
+            clue:
+              id: same
+              hint: "Slabé miesto: jedno heslo na troch miestach. Keď uniklo z fóra, otvorilo aj ostatné."
+      - style: meta
+        segments:
+          - text: "[malý smajlík nakreslený perom]"
+            decoy: Obrázok na lístku nie je problém. Problém je, čo je na lístku napísané.
+
+scan:
+  min_clues: 3
+  prompt: Ťukni na slabé miesto. Tu nehľadáš podvod, ale dieru v zámku.
+  button: Poradiť pani učiteľke
+
+decision:
+  title: Ako zamknúť klubový účet?
+  prompt:
+    - speaker: simkova
+      text: Čo s tým urobíme?
+  next_button: "Výcvik: Dobrý zámok alebo slabé miesto"
+  options:
+    - id: plus-one
+      text: Zmeniť heslo na klub12345.
+      outcome: bad
+      label: Tieň je znova dnu
+      consequence: Tieň skúsi podobné heslá. O deň je v účte znova.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: dlhé heslo z viacerých slov."
+    - id: only-game
+      text: Zmeniť heslo len na klubovom účte. E-mail a fórum nechať tak.
+      outcome: ok
+      label: Skoro
+      consequence: Klubový účet je bezpečnejší. Ale e-mail má stále staré heslo. Kto má e-mail, vie si zmeniť aj ostatné heslá.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: začať e-mailom."
+    - id: lock
+      text: S pani učiteľkou dať nové dlhé heslo, pre každý účet iné, a začať e-mailom. Zapnúť druhý zámok a odhlásiť cudzie zariadenia.
+      outcome: best
+      label: Prípad vyriešený
+      consequence: Cudzie zariadenie je odhlásené. Klubový obrázok je znova logo klubu, nie drak.
+      calm: Presne tak. Dlhé heslo, pre každý účet iné, a k tomu druhý zámok.
+
+trust_or_trap:
+  title: Výcvik · Dobrý zámok alebo slabé miesto
+  start_button: "Výcvik: Dobrý zámok alebo slabé miesto"
+  trust_label: Dobrý zámok
+  trap_label: Slabé miesto
+  items:
+    - source: Cvičné heslo pre klubový účet
+      text: Lipovec2014
+      answer: trap
+      why: Mesto a rok sa hádajú ľahko. A je krátke.
+    - source: Cvičné heslo pre klubový účet
+      text: dáždnik fialová žirafa polievka
+      answer: trust
+      why: Dlhá veta zo 4 slov, má viac ako 12 znakov. O klube nič neprezradí. Toto heslo je len cvičné, svoje skutočné nikde neukazuj.
+    - source: Plán pani učiteľky
+      text: Jedno nové dlhé heslo pre Kryptoriu, e-mail aj fórum.
+      answer: trap
+      why: Keď unikne z jedného miesta, otvorí aj ostatné. Pre každý účet iné heslo.
+    - source: Fúzik radí
+      text: Veľa dlhých hesiel si za teba zapamätá správca hesiel.
+      answer: trust
+      why: Správca hesiel si pamätá iné heslo pre každý účet. Nastav si ho s dospelým.
+    - source: Prihlásenie do Kryptorie
+      text: Okrem hesla chce aj kód z aplikácie v telefóne.
+      answer: trust
+      why: To je druhý zámok, dvojstupňové overenie. Kód z aplikácie je silnejší ako SMS. Aj SMS je lepšia ako nič.
+    - source: Bzuk · spolužiak z klubu
+      text: povedz mi nové heslo ku klubu, chcem si len niečo pozrieť
+      answer: trap
+      why: Heslo nepovedz nikomu, ani kamarátovi. Účet spravuje pani učiteľka.
+
+lock_up:
+  title: Zamkni klubový účet
+  prompt: V akom poradí to urobiť? Ťukaj na kartičky.
+  steps:
+    - id: email
+      text: Zmeniť heslo k e-mailu klubu na nové dlhé heslo.
+      rank: 1
+    - id: game
+      text: Otvoriť Kryptoriu vlastnou cestou a dať jej iné dlhé heslo.
+      rank: 2
+      hint: Najprv e-mail. Kto má e-mail, vie zmeniť aj ostatné heslá.
+    - id: forum
+      text: Na fóre Kotol dať tiež iné heslo.
+      rank: 2
+      hint: Najprv e-mail. Kto má e-mail, vie zmeniť aj ostatné heslá.
+    - id: two-step
+      text: Zapnúť druhý zámok, dvojstupňové overenie. Kód z aplikácie je silnejší ako SMS.
+      rank: 3
+    - id: warn
+      text: Napísať členom klubu, že účet písal niekto cudzí. Nech na tie správy nereagujú.
+      rank: 3
+  distractors:
+    - id: sticky
+      text: Napísať nové heslo na lístok a nalepiť ho na počítač.
+      hint: Toto nie. Lístok na spoločnom počítači vidí každý.
+    - id: group-chat
+      text: Poslať nové heslo všetkým členom do skupinového chatu.
+      hint: Toto nie. Heslo nikomu neposielaj. Účet spravuje pani učiteľka.
+  wrong_order_hint: Ešte nie. Tento krok príde neskôr. Čo treba urobiť skôr?
+  correct: Presne tak. Najprv e-mail, potom každý účet iným heslom, nakoniec druhý zámok a varovanie.
+
+debrief:
+  rule: Keď zakladáš účet, tak daj dlhé, iné heslo a druhý zámok.
+  clues:
+    - text: Krátke heslo z názvu klubu a čísel.
+      clue: short
+    - text: Jedno heslo na troch miestach.
+      clue: same
+    - text: Heslo na lístku, ktorý vidí každý.
+      clue: shared
+    - text: Chýba druhý zámok.
+      clue: no2fa
+  note: Dobré heslo je dlhá veta aspoň z 12 znakov. Pre každý účet iná. Zapamätať ich pomôže správca hesiel.
+  if_it_happened:
+    - Povedz to dospelému, ktorému dôveruješ.
+    - Zmeň heslo, najprv k e-mailu. Potom všade, kde bolo rovnaké. Každé iné.
+    - Zapni dvojstupňové overenie.
+    - Ak sa nevieš prihlásiť, použi oficiálne obnovenie účtu.
+    - Daj vedieť kamarátom, nech na správy z účtu nereagujú.
+  story_clue:
+    title: Stopa k Tieňovi č. 3
+    text: Tieň heslo nehádal. Našiel ho v heslách, ktoré unikli z fóra Kotol. Tieň zbiera to, čo ľudia nechajú ležať.
+  next_teaser: "Ďalší prípad: Kričiaca obrazovka. Babi Zora má problém s tabletom."
+
+stars:
+  - type: clues
+    min: 3
+    label: Nájsť aspoň 3 slabé miesta
+  - type: decision_best
+    label: Vybrať najbezpečnejšiu radu
+  - type: lock_up
+    max_errors: 1
+    label: Zamknúť účet najviac s 1 chybou

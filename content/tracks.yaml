@@ -30,8 +30,19 @@ tracks:
         name: Fúzik
         role: detektívny pes
         avatar: { kind: dog }
+      - id: simkova
+        name: pani učiteľka Šimková
+        role: vedie herný klub
+        avatar: { kind: person, skin: "#e8c3a0", hair: "#5a3a22", hair_style: bun }
+      - id: babi-zora
+        name: Babi Zora
+        role: pekáreň pod kanceláriou
+        avatar: { kind: person, skin: "#f0c7a8", hair: "#c9c9c9", hair_style: bun, band: "#c0504d" }
     cases:
       - j1-drak-zadarmo
+      - j2-kod-pre-kamarata
+      - j3-zamok-na-ucte
+      - j4-kriciaca-obrazovka
 
   - id: teen
     title: Ozvena

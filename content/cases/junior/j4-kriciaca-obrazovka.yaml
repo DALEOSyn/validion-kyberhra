@@ -1,0 +1,211 @@
+# J4 "Kričiaca obrazovka" (docs/CASE_SPECS.md J4), end of the junior arc. Schema: docs/CONTENT_SCHEMA.md
+# Facts: docs/SOURCES.md J4. The lesson is the sourced habit (official store, permissions, who made the app,
+# do not install because a message says so). The scare pop-up is only the setting: no SK/EU source describes it,
+# so ch-ncsc-fake-virus-alert-2025 and sk-eset-kb-fake-virus-android are supporting only. The `call` clue rests on
+# those two supporting sources; if the fraud-researcher objects, make that span plain text (5 clues remain).
+id: j4-kriciaca-obrazovka
+track: junior
+number: 4
+title: Kričiaca obrazovka
+summary: Tablet Babi Zory kričí, že má vírusy, a chce nainštalovať čistič.
+sources:
+  - sk-skcert-malicious-app-2025
+  - sk-skcert-fakeapps-2018
+  - sk-nbs-pozor-na-podvody
+  - ch-ncsc-fake-virus-alert-2025
+  - sk-eset-kb-fake-virus-android
+
+intro:
+  stamp: Prípad č. 4 · Kričiaca obrazovka
+  lines:
+    - speaker: mira
+      text: "Pamätáš si pravidlo z minulého prípadu? Keď zakladáš účet, tak daj dlhé, iné heslo a druhý zámok."
+    - speaker: babi-zora
+      text: Deti, tablet kričal, že má vírusy. Ťukla som na Stiahnuť a teraz sa ma na niečo pýta.
+    - speaker: fuzik
+      text: Haf. Dobre, že ste prestali. Ešte nič nepovoľujte.
+    - speaker: mira
+      text: Pozrime sa na obe obrazovky. Nájdi aspoň 3 stopy.
+  button: Vziať lupu
+
+evidence:
+  - kind: popup
+    label: Dôkaz A · Okno na stránke s receptom
+    header: Prehliadač · recepty-lipovec.example
+    meta: "10:12"
+    aria_label: Vyskakovacie okno cez stránku s receptom
+    lines:
+      - style: title
+        segments:
+          - text: "[štít] Bezpečnostné centrum"
+            decoy: Štít a slovo „bezpečnosť“ si nakreslí ktokoľvek. Samo to nič nedokazuje.
+      - segments:
+          - text: "⚠ VÁŠ TABLET JE NAKAZENÝ (5 VÍRUSOV) · Do 00:59 sa poškodia fotky"
+            clue:
+              id: scare
+              hint: "Stopa: strach a odpočítavanie. Okno ženie do inštalácie. Pred inštaláciou sa vždy zastav."
+      - style: button
+        segments:
+          - text: "STIAHNUŤ Čistič PRO · cistic-pro.example"
+            clue:
+              id: download
+              hint: "Stopa: aplikácia z odkazu v okne, nie z oficiálneho obchodu. Aplikácie inštaluj len z oficiálneho obchodu."
+      - segments:
+          - text: "Alebo volajte technika: 0900 ••• •••"
+            clue:
+              id: call
+              hint: "Stopa: neznáme číslo z okna. Nevolaj naň."
+      - style: meta
+        segments:
+          - text: "[za oknom: recept Lipovecké šišky]"
+            decoy: Stránka s receptami nie je problém. Problém je, čo chce okno.
+          - " · "
+          - text: 🐉
+            decoy: Podpis sám osebe nič nedokazuje. Skutoční podvodníci sa nepodpisujú. Ale Fúzik ho už pozná.
+
+  - kind: popup
+    label: Dôkaz B · Otázka tabletu
+    header: Tablet · Inštalácia
+    meta: Batéria 64 %
+    aria_label: Obrazovka tabletu s otázkou na inštaláciu a zoznamom povolení
+    lines:
+      - style: title
+        segments:
+          - text: Povoliť inštaláciu aplikácií z tohto zdroja?
+            clue:
+              id: source
+              hint: "Stopa: tablet upozorňuje, že aplikácia neprichádza z oficiálneho obchodu."
+      - segments:
+          - text: "Čistič PRO chce: kontakty, SMS správy, ovládanie obrazovky"
+            clue:
+              id: perms
+              hint: "Stopa: povolenia, ktoré čistič nepotrebuje. Na čo by mu boli SMS?"
+      - segments:
+          - text: "Vývojár: neznámy · 0 hodnotení"
+            clue:
+              id: maker
+              hint: "Stopa: nevieš, kto aplikáciu robí, a nikto ju nehodnotil. Pri každej aplikácii pozri, kto ju robí."
+      - style: meta
+        segments:
+          - text: "Wi-Fi: Pekáreň Zora"
+            decoy: Bežný údaj tabletu. S aplikáciou nesúvisí.
+      - style: button
+        segments:
+          - "Zrušiť · Povoliť"
+
+scan:
+  min_clues: 3
+  prompt: Ťukni na časť obrazovky, ktorá ti nesedí. Pozri sa na obe.
+  button: Poradiť Babi Zore
+
+decision:
+  title: Čo poradíš Babi Zore?
+  prompt:
+    - speaker: babi-zora
+      text: Tak čo, mám to povoliť?
+  next_button: "Veľký výcvik: Dôvera alebo pasca"
+  options:
+    - id: allow
+      text: Povoliť všetko, nech je tablet čistý.
+      outcome: bad
+      label: Čistič je dnu
+      consequence: Čistič sa nainštaluje a hneď chce ďalšie povolenia. Babi už nevie, čo všetko v tablete robí.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: aplikáciu odinštalovať a ukázať tablet niekomu, kto sa vyzná."
+    - id: call
+      text: Zavolať na číslo technika z okna.
+      outcome: bad
+      label: Milý hlas
+      consequence: Milý hlas chce, aby Babi nainštalovala ešte jednu aplikáciu. Na Babinu otázku odpovedá „Verte mi.“
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: zložiť a nič neinštalovať."
+    - id: wait
+      text: Nechať tablet tak a počkať, kým sa to samo vyrieši.
+      outcome: ok
+      label: Skoro
+      consequence: Nič zlé sa nestalo. Ale otázka na obrazovke ostáva.
+      calm: "Toto sa môže stať komukoľvek. Ďalší krok: inštaláciu zrušiť a okno zavrieť."
+    - id: cancel
+      text: Inštaláciu zrušiť a nič nepovoliť. Okno zavrieť. Čistič hľadať len v oficiálnom obchode a pozrieť, kto ho robí.
+      outcome: best
+      label: Prípad vyriešený
+      consequence: Babi ťukne na Zrušiť a zavrie okno. Nič sa nenainštalovalo. Šišky sa dopečú načas.
+      calm: Presne tak. Zastaviť sa, zrušiť a aplikácie brať len z oficiálneho obchodu.
+
+trust_or_trap:
+  title: Veľký výcvik · Všetky štyri triky
+  start_button: "Veľký výcvik: Dôvera alebo pasca"
+  items:
+    - source: Aplikácia Baterka z oficiálneho obchodu
+      text: Baterka chce prístup k tvojim kontaktom a SMS.
+      answer: trap
+      why: Baterka kontakty ani SMS nepotrebuje. Odmietni a aplikáciu odinštaluj. Aj v oficiálnom obchode treba pozerať.
+    - source: Oficiálny obchod s aplikáciami
+      text: "Kryptoria · vývojár Kryptoria Studio · 4,6 ★ · 120 tis. hodnotení · Inštalovať"
+      answer: trust
+      why: Oficiálny obchod, známy vývojár a veľa hodnotení. Aj tak pozri, aké povolenia chce.
+    - source: Kryptoria · v hre
+      text: Odmena za týždennú výzvu je v tvojom batohu.
+      answer: trust
+      why: Je to priamo v hre a nič nepýta.
+    - source: Bzuk · neznámy účet
+      text: Zadaj heslo do Kryptorie na kryst-bonus.example a dostaneš 1 000 kryštálov.
+      answer: trap
+      why: Heslo za výhru je pasca. Otvor hru vlastnou cestou.
+    - source: Lea, osobne v škole
+      text: Zapla som si druhý zámok. Ukážem ti, ako na to.
+      answer: trust
+      why: Kamarátka osobne a dobrá rada. Druhý zámok chráni účet.
+
+debrief:
+  rule: Keď okno ženie inštalovať aplikáciu, tak ju hľadaj len v oficiálnom obchode.
+  clues:
+    - text: Aplikácia z odkazu v okne, nie z obchodu.
+      clue: download
+    - text: Povolenia, ktoré čistič nepotrebuje.
+      clue: perms
+    - text: Neznámy vývojár a žiadne hodnotenia.
+      clue: maker
+    - text: Strach a odpočítavanie.
+      clue: scare
+  note: Povolenia, ktoré aplikácia nepotrebuje, odmietni. Ani oficiálny obchod nie je vždy bezpečný, preto pozri, kto aplikáciu robí.
+  if_it_happened:
+    - Povedz to dospelému, ktorému dôveruješ.
+    - Aplikáciu odinštaluj.
+    - Ak dostala zvláštne povolenia, ukáž tablet dospelému. Môže byť potrebné tablet obnoviť do pôvodného stavu.
+    - Dospelý potom zmení heslá a dá vedieť banke.
+  story_clue:
+    title: Stopa k Tieňovi č. 4
+    text: V rohu okna bol malý drak 🐉. Štyri triky, jeden drak.
+
+arc_scene:
+  button: Záver príbehu
+  stamp: Spis uzavretý · Odznak STOPA
+  lines:
+    - speaker: mira
+      text: Štyri triky, jeden drak. Pripni ich na nástenku.
+    - speaker: fuzik
+      text: Haf. Falošná výhra, požičaný účet, uniknuté heslo, strašiace okno. Nič múdre. Len rýchle.
+    - speaker: babi-zora
+      text: Toto zanesieme spolu s vašimi rodičmi na políciu.
+    - speaker: mira
+      text: Prišla odpoveď. Polícia ďakuje. Tieň nie je jeden zloduch z Lipovca.
+    - speaker: mira
+      text: Je to skupina podvodníkov ďaleko odtiaľto. Posielajú rovnaké triky tisícom ľudí. Kto presne, to už je práca polície.
+    - speaker: mira
+      text: Tieň nevyhrá, keď ľudia vedia, na čo si dať pozor. Teraz to vieš aj ty.
+  closing: >-
+    Štyri pravidlá STOPY.
+    1. Keď výhra chce prihlásenie cez odkaz, tak otvor hru vlastnou cestou.
+    2. Keď niekto chce kód z tvojho telefónu, tak ho nepošli nikomu.
+    3. Keď zakladáš účet, tak daj dlhé, iné heslo a druhý zámok.
+    4. Keď okno ženie inštalovať aplikáciu, tak ju hľadaj len v oficiálnom obchode.
+    Kancelária STOPA zostáva otvorená. Ukáž svoje stopy doma alebo kamarátovi.
+
+stars:
+  - type: clues
+    min: 4
+    label: Nájsť aspoň 4 stopy
+  - type: decision_best
+    label: Vybrať najbezpečnejšiu radu
+  - type: trust_or_trap
+    min: 4
+    label: Aspoň 4 správne vo výcviku

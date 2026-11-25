@@ -1,15 +1,16 @@
-# J1 "Drak zadarmo", ported from prototypes/stopa-case1-v0.2.html. Schema: docs/CONTENT_SCHEMA.md
+# J1 "Drak zadarmo" (docs/CASE_SPECS.md J1; ported from prototypes/stopa-case1-v0.2.html). Schema: docs/CONTENT_SCHEMA.md
 id: j1-drak-zadarmo
 track: junior
 number: 1
 title: Drak zadarmo
 summary: Lea vraj vyhrala draka do hry. Stačí sa prihlásiť cez odkaz.
-# From docs/CASE_SPECS.md (J1). The fraud-researcher confirms.
+# Facts: docs/SOURCES.md J1. ch-ncsc-gamer-phishing-2024 is supporting only (non-EU).
 sources:
   - sk-skcert-online-games-2020
   - eu-bik-gaming-teachers
   - eu-bik-ie-scams-young-2026
   - sk-skcert-hacked-accounts-2018
+  - ch-ncsc-gamer-phishing-2024
 
 intro:
   stamp: Prípad č. 1 · Drak zadarmo
@@ -20,6 +21,8 @@ intro:
       text: prišla mi táto správa v Bzuku. vraj som vyhrala draka do Kryptorie. mám kliknúť?
     - speaker: mira
       text: Zober lupu a preskúmaj správu. Nájdi aspoň 3 stopy, že niečo nesedí.
+    - speaker: mira
+      text: Prvú ti ukážem. Odosielateľ sa volá „Oficial Team“, ale Lea ho nepozná. Také meno si môže dať ktokoľvek.
     - speaker: fuzik
       text: Haf. Bzuk je chatovacia appka, Kryptoria je hra. Obe sú vymyslené. Triky sú skutočné.
   button: Vziať lupu
@@ -103,15 +106,15 @@ trust_or_trap:
     - source: Launcher Pixelbrána · upozornenie v aplikácii
       text: Nová aktualizácia Kryptorie je pripravená. Spusti ju tlačidlom Aktualizovať.
       answer: trust
-      why: Prišlo to priamo v launcheri, ktorý máš nainštalovaný, a nepýta to heslo.
+      why: Prišlo to v launcheri, ktorý máš nainštalovaný. A nepýta to heslo.
     - source: Bzuk · kamarát Tomáš
       text: čau, prišiel ti teraz SMS kód? pošli mi ho prosím, potrebujem ho na turnaj
       answer: trap
-      why: Kód zo SMS je kľúč k tvojmu účtu. Nedávaj ho nikomu, ani najlepšiemu kamarátovi. Jeho účet mohol niekto ukradnúť.
+      why: Kód zo SMS je kľúč k tvojmu účtu. Nedávaj ho nikomu, ani kamarátovi. Jeho účet mohol niekto ukradnúť.
     - source: Video · komentár pod videom
-      text: GENERÁTOR KRYŠTÁLOV ZADARMO. Stiahni si program z kryst-gen.example a spusti ho.
+      text: GENERÁTOR KRYŠTÁLOV ZADARMO. Choď na kryst-gen.example a zadaj meno a heslo do Kryptorie.
       answer: trap
-      why: Generátory zadarmo nefungujú. Takéto programy často kradnú heslá z počítača.
+      why: Kryštály zadarmo za tvoje heslo sú známy trik. Kryštály hľadaj len priamo v hre.
     - source: Kryptoria · obchod v hre
       text: "Víkendová akcia: skin Mesačná líška za 200 kryštálov."
       answer: trust
@@ -122,14 +125,16 @@ trust_or_trap:
       why: Strašenie a odkaz, ktorý pýta heslo. Otvor hru vlastnou cestou a pozri, či je s účtom niečo v neporiadku.
 
 debrief:
-  rule: Ak ti správa sľúbi výhru za prihlásenie, neklikaj. Prihlasuj sa len v hre alebo v jej aplikácii.
+  rule: Keď výhra chce prihlásenie cez odkaz, tak otvor hru vlastnou cestou.
   clues:
     - text: Výhra zadarmo od účtu, ktorý nepoznáš.
       clue: prize
     - text: Časový tlak „do 15 minút, inak prepadne“.
       clue: hurry
-    - text: Cudzí odkaz, ktorý pýta meno a heslo.
+    - text: Cudzí odkaz do hry.
       clue: link
+    - text: Správa pýta meno a heslo.
+      clue: pass
   if_it_happened:
     - Otvor hru vlastnou cestou a hneď zmeň heslo. Zmeň ho aj všade, kde bolo rovnaké.
     - Zapni dvojstupňové overenie.
@@ -138,7 +143,7 @@ debrief:
   story_clue:
     title: Stopa k Tieňovi č. 1
     text: Správu podpísal malý drak 🐉. Kto za ním stojí?
-  next_teaser: Prípad č. 2 „Kód pre kamaráta“ pribudne v ďalšej verzii.
+  next_teaser: "Ďalší prípad: Kód pre kamaráta. Tvoj mobil zabzučí dvakrát."
 
 stars:
   - type: clues
