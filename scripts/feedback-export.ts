@@ -67,7 +67,7 @@ async function fetchIssues(repo: string, token: string | undefined): Promise<Iss
 }
 
 const input = arg('input');
-const repo = arg('repo') ?? process.env.GITHUB_REPOSITORY ?? 'daleosyn/cybersec-for-children';
+const repo = arg('repo') ?? process.env.GITHUB_REPOSITORY ?? 'daleosyn/validion-kyberhra';
 const outDir = resolve(arg('out') ?? 'docs/feedback');
 const issues = input ? (JSON.parse(readFileSync(input, 'utf8')) as Issue[]) : await fetchIssues(repo, process.env.GITHUB_TOKEN);
 const formDir = resolve(import.meta.dirname, '../.github/ISSUE_TEMPLATE');
