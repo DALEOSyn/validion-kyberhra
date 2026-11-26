@@ -5,6 +5,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import { parse } from 'yaml';
+import { aboutLines } from '../../src/content/about.ts';
 import type { z } from 'zod';
 import {
   AboutFileSchema,
@@ -146,6 +147,9 @@ export function aboutIssues(about: About): string[] {
   for (const s of about.sections) {
     if (s.address && /^[a-z][a-z0-9+.-]*:/i.test(s.address)) out.push(`about.yaml: section ${s.id}: write the address without a scheme (plain text, never a link)`);
     if (s.address_note && !s.address) out.push(`about.yaml: section ${s.id}: address_note needs an address`);
+    for (const send of [true, false]) {
+      if (aboutLines(s.text, send).length === 0) out.push(`about.yaml: section ${s.id}: has no paragraph in a build ${send ? 'with' : 'without'} „Odoslať“`);
+    }
   }
   return out;
 }

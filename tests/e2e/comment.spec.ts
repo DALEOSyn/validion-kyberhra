@@ -43,6 +43,9 @@ async function openAndFill(page: Page) {
   await expect(box.getByRole('heading', { name: 'Pripomienka pre dospelých' })).toBeVisible();
   await expect(box.getByText('Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch.', { exact: false })).toBeVisible();
   await expect(box.getByText('Si dieťa a niečo ťa trápi? Nepíš to sem.', { exact: false })).toContainText('116 111');
+  // the form is folded until an adult opens it; the warning and the child note stay visible above it
+  await expect(box.getByRole('radio', { name: 'Zo školy' })).toBeHidden();
+  await box.getByText('Otvoriť formulár pre dospelých').click();
   await expect(box.getByRole('group', { name: 'Hodnotenie (nepovinné)' })).toBeVisible();
   // asks for the role and the text first, calmly
   await box.getByRole('button', { name: 'Kopírovať text' }).click();
@@ -62,6 +65,18 @@ async function openAndFill(page: Page) {
 }
 
 test.describe('default build (no e-mail address)', () => {
+  test('the privacy text does not name „Odoslať“, which this build does not have', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.getByText('Hra o tebe nič neodosiela. Postup sa ukladá len v tomto prehliadači.')).toBeVisible();
+    await expect(page.getByText('Pripomienku môže odoslať len dospelý', { exact: false })).toHaveCount(0);
+    await page.getByRole('button', { name: 'O hre' }).click();
+    const about = page.locator('[data-screen="about"]');
+    await about.getByText('Otvoriť formulár pre dospelých').click();
+    await expect(about).not.toContainText('Odoslať');
+    await expect(about.locator('[data-about="sukromie"]')).toContainText('Hra ju sama nikam neodošle.');
+    await expect(about.locator('[data-about="sukromie"]')).toContainText('Neodosiela ani postup, ani nič o tvojom zariadení.');
+  });
+
   test('the box offers only „Kopírovať text“ and copies the issue-form text', async ({ page }) => {
     await page.goto('./');
     const box = await openAndFill(page);
@@ -98,8 +113,9 @@ test('the typed comment survives Escape and closing „O hre“ (QA review)', as
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'O hre' }).click();
   await expect(area()).toHaveValue('Deti pochopili pravidlo.');
-  // the other choices are kept too
+  // the other choices are kept too, and the form opens unfolded because a draft is kept
   await expect(page.locator('[data-comment-box]').getByRole('radio', { name: 'Zo školy' })).toBeChecked();
+  await expect(area()).toBeVisible();
   await expect(box).toBeVisible();
 });
 
@@ -145,6 +161,7 @@ test.describe('build with VITE_FEEDBACK_EMAIL', () => {
     await page.goto('./');
     await page.getByRole('button', { name: 'O hre' }).click();
     const box = page.locator('[data-comment-box]');
+    await box.getByText('Otvoriť formulár pre dospelých').click();
     const before = page.url();
     await box.getByRole('link', { name: 'Poslať e-mailom' }).click();
     await expect(box.getByRole('status')).toHaveText('Vyberte, prosím, kto píše.');

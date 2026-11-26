@@ -42,6 +42,9 @@ jobs:
       - run: npm test
       - run: npm run redline
       - run: npm run build
+      - name: Feedback server typecheck (server/feedback)
+        working-directory: server/feedback
+        run: npm ci --ignore-scripts && npm run typecheck
 
   e2e:
     name: e2e play-through, axe, offline (Playwright, --trace off)

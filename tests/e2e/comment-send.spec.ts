@@ -22,8 +22,8 @@ test.beforeEach(async ({ page, context }) => {
   const errs: string[] = [];
   errors.set(page, errs);
   page.on('console', (m) => {
-    // A mocked 500 shows up as a failed resource load in the console; that is the case under test, not an error.
-    if (m.type() === 'error' && !m.text().includes('status of 500')) errs.push(m.text());
+    // A mocked 500 or 429 shows up as a failed resource load in the console; that is the case under test, not an error.
+    if (m.type() === 'error' && !/status of (500|429)/.test(m.text())) errs.push(m.text());
   });
   page.on('pageerror', (e) => errs.push(e.message));
   page.on('request', (req) => {
@@ -45,6 +45,7 @@ async function openAndFill(page: Page) {
   await expect(box.getByText('Pripomienku môžete odoslať tlačidlom „Odoslať“.', { exact: false })).toBeVisible();
   await expect(box.getByText('Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch.', { exact: false })).toBeVisible();
   await expect(box.getByText('Si dieťa a niečo ťa trápi? Nepíš to sem.', { exact: false })).toContainText('116 111');
+  await box.getByText('Otvoriť formulár pre dospelých').click();
   await box.getByRole('radio', { name: 'Zo školy' }).check();
   await box.getByLabel('Ku ktorému prípadu').selectOption('T1 Ľahká brigáda');
   await box.getByRole('radio', { name: '4', exact: true }).check();
@@ -73,7 +74,7 @@ test('„Odoslať“ posts only the comment, then confirms calmly and clears the
   await axe(page);
 
   await box.getByRole('button', { name: 'Odoslať' }).click();
-  await expect(box.getByRole('status')).toHaveText('Ďakujeme. Pripomienka je odoslaná.');
+  await expect(box.getByRole('status')).toHaveText('Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.');
   const post = seen.find((r) => r.method() === 'POST');
   expect(post).toBeDefined();
   expect(post?.postDataJSON()).toEqual({ v: 1, app_version: '0.2.0', role: 'Zo školy', case: 'T1 Ľahká brigáda', rating: 4, text: 'Deti pochopili pravidlo.', hp: '' });
@@ -86,6 +87,75 @@ test('„Odoslať“ posts only the comment, then confirms calmly and clears the
   await expect(box.getByRole('textbox', { name: 'Pripomienka' })).toHaveValue('');
   await expect(box.getByRole('radio', { name: 'Zo školy' })).not.toBeChecked();
   await axe(page);
+  // a further click on the empty box keeps the thank-you
+  await box.getByRole('button', { name: 'Odoslať' }).click();
+  await expect(box.getByRole('status')).toHaveText('Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.');
+  expect(seen.filter((r) => r.method() === 'POST')).toHaveLength(1);
+});
+
+test('the privacy texts name „Odoslať“ in this build', async ({ page }) => {
+  await page.goto('./');
+  await expect(page.getByText('Pripomienku môže odoslať len dospelý v časti „O hre“.', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: 'O hre' }).click();
+  const priv = page.locator('[data-about="sukromie"]');
+  await expect(priv).toContainText('Hra ju odošle, len keď dospelý stlačí „Odoslať“.');
+  await expect(priv).not.toContainText('Hra ju sama nikam neodošle.');
+});
+
+test('while sending, the fields are locked: a double click and an edit attempt give exactly one POST and lose no text', async ({ page }) => {
+  const posts: PwRequest[] = [];
+  let release: () => void = () => undefined;
+  const gate = new Promise<void>((r) => (release = r));
+  await page.route(FEEDBACK_ENDPOINT, async (route) => {
+    if (route.request().method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST' } });
+    posts.push(route.request());
+    await gate;
+    return route.fulfill({ status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: '{"ok":true}' });
+  });
+  const box = await openAndFill(page);
+  const area = box.getByRole('textbox', { name: 'Pripomienka' });
+  await box.getByRole('button', { name: 'Odoslať' }).dblclick();
+  await expect(box.getByRole('status')).toHaveText('Pripomienka sa odosiela.');
+  await expect(area).toBeDisabled();
+  await expect(box.getByRole('radio', { name: 'Z rodiny' })).toBeDisabled();
+  // an edit attempt changes nothing and does not reset the status
+  await area.fill('Iný text.', { timeout: 500 }).catch(() => undefined);
+  await expect(area).toHaveValue('Deti pochopili pravidlo.');
+  await expect(box.getByRole('status')).toHaveText('Pripomienka sa odosiela.');
+  // the button is aria-disabled while sending (Playwright's click would wait for it), so dispatch a click directly
+  await box.getByRole('button', { name: 'Odoslať' }).dispatchEvent('click');
+  release();
+  await expect(box.getByRole('status')).toHaveText('Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.');
+  expect(posts).toHaveLength(1);
+  expect(posts[0]?.postDataJSON()).toMatchObject({ text: 'Deti pochopili pravidlo.' });
+  await expect(area).toBeEnabled();
+});
+
+test('a 429 answer asks to try again in a few minutes, and the text stays', async ({ page }) => {
+  await page.route(FEEDBACK_ENDPOINT, (route) =>
+    route.fulfill({ status: 429, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type' }, body: '{"ok":false}' }),
+  );
+  const box = await openAndFill(page);
+  await box.getByRole('button', { name: 'Odoslať' }).click();
+  await expect(box.getByRole('status')).toHaveText('Teraz prišlo veľa pripomienok naraz. Skúste to o pár minút alebo text skopírujte.');
+  const copy = box.getByRole('button', { name: 'Kopírovať text' });
+  await expect(copy).toBeFocused();
+  await expect(copy).toHaveAttribute('aria-describedby', 'comment-status');
+  await expect(box.getByRole('textbox', { name: 'Pripomienka' })).toHaveValue('Deti pochopili pravidlo.');
+});
+
+test('a comment whose JSON is over 2 KB is not sent, and the too-long message shows', async ({ page }) => {
+  let posted = false;
+  await page.route(FEEDBACK_ENDPOINT, (route) => {
+    posted = true;
+    return route.abort();
+  });
+  const box = await openAndFill(page);
+  // 500 characters that JSON writes as 6 bytes each (\u0001): within the textarea's limit, over the server's 2 KB
+  await box.getByRole('textbox', { name: 'Pripomienka' }).fill('a' + '\u0001'.repeat(499));
+  await box.getByRole('button', { name: 'Odoslať' }).click();
+  await expect(box.getByRole('status')).toHaveText('Pripomienka je na odoslanie príliš dlhá. Skráťte ju, prosím, alebo text skopírujte tlačidlom „Kopírovať text“.');
+  expect(posted).toBe(false);
 });
 
 test('when sending fails, the text stays and „Kopírovať text“ is the way on', async ({ page }) => {
@@ -96,6 +166,8 @@ test('when sending fails, the text stays and „Kopírovať text“ is the way o
   await box.getByRole('button', { name: 'Odoslať' }).click();
   await expect(box.getByRole('status')).toHaveText('Pripomienku sa teraz nepodarilo odoslať. Text zostal v poli. Môžete ho skopírovať tlačidlom „Kopírovať text“.');
   await expect(box.getByRole('button', { name: 'Kopírovať text' })).toBeFocused();
+  await expect(box.getByRole('button', { name: 'Kopírovať text' })).toHaveAttribute('aria-describedby', 'comment-status');
+  await expect(box.getByRole('status')).toBeInViewport();
   await expect(box.getByRole('textbox', { name: 'Pripomienka' })).toHaveValue('Deti pochopili pravidlo.');
   await axe(page);
   await page.keyboard.press('Enter');
@@ -127,6 +199,7 @@ test('without a role or text, nothing is sent', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'O hre' }).click();
   const box = page.locator('[data-comment-box]');
+  await box.getByText('Otvoriť formulár pre dospelých').click();
   await box.getByRole('button', { name: 'Odoslať' }).click();
   await expect(box.getByRole('status')).toHaveText('Vyberte, prosím, kto píše.');
   await box.getByRole('radio', { name: 'Z rodiny' }).check();

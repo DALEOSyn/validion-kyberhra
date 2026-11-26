@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { connectSrc, feedbackEndpoint } from '../../src/config.ts';
 import { commentActions, TEXTS } from '../../src/feedback/comment.ts';
-import { MAX_BODY_BYTES, payload, requestInit, SEND_TIMEOUT_MS, sendComment } from '../../src/feedback/send.ts';
+import { MAX_BODY_BYTES, payload, requestInit, SEND_TIMEOUT_MS, sendComment, tooLong } from '../../src/feedback/send.ts';
 
 const root = resolve(import.meta.dirname, '../..');
 const URL_ = 'https://feedback.validion.example/api/feedback';
@@ -81,8 +81,12 @@ describe('the client sender (src/feedback/send.ts)', () => {
     expect(await sendComment(URL_, p, { fetchImpl: (async () => { called = true; return new Response(''); }) as typeof fetch, online: false })).toBe('offline');
     expect(called).toBe(false);
     const huge = { ...p, text: '😀'.repeat(MAX_BODY_BYTES / 4) };
-    expect(await sendComment(URL_, huge, { fetchImpl: ok, online: true })).toBe('failed');
+    expect(tooLong(huge)).toBe(true);
+    expect(tooLong(p)).toBe(false);
+    expect(await sendComment(URL_, huge, { fetchImpl: ok, online: true })).toBe('tooLong');
+    expect(await sendComment(URL_, huge, { fetchImpl: ok, online: false })).toBe('tooLong');
     expect(calls).toHaveLength(1);
+    expect(await sendComment(URL_, p, { fetchImpl: (async () => new Response('{"ok":false}', { status: 429 })) as typeof fetch, online: true })).toBe('rate');
   });
   it('gives up after the timeout (10 s by default)', async () => {
     expect(SEND_TIMEOUT_MS).toBe(10_000);
@@ -94,6 +98,11 @@ describe('the client sender (src/feedback/send.ts)', () => {
     expect(TEXTS.send).toBe('Odoslať');
     expect(TEXTS.sendFailed).toContain('„Kopírovať text“');
     expect(TEXTS.offline).toContain('„Kopírovať text“');
-    expect(TEXTS.introSend).toContain('Hra nepridá nič o dieťati ani o zariadení.');
+    expect(TEXTS.introSend).toContain('Nič iné sa neodošle.');
+    expect(TEXTS.sendNote).toContain('na stránke hry na GitHube');
+    expect(TEXTS.sendNote).toContain('USA');
+    expect(TEXTS.sent).toBe('Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.');
+    expect(TEXTS.rate).toBe('Teraz prišlo veľa pripomienok naraz. Skúste to o pár minút alebo text skopírujte.');
+    expect(TEXTS.tooLong).toContain('„Kopírovať text“');
   });
 });

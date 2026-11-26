@@ -11,7 +11,8 @@ Gates and producer decisions. A task that depends on an open gate is not started
 | 2026-11-26 | Pilot timing | Roman | As soon as possible. |
 | 2026-11-26 | Pilot classes and coordinator | Roman | Open, unstructured: Roman arranges schools and gives teachers the coordinator contact directly. |
 | 2026-11-26 | Feedback data | Roman | VALIDION is the controller; feedback data is deleted 12 months after the pilot ends. |
-| 2026-11-26 | Comments from within the game | Roman | Adults' comments are sent directly from the game („Odoslať“) to a small EU feedback endpoint that files them as private issues in `DALEOSyn/validion-kyberhra-feedback`; copy and e-mail stay as fallbacks. Red Line 7 in CLAUDE.md narrowed accordingly (only the typed comment, never anything about the child). Hosting (Azure West Europe or Cloudflare) pending. |
+| 2026-11-26 | Comments from within the game | Roman | Adults' comments are sent directly from the game („Odoslať“) to a small feedback endpoint (hosted in the EU) that does not store them itself but files them as private GitHub issues in `DALEOSyn/validion-kyberhra-feedback`, so GitHub (a US service) is the processor that stores them; the box says so to the adult. Copy and e-mail stay as fallbacks. Red Line 7 in CLAUDE.md narrowed accordingly (only the typed comment, never anything about the child). Hosting (Azure West Europe or Cloudflare) pending. |
+| 2026-11-26 | Formal *vy* in adult-facing texts | Producer note | Texts addressed to adults (the comment box, the „Pre dospelých“ section of „O hre“, the adults' address note) use formal *vy* on purpose: a deliberate exception to Red Line 9's informal *ty*, which stays the rule for everything the child reads. |
 
 ## Open gates
 - **G-v1.0** (Roman): remove the pilot label and `noindex`, after "Blokuje vydanie" feedback is closed.

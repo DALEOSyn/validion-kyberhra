@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { feedbackEmail } from '../config.ts';
-import { CASE_OPTIONS, type Comment, commentActions, commentBody, commentSubject, type Draft, EMPTY_DRAFT, MAX_TEXT, ROLE_OPTIONS, TEXTS, WHOLE_GAME } from '../feedback/comment.ts';
+import { CASE_OPTIONS, type Comment, commentActions, commentBody, commentSubject, type Draft, EMPTY_DRAFT, MAX_TEXT, ROLE_OPTIONS, sameDraft, TEXTS, WHOLE_GAME } from '../feedback/comment.ts';
 import { payload, sendComment } from '../feedback/send.ts';
 
 /**
@@ -10,6 +10,9 @@ import { payload, sendComment } from '../feedback/send.ts';
  * allows only an <a> whose href is `mailtoUrl(...)`. Only when the build sets VITE_FEEDBACK_ENDPOINT, „Odoslať“ posts
  * what the adult typed (src/feedback/send.ts; Red Line 7 as narrowed 2026-11-26). The draft lives in App's memory
  * (props), never in storage; the honeypot lives in this component's state.
+ *
+ * While a comment is being sent, the fields are disabled (one <fieldset disabled>) and a ref guards against a second
+ * POST from a fast double-click. After it is sent, the draft is cleared only if it still equals what was sent.
  */
 
 /** Build-time address; null hides „Poslať e-mailom“. */
@@ -23,13 +26,21 @@ export function mailtoUrl(email: string, subject: string, body: string): string 
   return `mailto:${encodeURI(email)}?subject=${enc(subject)}&body=${enc(body)}`;
 }
 
-type Status = 'idle' | 'needRole' | 'needText' | 'copied' | 'copyFailed' | 'mailOpened' | 'sending' | 'sent' | 'sendFailed' | 'offline';
+type Status = 'idle' | 'needRole' | 'needText' | 'copied' | 'copyFailed' | 'mailOpened' | 'sending' | 'sent' | 'sendFailed' | 'offline' | 'rate' | 'tooLong';
 
-export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version: string; draft: Draft; onDraft: (d: Draft) => void; email?: string | null }) {
+/** After these, „Kopírovať text“ is the way on: it gets focus and is described by the status line. */
+const SEND_PROBLEMS: readonly Status[] = ['sendFailed', 'offline', 'rate', 'tooLong'];
+const STATUS_ID = 'comment-status';
+
+export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version: string; draft: Draft; onDraft: (d: Draft | ((prev: Draft) => Draft)) => void; email?: string | null }) {
   const [status, setStatus] = useState<Status>('idle');
   const [hp, setHp] = useState('');
   const fallback = useRef<HTMLTextAreaElement>(null);
   const copyButton = useRef<HTMLButtonElement>(null);
+  const statusLine = useRef<HTMLParagraphElement>(null);
+  /** Set synchronously on the first click, so a second click before the re-render cannot post again. */
+  const inFlight = useRef(false);
+  const [startOpen] = useState(() => !sameDraft(draft, EMPTY_DRAFT));
   const { role, rating, text } = draft;
 
   const comment: Comment | null = role ? { role, case: draft.case, rating, text } : null;
@@ -43,14 +54,22 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
     fallback.current?.select();
   }, [status]);
   useEffect(() => {
-    if (status === 'sendFailed' || status === 'offline') copyButton.current?.focus();
+    if (SEND_PROBLEMS.includes(status)) copyButton.current?.focus();
+    // On a small screen the status line can sit below the fold: bring it into view after sending.
+    if (status === 'sent' || SEND_PROBLEMS.includes(status)) statusLine.current?.scrollIntoView?.({ block: 'nearest' });
   }, [status]);
 
+  const sending = status === 'sending';
   const set = (patch: Partial<Draft>) => {
+    // The fields are disabled while sending; this guard keeps the status (and the button) as they are anyway.
+    if (sending || inFlight.current) return;
     onDraft({ ...draft, ...patch });
     if (status !== 'idle') setStatus('idle');
   };
+  /** After „Odoslať“ the box is empty: a further click keeps the thank-you instead of asking for a role. */
+  const keepSent = () => status === 'sent' && sameDraft(draft, EMPTY_DRAFT);
   const copy = async () => {
+    if (problem && keepSent()) return;
     if (problem) return setStatus(problem);
     try {
       await navigator.clipboard.writeText(body);
@@ -62,19 +81,27 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
   const onMail = (e: MouseEvent) => {
     if (problem) {
       e.preventDefault();
-      setStatus(problem);
+      if (!keepSent()) setStatus(problem);
     } else setStatus('mailOpened');
   };
   const send = async () => {
-    if (status === 'sending') return;
+    if (inFlight.current || sending) return;
+    if (problem && keepSent()) return;
     if (problem || !comment || !ENDPOINT) return setStatus(problem ?? 'needRole');
+    inFlight.current = true;
+    const sent = draft;
     setStatus('sending');
-    const result = await sendComment(ENDPOINT, payload(comment, version, hp));
-    if (result === 'sent') {
-      onDraft(EMPTY_DRAFT);
-      setHp('');
-      setStatus('sent');
-    } else setStatus(result === 'offline' ? 'offline' : 'sendFailed');
+    try {
+      const result = await sendComment(ENDPOINT, payload(comment, version, hp));
+      if (result === 'sent') {
+        // Clear only what was sent: if the draft changed meanwhile, keep it.
+        onDraft((cur) => (sameDraft(cur, sent) ? EMPTY_DRAFT : cur));
+        setHp('');
+        setStatus('sent');
+      } else setStatus(result === 'failed' ? 'sendFailed' : result);
+    } finally {
+      inFlight.current = false;
+    }
   };
   const mailTo = commentActions(email ?? null).includes('mail') ? email : null;
   // Read straight from the build-time constant (not a prop), so that without an endpoint every `sendTo &&` branch,
@@ -96,6 +123,11 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
       <p class="comment-warning">{TEXTS.warning}</p>
       <p class="comment-child">{TEXTS.childNote}</p>
 
+      {/* The form itself stays folded until an adult opens it; it starts open when a draft is kept from before. */}
+      <details class="comment-form" open={startOpen}>
+      <summary>{TEXTS.openForm}</summary>
+      {/* One wrapper, so every field is disabled while the comment is being sent. */}
+      <fieldset class="comment-fields" disabled={sending}>
       <fieldset>
         <legend>{TEXTS.role}</legend>
         <div class="comment-choices">
@@ -136,13 +168,27 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
         <textarea rows={5} maxLength={MAX_TEXT} value={text} aria-describedby="comment-counter" onInput={(e) => set({ text: e.currentTarget.value.slice(0, MAX_TEXT) })} />
       </label>
       <p id="comment-counter" class="small">{TEXTS.counter(text.length)}</p>
+      </fieldset>
 
       {sendTo && (
         // Honeypot: off-screen and hidden from assistive tech, never focused by Tab. People leave it empty.
         <div class="comment-hp" aria-hidden="true">
           <label>
             {TEXTS.honeypot}
-            <input type="text" name="stopa_hp" tabIndex={-1} autoComplete="off" value={hp} onInput={(e) => setHp(e.currentTarget.value)} />
+            {/* autocomplete off plus the ignore markers of common password managers (LastPass, 1Password, Bitwarden,
+                Dashlane), so no manager fills it and a person's comment is not dropped as a bot. */}
+            <input
+              type="text"
+              name="stopa_hp"
+              tabIndex={-1}
+              autoComplete="off"
+              data-lpignore="true"
+              data-1p-ignore=""
+              data-bwignore="true"
+              data-form-type="other"
+              value={hp}
+              onInput={(e) => setHp(e.currentTarget.value)}
+            />
           </label>
         </div>
       )}
@@ -150,7 +196,7 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
       {mailTo && <p class="small">{sendTo ? TEXTS.mailNoteSend : TEXTS.mailNote}</p>}
       <div class="row">
         {sendTo && (
-          <button type="button" class="btn" data-comment-send aria-disabled={status === 'sending' ? 'true' : undefined} onClick={() => void send()}>
+          <button type="button" class="btn" data-comment-send aria-disabled={sending ? 'true' : undefined} onClick={() => void send()}>
             {TEXTS.send}
           </button>
         )}
@@ -159,11 +205,17 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
             {TEXTS.mail}
           </a>
         )}
-        <button type="button" ref={copyButton} class={mailTo || sendTo ? 'btn alt' : 'btn'} onClick={() => void copy()}>
+        <button
+          type="button"
+          ref={copyButton}
+          class={mailTo || sendTo ? 'btn alt' : 'btn'}
+          aria-describedby={SEND_PROBLEMS.includes(status) ? STATUS_ID : undefined}
+          onClick={() => void copy()}
+        >
           {TEXTS.copy}
         </button>
       </div>
-      <p class="comment-status" role="status">
+      <p class="comment-status" id={STATUS_ID} ref={statusLine} role="status">
         {status === 'idle' ? '' : TEXTS[status]}
       </p>
       {status === 'copyFailed' && (
@@ -172,6 +224,7 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
           <textarea ref={fallback} rows={8} readOnly value={body} />
         </label>
       )}
+      </details>
     </div>
   );
 }

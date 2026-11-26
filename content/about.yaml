@@ -15,9 +15,12 @@ sections:
   - id: sukromie
     heading: Tvoje súkromie
     text:
-      - Hra o tebe nič nikam neodosiela. Ani postup, ani nič o tvojom zariadení.
-      - Dospelý môže napísať pripomienku k hre. Hra ju odošle, len keď dospelý stlačí „Odoslať“.
-      - Pripomienku môže dospelý aj skopírovať alebo poslať zo svojho vlastného e-mailu.
+      - Hra o tebe nič nikam neodosiela. Neodosiela ani postup, ani nič o tvojom zariadení.
+      # Only one of the next two shows, depending on the build (when_send, docs/CONTENT_SCHEMA.md §11b).
+      - text: Dospelý môže napísať pripomienku k hre. Hra ju odošle, len keď dospelý stlačí „Odoslať“.
+        when_send: true
+      - text: Dospelý môže napísať pripomienku k hre. Hra ju sama nikam neodošle.
+        when_send: false
       - Nepýta sa ťa na meno ani na nič iné o tebe.
       - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
       - Postup vymažeš tlačidlom „Vymazať postup“ dole na stránke trasy. Zmažú sa hviezdy na oboch trasách aj nastavenie zvuku.
@@ -27,6 +30,7 @@ sections:
       - Pripomienky zbierame cez učiteľov a rodičov, nie priamo od detí.
       - Učiteľ alebo rodič môže pripomienku alebo chybu zapísať na tejto adrese.
       - Bez účtu GitHub môže učiteľ poslať pripomienku koordinátorovi pilotu od VALIDION.
+      - Pripomienku z rámčeka nižšie môžete aj skopírovať alebo poslať zo svojho vlastného e-mailu.
     address: github.com/DALEOSyn/validion-kyberhra/issues
     address_note: Formuláre tam sú verejné. Nepíšte do nich mená detí ani iné osobné údaje.
     comment_box: true

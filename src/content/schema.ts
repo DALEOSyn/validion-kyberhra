@@ -332,11 +332,21 @@ export const HelpFileSchema = z.strictObject({
 
 // ---------- about.yaml ----------
 
+/** A paragraph of „O hre“ shown in only one kind of build (with or without „Odoslať“). */
+export const AboutLineSchema = z.strictObject({
+  text,
+  when_send: z.boolean(),
+});
+
 export const AboutSectionSchema = z.strictObject({
   id,
   heading: text,
-  /** Short paragraphs, plain text. */
-  text: z.array(text).min(1),
+  /**
+   * Short paragraphs, plain text. A paragraph written as `{ text, when_send }` is shown only in builds with
+   * „Odoslať“ (`when_send: true`, VITE_FEEDBACK_ENDPOINT set) or only in builds without it (`when_send: false`), so
+   * the privacy text is true in every build (src/ui/About.tsx aboutLines).
+   */
+  text: z.array(z.union([text, AboutLineSchema])).min(1),
   /**
    * An address shown as plain text only, never as a live link (same rule as help.yaml `url_label`): no links except
    * the comment box's mailto:. Written without a scheme, e.g. `github.com/owner/repo/issues`.
@@ -385,6 +395,7 @@ export type Source = z.output<typeof SourceSchema>;
 export type HelpEntry = z.output<typeof HelpEntrySchema>;
 export type Help = z.output<typeof HelpFileSchema>;
 export type AboutSection = z.output<typeof AboutSectionSchema>;
+export type AboutLine = AboutSection['text'][number];
 export type About = z.output<typeof AboutFileSchema>;
 
 /** What the build ships to the browser (virtual:content). */

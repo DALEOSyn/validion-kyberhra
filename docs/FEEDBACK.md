@@ -105,3 +105,6 @@ the pilot. The "Kto píše" answers are "Zo školy", "Z rodiny", "Odborná verej
   `server/feedback/` (Azure Functions or Cloudflare Worker, see its README) with its own `GITHUB_TOKEN` (Issues: read
   and write on that repository only), set the variable `FEEDBACK_ENDPOINT` here to its URL, and add the secret
   `FEEDBACK_REPO_TOKEN` for the export. Unset the variable to turn „Odoslať“ off again at the next deploy.
+- Before the endpoint goes live, check its logging: Application Insights is **off** for the function app, or, if it
+  must stay on, IP collection is disabled (keep the default IP masking, no `DisableIpMasking`) and request telemetry
+  stays off as set in `server/feedback/host.json`. On Cloudflare, Workers Logs and Logpush stay off (`wrangler.toml`).

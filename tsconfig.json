@@ -20,5 +20,5 @@
     "skipLibCheck": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src", "scripts", "tests", "server/feedback/src/core.ts", "server/feedback/src/worker.ts", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
+  "include": ["src", "scripts", "tests", "server/feedback/src/core.ts", "server/feedback/src/worker.ts", "server/feedback/src/ip.ts", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
 }

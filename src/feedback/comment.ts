@@ -68,9 +68,10 @@ export const TEXTS = {
   heading: 'Pripomienka pre dospelých',
   intro: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať a poslať ďalej.',
   introEmail: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať alebo poslať zo svojho e-mailu.',
-  introSend: 'Pripomienku môžete odoslať tlačidlom „Odoslať“. Odošle sa len to, čo vyplníte tu, a verzia hry. Hra nepridá nič o dieťati ani o zariadení.',
-  sendNote: 'Pripomienku si prečíta tím pilotu VALIDION. Po kontrole a bez osobných údajov ju môžeme zverejniť v repozitári hry.',
+  introSend: 'Pripomienku môžete odoslať tlačidlom „Odoslať“. Odošle sa len to, čo vyplníte tu, a verzia hry. Nič iné sa neodošle.',
+  sendNote: 'Odoslaná pripomienka sa uloží ako neverejný záznam (issue) na GitHube, čo je služba z USA. Číta ju tím pilotu VALIDION. Po kontrole a bez osobných údajov ju môžeme zverejniť na stránke hry na GitHube.',
   warning: 'Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch. Ak vám dieťa zverilo niečo vážne, postupujte podľa školského postupu ochrany detí.',
+  openForm: 'Otvoriť formulár pre dospelých',
   childNote: 'Si dieťa a niečo ťa trápi? Nepíš to sem. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.',
   role: 'Kto píše',
   case: 'Ku ktorému prípadu',
@@ -83,9 +84,11 @@ export const TEXTS = {
   mailNoteSend: 'Tlačidlo „Poslať e-mailom“ otvorí vašu e-mailovú aplikáciu.',
   send: 'Odoslať',
   sending: 'Pripomienka sa odosiela.',
-  sent: 'Ďakujeme. Pripomienka je odoslaná.',
+  sent: 'Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.',
   sendFailed: 'Pripomienku sa teraz nepodarilo odoslať. Text zostal v poli. Môžete ho skopírovať tlačidlom „Kopírovať text“.',
   offline: 'Zariadenie je bez pripojenia. Text zostal v poli. Môžete ho skopírovať tlačidlom „Kopírovať text“ a poslať neskôr.',
+  rate: 'Teraz prišlo veľa pripomienok naraz. Skúste to o pár minút alebo text skopírujte.',
+  tooLong: 'Pripomienka je na odoslanie príliš dlhá. Skráťte ju, prosím, alebo text skopírujte tlačidlom „Kopírovať text“.',
   honeypot: 'Toto pole nechajte prázdne',
   mail: 'Poslať e-mailom',
   copy: 'Kopírovať text',
@@ -116,3 +119,8 @@ export interface Draft {
   text: string;
 }
 export const EMPTY_DRAFT: Draft = { role: null, case: WHOLE_GAME, rating: null, text: '' };
+
+/** True when two drafts hold the same choices and text (after „Odoslať“ the box is cleared only if nothing changed). */
+export function sameDraft(a: Draft, b: Draft): boolean {
+  return a.role === b.role && a.case === b.case && a.rating === b.rating && a.text === b.text;
+}

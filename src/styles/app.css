@@ -1120,3 +1120,34 @@ a.btn {
 .tap.miss {
   text-decoration-line: none;
 }
+/* The adult form, folded behind „Otvoriť formulár pre dospelých“ (CommentBox.tsx). */
+.comment-form {
+  display: flex;
+  flex-direction: column;
+}
+.comment-form[open] > * + * {
+  margin-top: 10px;
+}
+.comment-form > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+  cursor: pointer;
+}
+.comment-form > summary::before {
+  content: '▸';
+  margin-right: 8px;
+}
+.comment-form[open] > summary::before {
+  content: '▾';
+}
+.comment-form > summary::-webkit-details-marker {
+  display: none;
+}
+.comment-form > summary {
+  list-style: none;
+}
+.comment-box fieldset.comment-fields {
+  gap: 10px;
+}

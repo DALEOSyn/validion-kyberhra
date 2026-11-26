@@ -51,25 +51,32 @@ export function requestInit(body: string, signal: AbortSignal): RequestInit {
   };
 }
 
-export type SendResult = 'sent' | 'failed' | 'offline';
+export type SendResult = 'sent' | 'failed' | 'offline' | 'rate' | 'tooLong';
+
+/** True when the JSON body is larger than the server accepts (MAX_BODY_BYTES). Pure, unit-tested. */
+export function tooLong(p: Payload): boolean {
+  return new TextEncoder().encode(JSON.stringify(p)).length > MAX_BODY_BYTES;
+}
 
 /**
- * Posts the comment. 'offline' when the browser knows it has no network, 'failed' on any error, timeout or non-2xx
- * answer, 'sent' otherwise. Never throws. `deps` lets the unit tests pass a fake fetch and short timeout.
+ * Posts the comment. 'tooLong' (nothing sent) when the JSON body is over MAX_BODY_BYTES, 'offline' when the browser
+ * knows it has no network, 'rate' when the server answers 429 (too many comments right now), 'failed' on any other
+ * error, timeout or non-2xx answer, 'sent' otherwise. Never throws. `deps` lets the unit tests pass a fake fetch and short timeout.
  */
 export async function sendComment(
   endpoint: string,
   p: Payload,
   deps: { fetchImpl?: typeof fetch; online?: boolean; timeoutMs?: number } = {},
 ): Promise<SendResult> {
+  if (tooLong(p)) return 'tooLong';
   const online = deps.online ?? (typeof navigator === 'undefined' || navigator.onLine !== false);
   if (!online) return 'offline';
   const body = JSON.stringify(p);
-  if (new TextEncoder().encode(body).length > MAX_BODY_BYTES) return 'failed';
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), deps.timeoutMs ?? SEND_TIMEOUT_MS);
   try {
     const res = await (deps.fetchImpl ?? fetch)(endpoint, requestInit(body, ctrl.signal));
+    if (res.status === 429) return 'rate';
     return res.ok ? 'sent' : 'failed';
   } catch {
     return 'failed';

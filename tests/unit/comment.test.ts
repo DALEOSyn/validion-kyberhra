@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { feedbackEmail } from '../../src/config.ts';
-import { CASE_OPTIONS, commentActions, commentBody, commentSubject, MAX_TEXT, ROLE_OPTIONS, TEXTS, WHOLE_GAME } from '../../src/feedback/comment.ts';
+import { CASE_OPTIONS, commentActions, commentBody, commentSubject, EMPTY_DRAFT, MAX_TEXT, ROLE_OPTIONS, sameDraft, TEXTS, WHOLE_GAME } from '../../src/feedback/comment.ts';
 import { mailtoUrl } from '../../src/ui/CommentBox.tsx';
 import { denyMatchers, lintValue, parseDenylist } from '../../scripts/lib/redline.ts';
 
@@ -65,6 +65,16 @@ describe('comment box (src/feedback/comment.ts)', () => {
     expect(lintValue(texts, m, true, true)).toEqual([]);
     expect(TEXTS.warning.startsWith('Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch.')).toBe(true);
     expect(TEXTS.childNote).toContain('116 111');
+  });
+});
+
+describe('sameDraft (the box is cleared after „Odoslať“ only if nothing changed meanwhile)', () => {
+  it('compares role, case, rating and text', () => {
+    const d = { role: 'Zo školy', case: 'J1 Drak zadarmo', rating: 3, text: 'x' } as const;
+    expect(sameDraft(d, { ...d })).toBe(true);
+    expect(sameDraft(d, { ...d, text: 'xy' })).toBe(false);
+    expect(sameDraft(d, { ...d, rating: null })).toBe(false);
+    expect(sameDraft(EMPTY_DRAFT, { ...EMPTY_DRAFT })).toBe(true);
   });
 });
 

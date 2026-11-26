@@ -60,17 +60,20 @@ export type Payload = z.infer<typeof PayloadSchema>;
 const EMAIL = /[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)+/giu;
 const URL_SCHEME = /\b(?:[a-z][a-z0-9+.-]*:\/\/|www\.)[^\s<>"']+/gi;
 const URL_BARE = /\b(?:[a-z0-9-]+\.)+(?:[a-z]{2,24}\/[^\s<>"']*|(?:sk|cz|eu|com|org|net|info|io|app|me|de|at|hu|pl|ua|uk|example|test|invalid)\b)/gi;
-const IBAN = /\b[a-z]{2}\d{2}(?:[ -]?[a-z0-9]){11,30}\b/gi;
+/** An IBAN as people write it: uppercase country code, check digits, then groups of 4 (spaced or not). */
+const IBAN = /\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{4}){2,7}(?:[ ]?[A-Z0-9]{1,4})?\b/g;
 const PHONE = /(?<![\p{L}\p{N}])\+?\d(?:[ \t()./-]*\d){8,}(?![\p{L}\p{N}])/gu;
 
 /**
- * Removes contact details and links from free text: e-mail addresses, URLs (with a scheme, www., or a bare domain
+ * Normalises the text (NFKC), then removes contact details and links from free text: e-mail addresses, URLs (with a scheme, www., or a bare domain
  * with a path or a common TLD), IBAN-like strings and phone-like numbers with 9 or more digits all become
  * "[odstránené]". Then makes the text inert in a GitHub issue: a line starting with "#" is escaped (it cannot fake a
  * "### Label" field or a heading), "<" is escaped (no HTML), and "@name" gets a space (no mentions).
  */
 export function redact(text: string): string {
   const cleaned = text
+    // NFKC first, so full-width or other compatibility forms of digits, letters and "@" are caught by the patterns.
+    .normalize('NFKC')
     .replace(/\r\n?/g, '\n')
     .trim()
     .replace(EMAIL, REDACTED)

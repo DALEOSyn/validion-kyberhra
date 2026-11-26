@@ -17,6 +17,7 @@ import {
   WHOLE_GAME,
 } from '../../server/feedback/src/core.ts';
 import worker from '../../server/feedback/src/worker.ts';
+import { clientIp } from '../../server/feedback/src/ip.ts';
 import { parseFormBody, HRA_ORDER, F } from '../../scripts/lib/feedback.ts';
 
 const ORIGIN = 'https://daleosyn.github.io';
@@ -140,10 +141,31 @@ describe('server/feedback core: redaction', () => {
     expect(r).toContain('Linka 116 111 a rok 2026 a 12345678 ostávajú.');
     expect(r.split(REDACTED).length - 1).toBe(9);
   });
+  it('does not cut ordinary words that only look a little like an IBAN', () => {
+    for (const t of ['Úloha J1 je ok12 hra je super dobra', 'Prípad T4 a sk12 abcd efgh ijkl ostávajú.', 'Verzia 0.2.0, trieda 7.B, 25 detí.']) expect(redact(t)).toBe(t);
+  });
+  it('still removes a spaced or unspaced SK IBAN, also in full-width digits (NFKC)', () => {
+    expect(redact('Účet SK31 1200 0000 1987 4263 7541 je tu.')).toBe(`Účet ${REDACTED} je tu.`);
+    expect(redact('IBAN SK3112000000198742637541.')).toBe(`IBAN ${REDACTED}.`);
+    expect(redact('Účet ＳＫ３１ １２００ ００００ １９８７ ４２６３ ７５４１')).toBe(`Účet ${REDACTED}`);
+    expect(redact('Píšte na ｊａｎａ＠ｓｋｏｌａ．ｅｘａｍｐｌｅ')).toBe(`Píšte na ${REDACTED}`);
+  });
   it('neutralises "#" lines, HTML and @mentions', () => {
     const r = redact('# nadpis\n  ### Prípad\nText <img src=x> pre @DALEOSyn a #12');
     expect(r).toBe('\\# nadpis\n  \\### Prípad\nText &lt;img src=x> pre @ DALEOSyn a #12');
     expect(r.split('\n').some((l) => /^\s*#/.test(l))).toBe(false);
+  });
+});
+
+describe('server/feedback azure adapter: client IP', () => {
+  it('takes the rightmost x-forwarded-for entry (appended by the platform), not the client-supplied first one', () => {
+    expect(clientIp('6.6.6.6, 203.0.113.7')).toBe('203.0.113.7');
+    expect(clientIp('6.6.6.6, 1.1.1.1, 203.0.113.7:54321')).toBe('203.0.113.7');
+    expect(clientIp('[2001:db8::1]:443')).toBe('2001:db8::1');
+    expect(clientIp('203.0.113.7, ')).toBe('203.0.113.7');
+    expect(clientIp('2001:db8::2')).toBe('2001:db8::2');
+    expect(clientIp(null)).toBeNull();
+    expect(clientIp(' , ')).toBeNull();
   });
 });
 

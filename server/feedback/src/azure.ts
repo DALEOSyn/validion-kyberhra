@@ -1,19 +1,13 @@
 /**
  * Azure Functions v4 adapter (Node 22): `func azure functionapp publish <name>` (see README.md). Route
  * /api/feedback, anonymous (the origin allow-list, honeypot and limits are in core.ts). The client IP comes from the
- * first x-forwarded-for entry (port removed) and is used only for the in-memory rate limit; it is never logged.
+ * last (rightmost) x-forwarded-for entry, the one the platform's front end appends (port removed); earlier entries
+ * are whatever the client sent and could be forged to dodge the rate limit. It is used only for the in-memory rate
+ * limit and is never logged.
  */
 import { app, type HttpRequest, type HttpResponseInit } from '@azure/functions';
 import { type FeedbackEnv, handleFeedback } from './core.ts';
-
-/** The first x-forwarded-for address without its port ("1.2.3.4:5678", "[::1]:80"). */
-export function clientIp(forwardedFor: string | null): string | null {
-  const first = (forwardedFor ?? '').split(',')[0]?.trim() ?? '';
-  if (!first) return null;
-  const v6 = /^\[([^\]]+)\](?::\d+)?$/.exec(first);
-  if (v6) return v6[1] ?? null;
-  return /^[\d.]+:\d+$/.test(first) ? (first.split(':')[0] ?? null) : first;
-}
+import { clientIp } from './ip.ts';
 
 app.http('feedback', {
   methods: ['POST', 'OPTIONS'],

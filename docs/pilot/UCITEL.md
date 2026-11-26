@@ -1,6 +1,6 @@
 # Pilotná hodina: návod pre učiteľov
 
-Hra **Lipovec · internetové prípady** od VALIDION (trasy Kancelária STOPA a Ozvena) učí deti od 11 do 15 rokov rozpoznať podvody na internete a zachovať sa bezpečne. Je zadarmo, beží v prehliadači a nič neodosiela. Ďakujeme, že ju vyskúšate so svojou triedou.
+Hra **Lipovec · internetové prípady** od VALIDION (trasy Kancelária STOPA a Ozvena) učí deti od 11 do 15 rokov rozpoznať podvody na internete a zachovať sa bezpečne. Je zadarmo a beží v prehliadači. Hra o dieťati nič neodosiela. Jediné, čo sa dá odoslať, je pripomienka, ktorú dospelý napíše v časti „O hre“ a sám odošle tlačidlom „Odoslať“, ak je to tlačidlo v hre zapnuté. Ďakujeme, že ju vyskúšate so svojou triedou.
 
 ## Pred hodinou
 - **Adresa hry:** dostanete ju od VALIDION spolu s pozvánkou. Hra beží v prehliadači na počítači, tablete aj mobile. Nič sa neinštaluje a netreba žiadne účty.

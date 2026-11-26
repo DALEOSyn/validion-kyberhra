@@ -286,7 +286,9 @@ like the help screen. Fields:
 - `title` (shown as the screen heading) and `help_line` (closing note). The validator requires `help_line` to name
   **116 111** (Red Line 8).
 - `sections`: one or more `{ id, heading, text, address?, address_note? }`. `text` is a list of short paragraphs.
-  `id`s are unique.
+  `id`s are unique. A paragraph may be written as `{ text, when_send: true|false }`: it shows only in builds with
+  „Odoslať“ (`VITE_FEEDBACK_ENDPOINT` set, `true`) or only in builds without it (`false`), so the privacy text is
+  true in every build. The validator requires every section to keep at least one paragraph in both kinds of build.
 - `address` is shown as **plain text, never a link** (same rule as help addresses). Write it without a scheme
   (`github.com/owner/repo/issues`, not `https://…`); the validator rejects a scheme. `address_note` (e.g. „the forms
   there are public, so no names“) needs an `address`.
@@ -294,7 +296,8 @@ like the help screen. Fields:
   (`src/ui/CommentBox.tsx`, words in `src/feedback/comment.ts`): a warning (no names or personal details about
   children), a note for a child who lands there (116 111, tell a trusted adult), who is writing („Zo školy“, „Z rodiny“,
   „Odborná verejnosť“, „Iné“), case, optional rating 1–5, a comment of at most 500 characters. The draft stays in
-  memory while the page is open (closing „O hre“ keeps it) and is never stored. „Kopírovať text“ copies the comment in issue-form shape
+  memory while the page is open (closing „O hre“ keeps it) and is never stored. The child note and the warning stay
+  visible; the form itself is folded behind „Otvoriť formulár pre dospelých“ (`<details>`). „Kopírovať text“ copies the comment in issue-form shape
   (`### Kto píše` / `### Prípad` / `### Hodnotenie` / `### Pripomienka`), and, only when the build sets
   `VITE_FEEDBACK_EMAIL`, „Poslať e-mailom“ is a `mailto:` link (subject „Pripomienka k hre <version>“) that opens the
   adult's own mail app. A maintainer pastes the text into an issue labelled `spatna-vazba` + `hra`; the exporter

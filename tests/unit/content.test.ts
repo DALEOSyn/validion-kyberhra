@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
+import { aboutLines } from '../../src/content/about.ts';
 import { aboutIssues, caseIssues, helpIssues, loadContent, trackIssues } from '../../scripts/lib/content.ts';
 import { AboutFileSchema, CaseSchema, HelpEntrySchema, RecallSchema } from '../../src/content/schema.ts';
 
@@ -189,5 +190,28 @@ describe('about.yaml („O hre“)', () => {
     expect(aboutIssues({ ...about, sections: [first, first] }).join('\n')).toMatch(/unique/);
     expect(aboutIssues({ ...about, sections: [{ ...first, address: 'https://x.example/' }] }).join('\n')).toMatch(/without a scheme/);
     expect(aboutIssues({ ...about, sections: [{ ...first, address: undefined, address_note: 'Verejné.' }] }).join('\n')).toMatch(/needs an address/);
+  });
+  it('the privacy text fits the build: „Odoslať“ is named only in builds that have it (when_send)', () => {
+    if (!about) throw new Error('about missing');
+    const all = (send: boolean) => about.sections.flatMap((s) => aboutLines(s.text, send)).join('\n');
+    expect(all(true)).toContain('„Odoslať“');
+    expect(all(false)).not.toContain('Odoslať');
+    expect(all(false)).toContain('Hra ju sama nikam neodošle.');
+    const priv = about.sections.find((s) => s.id === 'sukromie');
+    expect(aboutLines(priv?.text ?? [], false)[0]).toBe('Hra o tebe nič nikam neodosiela. Neodosiela ani postup, ani nič o tvojom zariadení.');
+    // the adult-only detail sits in the adults' section
+    expect(aboutLines(priv?.text ?? [], false).join(' ')).not.toMatch(/skopírovať/);
+    expect(aboutLines(about.sections.find((s) => s.id === 'pripomienky')?.text ?? [], false).join(' ')).toMatch(/skopírovať/);
+  });
+  it('aboutLines keeps plain lines and picks when_send lines by build; a section empty in one build is an issue', () => {
+    const lines = ['a', { text: 'send', when_send: true }, { text: 'nosend', when_send: false }];
+    expect(aboutLines(lines, true)).toEqual(['a', 'send']);
+    expect(aboutLines(lines, false)).toEqual(['a', 'nosend']);
+    expect(AboutFileSchema.safeParse({ title: 'O', help_line: '116 111', sections: [{ id: 'x', heading: 'X', text: [{ text: 'a', when_send: 'yes' }] }] }).success).toBe(false);
+    expect(AboutFileSchema.safeParse({ title: 'O', help_line: '116 111', sections: [{ id: 'x', heading: 'X', text: [{ text: 'a', when_send: true, extra: 1 }] }] }).success).toBe(false);
+    if (!about) throw new Error('about missing');
+    const first = about.sections[0];
+    if (!first) throw new Error('about empty');
+    expect(aboutIssues({ ...about, sections: [{ ...first, text: [{ text: 'a', when_send: true }] }] }).join('\n')).toMatch(/no paragraph in a build without/);
   });
 });

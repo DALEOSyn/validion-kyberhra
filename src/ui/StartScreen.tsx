@@ -28,7 +28,11 @@ export function StartScreen({ title, tracks, progress, onPick, pilot = null }: {
           );
         })}
       </div>
-      <p class="muted small">Hra o tebe nič neodosiela. Postup sa ukladá len v tomto prehliadači.</p>
+      <p class="muted small">
+        Hra o tebe nič neodosiela. Postup sa ukladá len v tomto prehliadači.
+        {/* Only in a build with „Odoslať“ (VITE_FEEDBACK_ENDPOINT). */}
+        {__FEEDBACK_ENDPOINT__ !== null && ' Pripomienku môže odoslať len dospelý v časti „O hre“.'}
+      </p>
       {/* A calm pilot label, driven by PILOT in src/config.ts. */}
       {pilot && (
         <p class="pilot-label small" data-testid="pilot-label">

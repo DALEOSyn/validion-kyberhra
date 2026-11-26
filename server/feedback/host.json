@@ -1,7 +1,26 @@
 {
   "version": "2.0",
   "logging": {
-    "logLevel": { "default": "Warning", "Function": "Information" }
+    "logLevel": {
+      "default": "Warning",
+      "Host.Results": "None",
+      "Host.Aggregator": "None",
+      "Function": "Warning",
+      "Function.feedback.User": "Information"
+    },
+    "applicationInsights": {
+      "enableLiveMetrics": false,
+      "enableDependencyTracking": false,
+      "httpAutoCollectionOptions": {
+        "enableHttpTriggerExtendedInfoCollection": false,
+        "enableW3CDistributedTracing": false,
+        "enableResponseHeaderInjection": false
+      },
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request;Dependency"
+      }
+    }
   },
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
