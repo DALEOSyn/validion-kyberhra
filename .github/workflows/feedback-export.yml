@@ -1,7 +1,8 @@
 name: Feedback export
 
 # Copies pilot feedback (issues labelled "spatna-vazba", see docs/FEEDBACK.md) into docs/feedback/ and opens a pull
-# request with the update. Runs weekly and on demand; never on pull requests, so fork code never reaches the runner.
+# request with the update. Also reads the private repository where comments sent from the game are filed
+# (vars.FEEDBACK_REPO, default DALEOSyn/validion-kyberhra-feedback), only when secrets.FEEDBACK_REPO_TOKEN is set. Runs weekly and on demand; never on pull requests, so fork code never reaches the runner.
 # A pull request opened with GITHUB_TOKEN does not start CI by itself: run CI on it by hand (it only touches docs/feedback/).
 on:
   workflow_dispatch:
@@ -24,6 +25,7 @@ jobs:
     # The write token is given only to the steps that call the API or push, never to npm (lifecycle scripts off too).
     env:
       REPO: ${{ github.repository }}
+      FEEDBACK_REPO: ${{ vars.FEEDBACK_REPO || 'DALEOSyn/validion-kyberhra-feedback' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -41,22 +43,42 @@ jobs:
           make_label() {
             code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
               -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
-              "https://api.github.com/repos/$REPO/labels" \
+              "https://api.github.com/repos/$LABEL_REPO/labels" \
               -d "{\"name\":\"$1\",\"color\":\"$2\",\"description\":\"$3\"}")
             case "$code" in 201|422) ;; *) echo "label $1: HTTP $code"; exit 1 ;; esac
           }
+          LABEL_REPO="$REPO"
           make_label spatna-vazba 0e8a16 'Pilot feedback (exported to docs/feedback)'
           make_label lekcia 1d76db 'Pilot lesson report from a teacher'
           make_label recenzia 5319e7 'Expert review'
           make_label pripomienka fbca04 'Comment or bug from an adult player'
-          make_label hra c5def5 'Comment from the in-game comment box, pasted from e-mail by a maintainer'
+          make_label hra c5def5 'Comment from the in-game comment box (pasted by a maintainer, or sent to the feedback repo)'
           make_label schvalene 0e8a16 'Checked for personal data by a maintainer; only these are exported'
           make_label skryt b60205 'Keep out of the export (personal data, spam)'
 
-      - name: Export
-        run: npx tsx scripts/feedback-export.ts --repo "$REPO"
+      - name: Export (and, with FEEDBACK_REPO_TOKEN, the labels in the private feedback repository)
+        # FEEDBACK_REPO_TOKEN (fine-grained, Issues: read and write on FEEDBACK_REPO only) is given to this step only.
+        # Unset: the labels there are not touched and the exporter skips that repository with a log line.
+        run: |
+          if [ -n "$FEEDBACK_REPO_TOKEN" ]; then
+            for l in "spatna-vazba|0e8a16|Pilot feedback (exported to docs/feedback)" \
+                     "hra|c5def5|Comment sent from the in-game comment box" \
+                     "schvalene|0e8a16|Checked for personal data by a maintainer; only these are exported" \
+                     "skryt|b60205|Keep out of the export (personal data, spam)"; do
+              IFS='|' read -r name color desc <<< "$l"
+              code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+                -H "Authorization: Bearer $FEEDBACK_REPO_TOKEN" -H 'Accept: application/vnd.github+json' \
+                "https://api.github.com/repos/$FEEDBACK_REPO/labels" \
+                -d "{\"name\":\"$name\",\"color\":\"$color\",\"description\":\"$desc\"}")
+              case "$code" in 201|422) ;; *) echo "label $name in the feedback repository: HTTP $code"; exit 1 ;; esac
+            done
+          else
+            echo "FEEDBACK_REPO_TOKEN not set: no labels created in $FEEDBACK_REPO."
+          fi
+          npx tsx scripts/feedback-export.ts --repo "$REPO" --feedback-repo "$FEEDBACK_REPO"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FEEDBACK_REPO_TOKEN: ${{ secrets.FEEDBACK_REPO_TOKEN }}
 
       - name: Open a pull request when the export changed
         env:

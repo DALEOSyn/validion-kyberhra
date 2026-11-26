@@ -4,8 +4,9 @@ import { EMAIL_PORT, FEEDBACK_EMAIL } from '../../playwright.config.ts';
 
 /**
  * The comment box on „O hre“ (src/ui/CommentBox.tsx). The default build (no VITE_FEEDBACK_EMAIL) offers only
- * „Kopírovať text“; the second build (playwright.config.ts, dist-email) also offers the mailto: link. The game sends
- * nothing: every request to another origin fails the test, and no comment text may end up in storage.
+ * „Kopírovať text“; the second build (playwright.config.ts, dist-email) also offers the mailto: link. Neither has
+ * „Odoslať“ (that build is tests/e2e/comment-send.spec.ts): every request to another origin fails the test, and no
+ * comment text may end up in storage.
  */
 
 async function axe(page: Page) {
@@ -67,6 +68,12 @@ test.describe('default build (no e-mail address)', () => {
     await expect(box.getByRole('link')).toHaveCount(0);
     await expect(box.getByText('Otvorí sa vaša e-mailová aplikácia. Hra sama nič neodošle.')).toHaveCount(0);
     await expect(page.locator('main a')).toHaveCount(0);
+    // no „Odoslať“, no honeypot, and the CSP lets the page talk only to itself (no VITE_FEEDBACK_ENDPOINT)
+    await expect(box.getByRole('button', { name: 'Odoslať' })).toHaveCount(0);
+    await expect(page.locator('input[name="stopa_hp"]')).toHaveCount(0);
+    await expect(box.getByText('Hra pripomienku nikam neodošle.', { exact: false })).toBeVisible();
+    const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
+    expect(csp).toContain("connect-src 'self';");
     await box.getByRole('button', { name: 'Kopírovať text' }).click();
     await expect(box.getByRole('status')).toHaveText('Text je skopírovaný. Môžete ho vložiť do e-mailu alebo do formulára.');
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(EXPECTED);
@@ -124,6 +131,7 @@ test.describe('build with VITE_FEEDBACK_EMAIL', () => {
     expect(decodeURIComponent(href.split('&body=')[1] ?? '')).toBe(EXPECTED.replace(/\n/g, '\r\n'));
     // the one link in the game
     await expect(page.locator('a')).toHaveCount(1);
+    await expect(box.getByRole('button', { name: 'Odoslať' })).toHaveCount(0);
     // the CSP is the same as in the default build: no connect-src beyond the game itself
     const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
     expect(csp).toContain("connect-src 'self';");

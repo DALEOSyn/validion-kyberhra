@@ -16,7 +16,7 @@ const SRC_SYNTAX = [
 ];
 
 export default tseslint.config(
-  { ignores: ['dist/', 'dist-email/', 'node_modules/', 'playwright-report/', 'test-results/'] },
+  { ignores: ['dist/', 'dist-email/', 'dist-send/', 'node_modules/', 'playwright-report/', 'test-results/', 'server/feedback/dist/', 'server/feedback/node_modules/', 'server/feedback/.wrangler/'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -61,6 +61,19 @@ export default tseslint.config(
         },
         { selector: "JSXOpeningElement[name.name='a']:has(JSXSpreadAttribute)", message: 'No spread props on the mailto: link.' },
         ...SRC_SYNTAX.filter((r) => r !== NO_MAILTO_LITERAL && r !== NO_MAILTO_TEMPLATE),
+      ],
+    },
+  },
+  {
+    // The second exception (Roman, 2026-11-26): „Odoslať“ in the comment box. Only this file may use the global
+    // `fetch` (not `.fetch`, not XMLHttpRequest, WebSocket or sendBeacon); it posts an adult's comment on purpose and
+    // nothing about the child. Used only when the build sets VITE_FEEDBACK_ENDPOINT.
+    files: ['src/feedback/send.ts'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        { name: 'XMLHttpRequest', message: 'No runtime network calls.' },
+        { name: 'WebSocket', message: 'No runtime network calls.' },
       ],
     },
   },

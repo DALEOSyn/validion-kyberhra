@@ -38,6 +38,9 @@ jobs:
         env:
           # Optional: the adult comment box shows „Poslať e-mailom“ only when this repository variable is set.
           VITE_FEEDBACK_EMAIL: ${{ vars.FEEDBACK_EMAIL }}
+          # Optional: „Odoslať“ (server/feedback/) shows only when this repository variable is set, and the CSP then
+          # adds only its origin to connect-src. Unset: the build is the same as without the feature.
+          VITE_FEEDBACK_ENDPOINT: ${{ vars.FEEDBACK_ENDPOINT }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: dist

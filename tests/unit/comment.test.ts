@@ -68,15 +68,19 @@ describe('comment box (src/feedback/comment.ts)', () => {
   });
 });
 
-describe('the game sends nothing (Red Line 7)', () => {
+describe('the game sends nothing about the child (Red Line 7, narrowed 2026-11-26)', () => {
   const files = (dir: string): string[] => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? files(join(dir, n)) : [join(dir, n)]));
   const src = files(resolve(root, 'src')).filter((f) => /\.(ts|tsx)$/.test(f));
-  it('only src/ui/CommentBox.tsx writes "mailto:" or renders an <a>, and no file calls fetch or stores the comment', () => {
+  it('only CommentBox.tsx writes "mailto:" or renders an <a>, only send.ts uses fetch, and nothing stores the comment', () => {
     const rel = (f: string) => relative(root, f).split('\\').join('/');
     expect(src.filter((f) => /mailto:/i.test(code(f))).map(rel)).toEqual(['src/ui/CommentBox.tsx']);
     expect(src.filter((f) => /<a[\s>]/.test(code(f))).map(rel)).toEqual(['src/ui/CommentBox.tsx']);
-    expect(src.filter((f) => /\bfetch\s*\(|sendBeacon|XMLHttpRequest/.test(code(f))).map(rel)).toEqual([]);
-    const box = readFileSync(resolve(root, 'src/ui/CommentBox.tsx'), 'utf8') + readFileSync(resolve(root, 'src/feedback/comment.ts'), 'utf8');
+    expect(src.filter((f) => /\bfetch\b|sendBeacon|XMLHttpRequest|WebSocket|EventSource/.test(code(f))).map(rel)).toEqual(['src/feedback/send.ts']);
+    // send.ts reads nothing about the child or the device: no storage, no progress, no navigator details
+    const send = code(resolve(root, 'src/feedback/send.ts'));
+    expect(send).not.toMatch(/localStorage|sessionStorage|indexedDB|progress|userAgent|language|screen\.|Date\.now|new Date|crypto|document\.cookie/);
+    expect(send.match(/navigator\.\w+/g)).toEqual(['navigator.onLine']);
+    const box = readFileSync(resolve(root, 'src/ui/CommentBox.tsx'), 'utf8') + readFileSync(resolve(root, 'src/feedback/comment.ts'), 'utf8') + send;
     expect(box).not.toMatch(/\b(localStorage|sessionStorage|indexedDB|caches)\s*[.[]/);
   });
 });

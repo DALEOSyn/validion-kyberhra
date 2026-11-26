@@ -7,7 +7,9 @@ Each case takes about 5 minutes: read the brief, scan the evidence for clues, ch
 and close the case file with the one rule and "Ak sa to už stalo".
 
 The player only ever defends. All brands, apps, people and addresses in the game are fictional. The game sends
-nothing anywhere: no accounts, no analytics, no network calls; progress lives in `localStorage` on the device.
+nothing about the player: no accounts, no analytics, no tracking; progress lives in `localStorage` on the device. The
+one network call is optional: in a build with `VITE_FEEDBACK_ENDPOINT`, an adult can send a comment on purpose from
+the „O hre“ screen (`server/feedback/`, docs/FEEDBACK.md).
 See `CLAUDE.md` for the Red Lines.
 
 ## Run it

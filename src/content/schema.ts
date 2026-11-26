@@ -346,7 +346,8 @@ export const AboutSectionSchema = z.strictObject({
   address_note: text.optional(),
   /**
    * Show the comment box for adults (src/ui/CommentBox.tsx) at the end of this section: it copies the comment, or
-   * opens the adult's own mail app. The game sends nothing. At most one section (validator).
+   * opens the adult's own mail app, or (only in a build with VITE_FEEDBACK_ENDPOINT) sends it when the adult presses
+   * „Odoslať“. Nothing about the child is sent. At most one section (validator).
    */
   comment_box: z.boolean().optional(),
 });

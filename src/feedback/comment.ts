@@ -1,8 +1,10 @@
 /**
  * The „O hre“ comment box (Roman, 2026-11-26): an adult writes a short comment, and the game turns it into text in
- * issue-form shape ("### Label\n\nvalue") that the adult copies or sends from their own e-mail app. The game itself
- * sends nothing (Red Line 7): no fetch, nothing stored. A maintainer pastes the text into an issue labelled
- * `spatna-vazba` + `hra`, and scripts/feedback-export.ts parses it (kind `hra`, field order HRA_ORDER there).
+ * issue-form shape ("### Label\n\nvalue") that the adult copies or sends from their own e-mail app. When the build
+ * sets VITE_FEEDBACK_ENDPOINT, „Odoslať“ also posts the comment on purpose (src/feedback/send.ts, the only fetch in
+ * the game; Red Line 7 as narrowed by Roman, 2026-11-26: nothing about the child is ever sent). Nothing is stored.
+ * A maintainer pastes copied or e-mailed text into an issue labelled `spatna-vazba` + `hra`; the server files sent
+ * comments in the same shape. scripts/feedback-export.ts parses both (kind `hra`, field order HRA_ORDER there).
  * Pure functions and constants, unit-tested in tests/unit/comment.test.ts.
  */
 
@@ -27,7 +29,7 @@ export const WHOLE_GAME = 'Celá hra';
 export const MAX_TEXT = 500;
 
 /** The question labels, in this order, of a comment from the game (scripts/lib/feedback.ts uses them as HRA_ORDER). */
-export const HRA_LABELS = { who: 'Kto píše', case: 'Prípad', rating: 'Hodnotenie', comment: 'Pripomienka' } as const;
+export const HRA_LABELS = { who: 'Kto píše', case: 'Prípad', rating: 'Hodnotenie', comment: 'Pripomienka', version: 'Verzia hry' } as const;
 
 /** How GitHub issue forms write an empty answer; the exporter turns it into "". */
 const NO_RESPONSE = '_No response_';
@@ -66,6 +68,8 @@ export const TEXTS = {
   heading: 'Pripomienka pre dospelých',
   intro: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať a poslať ďalej.',
   introEmail: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať alebo poslať zo svojho e-mailu.',
+  introSend: 'Pripomienku môžete odoslať tlačidlom „Odoslať“. Odošle sa len to, čo vyplníte tu, a verzia hry. Hra nepridá nič o dieťati ani o zariadení.',
+  sendNote: 'Pripomienku si prečíta tím pilotu VALIDION. Po kontrole a bez osobných údajov ju môžeme zverejniť v repozitári hry.',
   warning: 'Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch. Ak vám dieťa zverilo niečo vážne, postupujte podľa školského postupu ochrany detí.',
   childNote: 'Si dieťa a niečo ťa trápi? Nepíš to sem. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.',
   role: 'Kto píše',
@@ -76,6 +80,13 @@ export const TEXTS = {
   text: 'Pripomienka',
   counter: (n: number) => `${n} z ${MAX_TEXT} znakov`,
   mailNote: 'Otvorí sa vaša e-mailová aplikácia. Hra sama nič neodošle.',
+  mailNoteSend: 'Tlačidlo „Poslať e-mailom“ otvorí vašu e-mailovú aplikáciu.',
+  send: 'Odoslať',
+  sending: 'Pripomienka sa odosiela.',
+  sent: 'Ďakujeme. Pripomienka je odoslaná.',
+  sendFailed: 'Pripomienku sa teraz nepodarilo odoslať. Text zostal v poli. Môžete ho skopírovať tlačidlom „Kopírovať text“.',
+  offline: 'Zariadenie je bez pripojenia. Text zostal v poli. Môžete ho skopírovať tlačidlom „Kopírovať text“ a poslať neskôr.',
+  honeypot: 'Toto pole nechajte prázdne',
   mail: 'Poslať e-mailom',
   copy: 'Kopírovať text',
   needRole: 'Vyberte, prosím, kto píše.',
@@ -86,9 +97,12 @@ export const TEXTS = {
   mailOpened: 'Ak sa e-mailová aplikácia neotvorila, použite tlačidlo „Kopírovať text“.',
 } as const;
 
-/** The box's buttons: „Poslať e-mailom“ only with a build-time address, „Kopírovať text“ always. */
-export function commentActions(email: string | null): ('mail' | 'copy')[] {
-  return email ? ['mail', 'copy'] : ['copy'];
+/**
+ * The box's buttons: „Odoslať“ only with a build-time endpoint, „Poslať e-mailom“ only with a build-time address,
+ * „Kopírovať text“ always.
+ */
+export function commentActions(email: string | null, endpoint: string | null = null): ('send' | 'mail' | 'copy')[] {
+  return [...(endpoint ? (['send'] as const) : []), ...(email ? (['mail'] as const) : []), 'copy'];
 }
 
 /**

@@ -5,7 +5,7 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { loadContent } from './scripts/lib/content.ts';
 import { serviceWorkerSource } from './scripts/lib/sw.ts';
-import { feedbackEmail, withNoindex } from './src/config.ts';
+import { connectSrc, feedbackEmail, feedbackEndpoint, withNoindex } from './src/config.ts';
 
 const pkg = JSON.parse(readFileSync(resolve(import.meta.dirname, 'package.json'), 'utf8')) as { version: string };
 
@@ -75,15 +75,18 @@ function serviceWorkerPlugin(): Plugin {
   };
 }
 
-/** A strict Content-Security-Policy in the built page: own origin only (Red Line 7, no network). */
-function cspPlugin(): Plugin {
+/**
+ * A strict Content-Security-Policy in the built page: own origin only (Red Line 7). The one addition: when the build
+ * sets VITE_FEEDBACK_ENDPOINT, `connect-src` also allows that endpoint's origin, for the comment box's „Odoslať“.
+ */
+function cspPlugin(endpoint: string | null): Plugin {
   const csp = [
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self'",
-    "connect-src 'self'",
+    `connect-src ${connectSrc(endpoint)}`,
     "manifest-src 'self'",
     "worker-src 'self'",
     "object-src 'none'",
@@ -111,14 +114,18 @@ function noindexPlugin(): Plugin {
 }
 
 export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, import.meta.dirname, 'VITE_');
   // VITE_FEEDBACK_EMAIL (optional) is the address of the comment box's „Poslať e-mailom“ link; a malformed value fails
   // the build here. It adds no network access: the CSP stays the same with or without it.
-  feedbackEmail(loadEnv(mode, import.meta.dirname, 'VITE_').VITE_FEEDBACK_EMAIL);
+  feedbackEmail(env.VITE_FEEDBACK_EMAIL);
+  // VITE_FEEDBACK_ENDPOINT (optional) turns on „Odoslať“ and adds only its origin to connect-src. Unset: the build is
+  // as before (the send code is a dead branch and is dropped from the bundle). A malformed value fails the build.
+  const endpoint = feedbackEndpoint(env.VITE_FEEDBACK_ENDPOINT);
   return {
     base: './',
-    /** The version from package.json, shown in the pilot label (src/vite-env.d.ts). */
-    define: { __APP_VERSION__: JSON.stringify(pkg.version) },
-    plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin(), noindexPlugin()],
+    /** The version from package.json (pilot label) and the comment endpoint or null (src/vite-env.d.ts). */
+    define: { __APP_VERSION__: JSON.stringify(pkg.version), __FEEDBACK_ENDPOINT__: JSON.stringify(endpoint) },
+    plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin(endpoint), noindexPlugin()],
     build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0 },
   };
 });

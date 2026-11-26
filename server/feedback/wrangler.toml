@@ -1,0 +1,13 @@
+# Cloudflare Worker for the comment box (see README.md). Secrets: `wrangler secret put GITHUB_TOKEN`.
+name = "kancelaria-stopa-feedback"
+main = "src/worker.ts"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://daleosyn.github.io"
+FEEDBACK_REPO = "DALEOSyn/validion-kyberhra-feedback"
+DAILY_CAP = "200"
+
+[observability]
+enabled = false

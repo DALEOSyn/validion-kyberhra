@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { feedbackEmail } from '../config.ts';
-import { CASE_OPTIONS, type Comment, commentActions, commentBody, commentSubject, type Draft, MAX_TEXT, ROLE_OPTIONS, TEXTS, WHOLE_GAME } from '../feedback/comment.ts';
+import { CASE_OPTIONS, type Comment, commentActions, commentBody, commentSubject, type Draft, EMPTY_DRAFT, MAX_TEXT, ROLE_OPTIONS, TEXTS, WHOLE_GAME } from '../feedback/comment.ts';
+import { payload, sendComment } from '../feedback/send.ts';
 
 /**
- * The comment box on the „O hre“ screen (section with `comment_box: true` in content/about.yaml). The game sends
- * nothing (Red Line 7): „Kopírovať text“ copies the comment to the clipboard, and „Poslať e-mailom“ is a plain
- * mailto: link that opens the adult's own mail app. That link is the only mailto: and the only <a> in the game; the
- * eslint exception is for this file alone and allows only an <a> whose href is `mailtoUrl(...)`. The draft lives in
- * App's memory (props), never in storage.
+ * The comment box on the „O hre“ screen (section with `comment_box: true` in content/about.yaml). „Kopírovať text“
+ * copies the comment to the clipboard, and „Poslať e-mailom“ is a plain mailto: link that opens the adult's own mail
+ * app. That link is the only mailto: and the only <a> in the game; the eslint exception is for this file alone and
+ * allows only an <a> whose href is `mailtoUrl(...)`. Only when the build sets VITE_FEEDBACK_ENDPOINT, „Odoslať“ posts
+ * what the adult typed (src/feedback/send.ts; Red Line 7 as narrowed 2026-11-26). The draft lives in App's memory
+ * (props), never in storage; the honeypot lives in this component's state.
  */
 
 /** Build-time address; null hides „Poslať e-mailom“. */
 const EMAIL = feedbackEmail(import.meta.env.VITE_FEEDBACK_EMAIL);
+/** Build-time endpoint (vite.config.ts `define`); null hides „Odoslať“ and drops the send code from the bundle. */
+const ENDPOINT: string | null = __FEEDBACK_ENDPOINT__;
 
 /** The mailto: URL for a comment (RFC 6068: line breaks as CRLF, everything percent-encoded). Pure, unit-tested. */
 export function mailtoUrl(email: string, subject: string, body: string): string {
@@ -19,11 +23,13 @@ export function mailtoUrl(email: string, subject: string, body: string): string 
   return `mailto:${encodeURI(email)}?subject=${enc(subject)}&body=${enc(body)}`;
 }
 
-type Status = 'idle' | 'needRole' | 'needText' | 'copied' | 'copyFailed' | 'mailOpened';
+type Status = 'idle' | 'needRole' | 'needText' | 'copied' | 'copyFailed' | 'mailOpened' | 'sending' | 'sent' | 'sendFailed' | 'offline';
 
 export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version: string; draft: Draft; onDraft: (d: Draft) => void; email?: string | null }) {
   const [status, setStatus] = useState<Status>('idle');
+  const [hp, setHp] = useState('');
   const fallback = useRef<HTMLTextAreaElement>(null);
+  const copyButton = useRef<HTMLButtonElement>(null);
   const { role, rating, text } = draft;
 
   const comment: Comment | null = role ? { role, case: draft.case, rating, text } : null;
@@ -35,6 +41,9 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
     if (status !== 'copyFailed') return;
     fallback.current?.focus();
     fallback.current?.select();
+  }, [status]);
+  useEffect(() => {
+    if (status === 'sendFailed' || status === 'offline') copyButton.current?.focus();
   }, [status]);
 
   const set = (patch: Partial<Draft>) => {
@@ -56,7 +65,21 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
       setStatus(problem);
     } else setStatus('mailOpened');
   };
+  const send = async () => {
+    if (status === 'sending') return;
+    if (problem || !comment || !ENDPOINT) return setStatus(problem ?? 'needRole');
+    setStatus('sending');
+    const result = await sendComment(ENDPOINT, payload(comment, version, hp));
+    if (result === 'sent') {
+      onDraft(EMPTY_DRAFT);
+      setHp('');
+      setStatus('sent');
+    } else setStatus(result === 'offline' ? 'offline' : 'sendFailed');
+  };
   const mailTo = commentActions(email ?? null).includes('mail') ? email : null;
+  // Read straight from the build-time constant (not a prop), so that without an endpoint every `sendTo &&` branch,
+  // send() and src/feedback/send.ts are dead code and the bundler drops them.
+  const sendTo = ENDPOINT;
 
   return (
     <div
@@ -68,7 +91,8 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
       onKeyDown={(e) => e.key === 'Escape' && text.trim() && e.stopPropagation()}
     >
       <h4 id="comment-box-h">{TEXTS.heading}</h4>
-      <p>{mailTo ? TEXTS.introEmail : TEXTS.intro}</p>
+      <p>{sendTo ? TEXTS.introSend : mailTo ? TEXTS.introEmail : TEXTS.intro}</p>
+      {sendTo && <p class="small">{TEXTS.sendNote}</p>}
       <p class="comment-warning">{TEXTS.warning}</p>
       <p class="comment-child">{TEXTS.childNote}</p>
 
@@ -113,14 +137,29 @@ export function CommentBox({ version, draft, onDraft, email = EMAIL }: { version
       </label>
       <p id="comment-counter" class="small">{TEXTS.counter(text.length)}</p>
 
-      {mailTo && <p class="small">{TEXTS.mailNote}</p>}
+      {sendTo && (
+        // Honeypot: off-screen and hidden from assistive tech, never focused by Tab. People leave it empty.
+        <div class="comment-hp" aria-hidden="true">
+          <label>
+            {TEXTS.honeypot}
+            <input type="text" name="stopa_hp" tabIndex={-1} autoComplete="off" value={hp} onInput={(e) => setHp(e.currentTarget.value)} />
+          </label>
+        </div>
+      )}
+
+      {mailTo && <p class="small">{sendTo ? TEXTS.mailNoteSend : TEXTS.mailNote}</p>}
       <div class="row">
+        {sendTo && (
+          <button type="button" class="btn" data-comment-send aria-disabled={status === 'sending' ? 'true' : undefined} onClick={() => void send()}>
+            {TEXTS.send}
+          </button>
+        )}
         {mailTo && (
-          <a class="btn" data-comment-mail href={mailtoUrl(mailTo, commentSubject(version), body)} onClick={onMail}>
+          <a class={sendTo ? 'btn alt' : 'btn'} data-comment-mail href={mailtoUrl(mailTo, commentSubject(version), body)} onClick={onMail}>
             {TEXTS.mail}
           </a>
         )}
-        <button type="button" class={mailTo ? 'btn alt' : 'btn'} onClick={() => void copy()}>
+        <button type="button" ref={copyButton} class={mailTo || sendTo ? 'btn alt' : 'btn'} onClick={() => void copy()}>
           {TEXTS.copy}
         </button>
       </div>

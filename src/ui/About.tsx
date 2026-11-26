@@ -5,7 +5,7 @@ import { CommentBox } from './CommentBox.tsx';
 
 /**
  * „O hre“, rendered from content/about.yaml: what the game is, privacy, feedback for adults, the help line.
- * The section with `comment_box: true` also shows the comment box (CommentBox.tsx; it sends nothing itself).
+ * The section with `comment_box: true` also shows the comment box (CommentBox.tsx; it sends a comment only when an adult presses „Odoslať“ in a build with an endpoint).
  * Addresses are plain text: no links except the comment box's mailto: (same rule as the help screen).
  */
 export function AboutScreen({ about, onClose, draft, onDraft }: { about: About; onClose: () => void; draft: Draft; onDraft: (d: Draft) => void }) {

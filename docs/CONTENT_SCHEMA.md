@@ -294,12 +294,17 @@ like the help screen. Fields:
   (`src/ui/CommentBox.tsx`, words in `src/feedback/comment.ts`): a warning (no names or personal details about
   children), a note for a child who lands there (116 111, tell a trusted adult), who is writing („Zo školy“, „Z rodiny“,
   „Odborná verejnosť“, „Iné“), case, optional rating 1–5, a comment of at most 500 characters. The draft stays in
-  memory while the page is open (closing „O hre“ keeps it) and is never stored. The game sends nothing: „Kopírovať text“ copies the comment in issue-form shape
+  memory while the page is open (closing „O hre“ keeps it) and is never stored. „Kopírovať text“ copies the comment in issue-form shape
   (`### Kto píše` / `### Prípad` / `### Hodnotenie` / `### Pripomienka`), and, only when the build sets
   `VITE_FEEDBACK_EMAIL`, „Poslať e-mailom“ is a `mailto:` link (subject „Pripomienka k hre <version>“) that opens the
   adult's own mail app. A maintainer pastes the text into an issue labelled `spatna-vazba` + `hra`; the exporter
   parses it as kind `hra`. That link is the only `mailto:` and the only `<a>` in the game (eslint exception for that
   one file, which allows only an `<a>` whose href is `mailtoUrl(...)`). The CSP is the same with or without the address.
+  Only when the build sets `VITE_FEEDBACK_ENDPOINT`, „Odoslať“ posts the comment (`src/feedback/send.ts`, the only file
+  allowed to use `fetch`; JSON `{v, app_version, role, case, rating, text, hp}`, no cookies, no referrer, 10 s
+  timeout) to `server/feedback/`, and the CSP `connect-src` adds only that origin. A hidden honeypot field goes with
+  it. Without the endpoint there is no „Odoslať“ and the send code is not in the bundle. Nothing about the child is
+  sent (Red Line 7 as narrowed on 2026-11-26). See docs/FEEDBACK.md.
 
 Like `help.yaml` and `sources.yaml`, `about.yaml` may name real organisations (VALIDION, GitHub, Linka detskej
 istoty) and real addresses: the domains, denylist and phone rules skip it. The gender and IBAN rules still apply, and
@@ -311,7 +316,7 @@ sections:
   - id: sukromie
     heading: Tvoje súkromie
     text:
-      - Hra nič nikam neodosiela.
+      - Hra o tebe nič nikam neodosiela.
   - id: pripomienky
     heading: "Pre dospelých: pripomienky a chyby"
     text:

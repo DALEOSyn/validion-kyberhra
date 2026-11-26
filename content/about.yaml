@@ -15,8 +15,9 @@ sections:
   - id: sukromie
     heading: Tvoje súkromie
     text:
-      - Hra nič nikam neodosiela.
-      - Dospelý môže pripomienku skopírovať alebo poslať zo svojho vlastného e-mailu. Hra ju sama neodošle.
+      - Hra o tebe nič nikam neodosiela. Ani postup, ani nič o tvojom zariadení.
+      - Dospelý môže napísať pripomienku k hre. Hra ju odošle, len keď dospelý stlačí „Odoslať“.
+      - Pripomienku môže dospelý aj skopírovať alebo poslať zo svojho vlastného e-mailu.
       - Nepýta sa ťa na meno ani na nič iné o tebe.
       - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
       - Postup vymažeš tlačidlom „Vymazať postup“ dole na stránke trasy. Zmažú sa hviezdy na oboch trasách aj nastavenie zvuku.

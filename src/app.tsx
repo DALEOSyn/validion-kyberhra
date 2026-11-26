@@ -267,7 +267,7 @@ export function App() {
         </div>
       </main>
       <footer class="foot" inert={modal}>
-        {track?.footer ?? 'Všetky aplikácie, hry, mená a adresy v hre sú vymyslené.'} Hra nič neodosiela.
+        {track?.footer ?? 'Všetky aplikácie, hry, mená a adresy v hre sú vymyslené.'} Hra o tebe nič neodosiela.
       </footer>
     </div>
   );

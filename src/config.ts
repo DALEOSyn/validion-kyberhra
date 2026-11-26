@@ -35,3 +35,31 @@ export function feedbackEmail(raw: string | undefined): string | null {
   if (!/^[A-Za-z0-9._+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(v)) throw new Error(`VITE_FEEDBACK_EMAIL is not one plain e-mail address: "${v}"`);
   return v;
 }
+
+/**
+ * The URL the comment box's „Odoslať“ button posts to, from the build-time env VITE_FEEDBACK_ENDPOINT (repository
+ * variable FEEDBACK_ENDPOINT in pages.yml). Unset or empty: null, and the build is the same as without the feature
+ * (no „Odoslať“, CSP `connect-src 'self'`). Only an https URL without credentials, query or fragment is accepted
+ * (http only for localhost and 127.0.0.1, for the e2e build); anything else throws, so a typo fails the build
+ * (vite.config.ts). Pure, so it is unit-tested.
+ */
+export function feedbackEndpoint(raw: string | undefined): string | null {
+  const v = (raw ?? '').trim();
+  if (!v) return null;
+  let u: URL;
+  try {
+    u = new URL(v);
+  } catch {
+    throw new Error(`VITE_FEEDBACK_ENDPOINT is not a URL: "${v}"`);
+  }
+  const local = u.hostname === 'localhost' || u.hostname === '127.0.0.1';
+  if (u.protocol !== 'https:' && !(u.protocol === 'http:' && local)) throw new Error(`VITE_FEEDBACK_ENDPOINT must be https: "${v}"`);
+  if (u.username || u.password || u.search || u.hash || v.includes('?') || v.includes('#')) throw new Error(`VITE_FEEDBACK_ENDPOINT must have no credentials, query or fragment: "${v}"`);
+  if (/[\s'";,]/.test(v)) throw new Error(`VITE_FEEDBACK_ENDPOINT has characters that do not belong in a URL: "${v}"`);
+  return u.href;
+}
+
+/** The CSP `connect-src` value: the game's own origin, plus the endpoint's origin when one is set. Pure, unit-tested. */
+export function connectSrc(endpoint: string | null): string {
+  return endpoint ? `'self' ${new URL(endpoint).origin}` : "'self'";
+}

@@ -1,9 +1,11 @@
 /**
  * Pilot feedback captured as GitHub issues (issue forms in .github/ISSUE_TEMPLATE/), exported into the repository
  * as docs/feedback/feedback.csv and docs/feedback/SUMMARY.md by scripts/feedback-export.ts. See docs/FEEDBACK.md.
- * Pure functions, unit-tested in tests/unit/feedback.test.ts. The game itself sends nothing (Red Line 7).
+ * Pure functions, unit-tested in tests/unit/feedback.test.ts.
  * Kind `hra`: a comment from the game's comment box (src/feedback/comment.ts), which an adult copied or e-mailed and
- * a maintainer pasted into an issue labelled `spatna-vazba` + `hra`. It has no issue form; its field order is HRA_ORDER.
+ * a maintainer pasted into an issue labelled `spatna-vazba` + `hra` in this repository, or which an adult sent with
+ * „Odoslať“ and server/feedback/ filed in the private feedback repository (with a `### Verzia hry` field). It has no
+ * issue form; its field order is HRA_ORDER. Issues from the private repository carry `source` (see Row.ref).
  */
 import { CASE_OPTIONS, HRA_LABELS, WHOLE_GAME } from '../../src/feedback/comment.ts';
 
@@ -48,14 +50,18 @@ export const F = {
   device: 'Zariadenie a prehliadač',
   who: HRA_LABELS.who,
   rating: HRA_LABELS.rating,
+  version: HRA_LABELS.version,
   privacy: 'Ochrana súkromia',
 } as const;
 
 /** Kinds that have an issue form in .github/ISSUE_TEMPLATE/ (`hra` comes from the game's comment box instead). */
 export const FORM_KINDS = ['lekcia', 'recenzia', 'pripomienka'] as const satisfies readonly Kind[];
 
-/** Field order of a `hra` comment, fixed by the game (src/feedback/comment.ts commentBody). */
-export const HRA_ORDER = [F.who, F.case, F.rating, F.comment] as const;
+/**
+ * Field order of a `hra` comment, fixed by the game (src/feedback/comment.ts commentBody) and the server
+ * (server/feedback/src/core.ts issueBody, which adds the version; pasted comments have no version field).
+ */
+export const HRA_ORDER = [F.who, F.case, F.rating, F.comment, F.version] as const;
 
 /** Case titles as offered in the forms' dropdowns and the game's comment box: CASE_OPTIONS, WHOLE_GAME (imported above). */
 export const AREA_OPTIONS = ['Text a jazyk', 'Vek a náročnosť', 'Tón a emočná bezpečnosť', 'Fakty a zdroje', 'Pomoc a kontakty', 'Ovládanie a prístupnosť'] as const;
@@ -74,10 +80,14 @@ export interface Issue {
   last_edited_at?: string | null;
   /** When the APPROVED_LABEL was last added. */
   approved_at?: string | null;
+  /** Short name of the repository the issue is in, when it is not this one (e.g. "feedback" for the private repo). */
+  source?: string;
 }
 
 export interface Row {
   number: number;
+  /** "12" for an issue in this repository, "feedback#12" for one from another repository (Issue.source). */
+  ref: string;
   kind: Kind | 'ina';
   state: string;
   created: string;
@@ -172,6 +182,7 @@ export function toRows(issues: Issue[], orders: Partial<Record<Kind, string[]>>)
       delete fields[F.privacy];
       return {
         number: i.number,
+        ref: i.source ? `${i.source}#${i.number}` : String(i.number),
         kind,
         state: i.state,
         created: i.created_at.slice(0, 10),
@@ -181,7 +192,12 @@ export function toRows(issues: Issue[], orders: Partial<Record<Kind, string[]>>)
         url: i.html_url,
       };
     })
-    .sort((a, b) => a.number - b.number);
+    .sort((a, b) => refSource(a).localeCompare(refSource(b)) || a.number - b.number);
+}
+
+/** "" for this repository (sorted first), else the source name. */
+function refSource(r: Row): string {
+  return r.ref.includes('#') ? (r.ref.split('#')[0] ?? '') : '';
 }
 
 function csvCell(s: string): string {
@@ -196,7 +212,7 @@ export function toCsv(rows: Row[]): string {
   const head = ['issue', 'druh', 'stav', 'datum', 'pripady', ...questions];
   const lines = [head.map(csvCell).join(',')];
   for (const r of rows) {
-    lines.push([String(r.number), r.kind, r.state, r.created, r.cases.join(' '), ...questions.map((q) => r.fields[q] ?? '')].map(csvCell).join(','));
+    lines.push([r.ref, r.kind, r.state, r.created, r.cases.join(' '), ...questions.map((q) => r.fields[q] ?? '')].map(csvCell).join(','));
   }
   return lines.join('\n') + '\n';
 }
@@ -231,7 +247,7 @@ export function toSummary(rows: Row[], generatedAt: string): string {
     out.push('', '## Otvorené odborné pripomienky', '');
     for (const sev of ['Blokuje vydanie', 'Dôležité', 'Drobnosť', '']) {
       for (const r of open.filter((x) => x.severity === sev)) {
-        out.push(`- #${r.number} · ${sev || 'bez závažnosti'} · ${r.cases.join(', ') || '—'} · ${onlyOptions(r.fields[F.area] ?? '', AREA_OPTIONS)}`);
+        out.push(`- ${r.ref.includes('#') ? r.ref : `#${r.ref}`} · ${sev || 'bez závažnosti'} · ${r.cases.join(', ') || '—'} · ${onlyOptions(r.fields[F.area] ?? '', AREA_OPTIONS)}`);
       }
     }
   }

@@ -11,6 +11,9 @@ const baseURL = `http://127.0.0.1:${port}/`;
 /** A second build with VITE_FEEDBACK_EMAIL set, for tests/e2e/comment-email.spec.ts (its own outDir and port). */
 export const EMAIL_PORT = Number(process.env['PW_EMAIL_PORT'] ?? port + 1);
 export const FEEDBACK_EMAIL = 'pripomienky@validion.example';
+/** A third build with VITE_FEEDBACK_ENDPOINT (and the address) set, for tests/e2e/comment-send.spec.ts; page.route mocks it. */
+export const SEND_PORT = Number(process.env['PW_SEND_PORT'] ?? port + 2);
+export const FEEDBACK_ENDPOINT = 'https://feedback.validion.example/api/feedback';
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -34,6 +37,13 @@ export default defineConfig({
       command: `npx vite build --outDir dist-email && npx vite preview --outDir dist-email --port ${EMAIL_PORT} --strictPort --host 127.0.0.1`,
       url: `http://127.0.0.1:${EMAIL_PORT}/`,
       env: { VITE_FEEDBACK_EMAIL: FEEDBACK_EMAIL },
+      reuseExistingServer: !process.env['CI'],
+      timeout: 120_000,
+    },
+    {
+      command: `npx vite build --outDir dist-send && npx vite preview --outDir dist-send --port ${SEND_PORT} --strictPort --host 127.0.0.1`,
+      url: `http://127.0.0.1:${SEND_PORT}/`,
+      env: { VITE_FEEDBACK_EMAIL: FEEDBACK_EMAIL, VITE_FEEDBACK_ENDPOINT: FEEDBACK_ENDPOINT },
       reuseExistingServer: !process.env['CI'],
       timeout: 120_000,
     },

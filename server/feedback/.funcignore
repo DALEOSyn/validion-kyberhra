@@ -1,0 +1,6 @@
+src/worker.ts
+wrangler.toml
+README.md
+tsconfig.json
+.wrangler/
+*.test.ts
