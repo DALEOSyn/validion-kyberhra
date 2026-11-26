@@ -8,7 +8,7 @@ na jednej vyučovacej hodine si vaše dieťa vyskúša novú hru **Lipovec · in
 - **Pokojný tón.** Hra nestraší a nikoho nezosmiešňuje. Citlivé témy ako vydieranie či šikana sa v hre neprehrávajú, sú len na obrazovke s kontaktmi na pomoc, napríklad Linka detskej istoty 116 111.
 - **Spätná väzba.** Učiteľ zapíše, ako sa hra deťom páčila (počty hlasov a anonymné postrehy bez mien). Deti samy nič nevypĺňajú.
 
-Hru si môžete vyskúšať aj doma, na adrese, ktorú vám pošle škola. Ak máte pripomienku, povedzte ju učiteľovi alebo ju zapíšte do formulára „Pripomienka alebo chyba“ na `github.com/DALEOSyn/validion-kyberhra/issues`. Formulár je verejný, preto doň nepíšte mená ani kontakty.
+Hru si môžete vyskúšať aj doma, na adrese, ktorú vám pošle škola. Ak máte pripomienku, povedzte ju učiteľovi, pošlite ju zo svojho e-mailu cez obrazovku „O hre“ v hre alebo ju zapíšte do formulára „Pripomienka alebo chyba“ na `github.com/DALEOSyn/validion-kyberhra/issues`. Formulár je verejný, preto doň nepíšte mená ani kontakty.
 
 Ďakujeme
 VALIDION

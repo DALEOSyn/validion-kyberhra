@@ -11,10 +11,21 @@ opens no links (Red Line 7). Release plan: the "Plán: verejné vydanie pilotu a
 | Pilotná hodina (učiteľ) | A teacher, once per pilot lesson: class poll counts, minutes per case, where children got stuck, quotes without names, any upset reactions | `spatna-vazba`, `lekcia` |
 | Odborná recenzia | Psychologist, native Slovak reader, teacher, security expert: one finding per issue, with severity | `spatna-vazba`, `recenzia` |
 | Pripomienka alebo chyba | Any adult who played the public pilot | `spatna-vazba`, `pripomienka` |
+| Komentár z hry (e-mail) | Any adult, from the comment box on the game's "O hre" screen, without a GitHub account | `spatna-vazba`, `hra` |
 
 **Children never file issues.** GitHub accounts need age 13+ and issues are public. Children give their views in class
 (the teacher records the counts and anonymous quotes) or to a parent, who files a comment. Blank issues are off, and
 the issue chooser shows Linka detskej istoty 116 111 for any child who lands there.
+
+## Comments from the game (no account)
+
+The "O hre" screen has a comment box for adults. The game sends nothing (Red Line 7): "Poslať e-mailom" opens the
+person's own mail app with the comment pre-filled, "Kopírovať text" copies it. The e-mail body is already in
+issue-form shape (`### Kto píše`, `### Prípad`, `### Hodnotenie`, `### Pripomienka`). A maintainer pastes it into a new
+issue labelled `spatna-vazba` + `hra`, removes any personal data first, never pastes the sender's address, and then
+approves it as usual. A Power Automate flow in VALIDION's Microsoft 365 may do the paste later. The address is the
+repository variable `FEEDBACK_EMAIL` (Settings > Secrets and variables > Actions > Variables); without it the game shows
+only "Kopírovať text".
 
 ## Privacy rules for maintainers
 
