@@ -28,4 +28,6 @@ Hra **Lipovec · internetové prípady** od VALIDION (trasy Kancelária STOPA a 
 ## Po hodine
 Vyplňte formulár **„Pilotná hodina (učiteľ)“** na `github.com/DALEOSyn/validion-kyberhra/issues` (tlačidlo „New issue“). Zaberie asi 10 minút. Formulár je verejný, preto doň nepíšte mená detí, školu, mesto ani triedu. Ak nemáte účet GitHub alebo ho nechcete použiť, pošlite odpovede koordinátorovi pilotu a ten ich zapíše.
 
+Na obrazovke „O hre“ je aj okienko „Pripomienka pre dospelých“. Ak ho použijete na školskom zariadení, po odoslaní alebo skopírovaní zatvorte kartu prehliadača, aby rozpísaný text nevidel ďalší žiak.
+
 Zaujíma nás najmä: koľko minút trval jeden prípad, kde sa deti zasekli, výsledky hlasovania a čo deti povedali (bez mien).

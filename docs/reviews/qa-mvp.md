@@ -346,3 +346,13 @@ Findings:
 5. Note: the counter counts UTF-16 units, so an emoji counts as 2. This matches `maxlength`.
 
 Screenshots: `docs/reviews/qa-shots/comment-*.png` (360-email-empty, 360-email-filled, desktop-plain-copied, copy-failed, keyboard-focus, escape-lost, 320, zoom200, desktop-email-child).
+
+### Re-test after 59f4af9 (2026-11-26): PASS
+
+Both builds were tested at 1440 px and 360 px.
+1. Fixed: with focus on the body or on „Späť do hry“, Escape closes „O hre“ and keeps the text and role. So do „Späť do hry“ and „Pomoc“. Nothing is in `localStorage` or `sessionStorage`. A reload clears the draft.
+2. Fixed: the privacy line („skopírovať alebo poslať zo svojho vlastného e-mailu“) is now true in the copy-only build.
+3. Fixed: the heading is „Pripomienka pre dospelých“, and a child note with 116 111 was added.
+4. Fixed: a failed copy focuses the read-only „Text na skopírovanie“ field and selects all its text.
+
+axe finds 0 violations and no requests leave the origin. The mailto subject and body are correct. e2e: 46/46 passed. Screenshots: `comment-retest-plain-360.png`, `comment-retest-mail-360.png`.
