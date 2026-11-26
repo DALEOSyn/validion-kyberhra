@@ -45,7 +45,7 @@ async function openAndFill(page: Page) {
   await expect(box.getByText('Si dieťa a niečo ťa trápi? Nepíš to sem.', { exact: false })).toContainText('116 111');
   // the form is folded until an adult opens it; the warning and the child note stay visible above it
   await expect(box.getByRole('radio', { name: 'Zo školy' })).toBeHidden();
-  await box.getByText('Otvoriť formulár pre dospelých').click();
+  await box.getByText('Formulár pre dospelých').click();
   await expect(box.getByRole('group', { name: 'Hodnotenie (nepovinné)' })).toBeVisible();
   // asks for the role and the text first, calmly
   await box.getByRole('button', { name: 'Kopírovať text' }).click();
@@ -71,7 +71,7 @@ test.describe('default build (no e-mail address)', () => {
     await expect(page.getByText('Pripomienku môže odoslať len dospelý', { exact: false })).toHaveCount(0);
     await page.getByRole('button', { name: 'O hre' }).click();
     const about = page.locator('[data-screen="about"]');
-    await about.getByText('Otvoriť formulár pre dospelých').click();
+    await about.getByText('Formulár pre dospelých').click();
     await expect(about).not.toContainText('Odoslať');
     await expect(about.locator('[data-about="sukromie"]')).toContainText('Hra ju sama nikam neodošle.');
     await expect(about.locator('[data-about="sukromie"]')).toContainText('Neodosiela ani postup, ani nič o tvojom zariadení.');
@@ -161,7 +161,7 @@ test.describe('build with VITE_FEEDBACK_EMAIL', () => {
     await page.goto('./');
     await page.getByRole('button', { name: 'O hre' }).click();
     const box = page.locator('[data-comment-box]');
-    await box.getByText('Otvoriť formulár pre dospelých').click();
+    await box.getByText('Formulár pre dospelých').click();
     const before = page.url();
     await box.getByRole('link', { name: 'Poslať e-mailom' }).click();
     await expect(box.getByRole('status')).toHaveText('Vyberte, prosím, kto píše.');

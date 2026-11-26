@@ -45,7 +45,7 @@ async function openAndFill(page: Page) {
   await expect(box.getByText('Pripomienku môžete odoslať tlačidlom „Odoslať“.', { exact: false })).toBeVisible();
   await expect(box.getByText('Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch.', { exact: false })).toBeVisible();
   await expect(box.getByText('Si dieťa a niečo ťa trápi? Nepíš to sem.', { exact: false })).toContainText('116 111');
-  await box.getByText('Otvoriť formulár pre dospelých').click();
+  await box.getByText('Formulár pre dospelých').click();
   await box.getByRole('radio', { name: 'Zo školy' }).check();
   await box.getByLabel('Ku ktorému prípadu').selectOption('T1 Ľahká brigáda');
   await box.getByRole('radio', { name: '4', exact: true }).check();
@@ -137,7 +137,7 @@ test('a 429 answer asks to try again in a few minutes, and the text stays', asyn
   );
   const box = await openAndFill(page);
   await box.getByRole('button', { name: 'Odoslať' }).click();
-  await expect(box.getByRole('status')).toHaveText('Teraz prišlo veľa pripomienok naraz. Skúste to o pár minút alebo text skopírujte.');
+  await expect(box.getByRole('status')).toHaveText('Teraz prišlo veľa pripomienok naraz. Skúste to znova o pár minút alebo text skopírujte tlačidlom „Kopírovať text“.');
   const copy = box.getByRole('button', { name: 'Kopírovať text' });
   await expect(copy).toBeFocused();
   await expect(copy).toHaveAttribute('aria-describedby', 'comment-status');
@@ -199,7 +199,7 @@ test('without a role or text, nothing is sent', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'O hre' }).click();
   const box = page.locator('[data-comment-box]');
-  await box.getByText('Otvoriť formulár pre dospelých').click();
+  await box.getByText('Formulár pre dospelých').click();
   await box.getByRole('button', { name: 'Odoslať' }).click();
   await expect(box.getByRole('status')).toHaveText('Vyberte, prosím, kto píše.');
   await box.getByRole('radio', { name: 'Z rodiny' }).check();

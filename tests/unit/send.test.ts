@@ -102,7 +102,7 @@ describe('the client sender (src/feedback/send.ts)', () => {
     expect(TEXTS.sendNote).toContain('na stránke hry na GitHube');
     expect(TEXTS.sendNote).toContain('USA');
     expect(TEXTS.sent).toBe('Ďakujeme. Pripomienka je odoslaná. Na pripomienky neodpovedáme. Ak niekto potrebuje pomoc hneď, volajte Linku detskej istoty 116 111.');
-    expect(TEXTS.rate).toBe('Teraz prišlo veľa pripomienok naraz. Skúste to o pár minút alebo text skopírujte.');
+    expect(TEXTS.rate).toBe('Teraz prišlo veľa pripomienok naraz. Skúste to znova o pár minút alebo text skopírujte tlačidlom „Kopírovať text“.');
     expect(TEXTS.tooLong).toContain('„Kopírovať text“');
   });
 });

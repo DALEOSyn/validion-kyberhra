@@ -1120,7 +1120,7 @@ a.btn {
 .tap.miss {
   text-decoration-line: none;
 }
-/* The adult form, folded behind „Otvoriť formulár pre dospelých“ (CommentBox.tsx). */
+/* The adult form, folded behind „Formulár pre dospelých“ (CommentBox.tsx). */
 .comment-form {
   display: flex;
   flex-direction: column;
@@ -1136,11 +1136,11 @@ a.btn {
   cursor: pointer;
 }
 .comment-form > summary::before {
-  content: '▸';
+  content: '▸' / '';
   margin-right: 8px;
 }
 .comment-form[open] > summary::before {
-  content: '▾';
+  content: '▾' / '';
 }
 .comment-form > summary::-webkit-details-marker {
   display: none;
