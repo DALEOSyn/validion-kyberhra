@@ -290,6 +290,14 @@ like the help screen. Fields:
 - `address` is shown as **plain text, never a link** (same rule as help addresses). Write it without a scheme
   (`github.com/owner/repo/issues`, not `https://…`); the validator rejects a scheme. `address_note` (e.g. „the forms
   there are public, so no names“) needs an `address`.
+- `comment_box: true` (at most one section) shows the comment box for adults at the end of the section
+  (`src/ui/CommentBox.tsx`, words in `src/feedback/comment.ts`): who is writing, case, optional rating 1–5, a comment
+  of at most 500 characters. The game sends nothing: „Kopírovať text“ copies the comment in issue-form shape
+  (`### Kto píše` / `### Prípad` / `### Hodnotenie` / `### Pripomienka`), and, only when the build sets
+  `VITE_FEEDBACK_EMAIL`, „Poslať e-mailom“ is a `mailto:` link (subject „Pripomienka k hre <version>“) that opens the
+  adult's own mail app. A maintainer pastes the text into an issue labelled `spatna-vazba` + `hra`; the exporter
+  parses it as kind `hra`. That link is the only `mailto:` and the only `<a>` in the game (eslint exception for that
+  one file). The CSP is the same with or without the address.
 
 Like `help.yaml` and `sources.yaml`, `about.yaml` may name real organisations (VALIDION, GitHub, Linka detskej
 istoty) and real addresses: the domains, denylist and phone rules skip it. The gender and IBAN rules still apply, and

@@ -8,6 +8,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const port = Number(process.env['PW_PORT'] ?? 4173);
 const baseURL = `http://127.0.0.1:${port}/`;
+/** A second build with VITE_FEEDBACK_EMAIL set, for tests/e2e/comment-email.spec.ts (its own outDir and port). */
+export const EMAIL_PORT = Number(process.env['PW_EMAIL_PORT'] ?? port + 1);
+export const FEEDBACK_EMAIL = 'pripomienky@validion.example';
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -20,10 +23,19 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 } } },
     { name: 'phone-360', use: { ...devices['Desktop Chrome'], viewport: { width: 360, height: 740 }, hasTouch: true } },
   ],
-  webServer: {
-    command: `npm run build && npx vite preview --port ${port} --strictPort --host 127.0.0.1`,
-    url: baseURL,
-    reuseExistingServer: !process.env['CI'],
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: `npm run build && npx vite preview --port ${port} --strictPort --host 127.0.0.1`,
+      url: baseURL,
+      reuseExistingServer: !process.env['CI'],
+      timeout: 120_000,
+    },
+    {
+      command: `npx vite build --outDir dist-email && npx vite preview --outDir dist-email --port ${EMAIL_PORT} --strictPort --host 127.0.0.1`,
+      url: `http://127.0.0.1:${EMAIL_PORT}/`,
+      env: { VITE_FEEDBACK_EMAIL: FEEDBACK_EMAIL },
+      reuseExistingServer: !process.env['CI'],
+      timeout: 120_000,
+    },
+  ],
 });

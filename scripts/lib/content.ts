@@ -142,6 +142,7 @@ export function aboutIssues(about: About): string[] {
   if (!/116\s?111/.test(about.help_line)) out.push('about.yaml: help_line must name Linka detskej istoty 116 111 (Red Line 8)');
   const ids = about.sections.map((s) => s.id);
   if (new Set(ids).size !== ids.length) out.push('about.yaml: section ids must be unique');
+  if (about.sections.filter((s) => s.comment_box).length > 1) out.push('about.yaml: comment_box may be on one section only');
   for (const s of about.sections) {
     if (s.address && /^[a-z][a-z0-9+.-]*:/i.test(s.address)) out.push(`about.yaml: section ${s.id}: write the address without a scheme (plain text, never a link)`);
     if (s.address_note && !s.address) out.push(`about.yaml: section ${s.id}: address_note needs an address`);

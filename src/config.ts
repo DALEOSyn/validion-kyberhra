@@ -23,3 +23,15 @@ export function withNoindex(html: string, pilot: boolean = PILOT): string {
   if (!out.includes('name="robots"')) throw new Error('withNoindex: no <meta charset="UTF-8" /> in index.html, cannot add noindex');
   return out;
 }
+
+/**
+ * The address the comment box's „Poslať e-mailom“ button writes to, from the build-time env VITE_FEEDBACK_EMAIL.
+ * Unset or empty: null (the box offers „Kopírovať text“ only). Anything that is not one plain address throws, so a
+ * typo fails the build (vite.config.ts) instead of shipping a broken button. Pure, so it is unit-tested.
+ */
+export function feedbackEmail(raw: string | undefined): string | null {
+  const v = (raw ?? '').trim();
+  if (!v) return null;
+  if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(v)) throw new Error(`VITE_FEEDBACK_EMAIL is not one plain e-mail address: "${v}"`);
+  return v;
+}

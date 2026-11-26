@@ -1,0 +1,91 @@
+/**
+ * The „O hre“ comment box (Roman, 2026-11-26): an adult writes a short comment, and the game turns it into text in
+ * issue-form shape ("### Label\n\nvalue") that the adult copies or sends from their own e-mail app. The game itself
+ * sends nothing (Red Line 7): no fetch, nothing stored. A maintainer pastes the text into an issue labelled
+ * `spatna-vazba` + `hra`, and scripts/feedback-export.ts parses it (kind `hra`, field order HRA_ORDER there).
+ * Pure functions and constants, unit-tested in tests/unit/comment.test.ts.
+ */
+
+/** Who is writing. Same values as scripts/lib/feedback.ts expects for the `hra` kind. */
+export const ROLE_OPTIONS = ['Učiteľ', 'Rodič', 'Odborník', 'Iné'] as const;
+export type Role = (typeof ROLE_OPTIONS)[number];
+
+/** Case titles, the same list as the issue forms (scripts/lib/feedback.ts re-exports it; a test checks the titles). */
+export const CASE_OPTIONS = [
+  'J1 Drak zadarmo',
+  'J2 Kód pre kamaráta',
+  'J3 Zámok na účte',
+  'J4 Kričiaca obrazovka',
+  'T1 Ľahká brigáda',
+  'T2 Cheat zadarmo',
+  'T3 Bez signálu',
+  'T4 Nové číslo',
+] as const;
+export const WHOLE_GAME = 'Celá hra';
+
+/** The longest comment, in characters (the textarea's maxlength and the counter). */
+export const MAX_TEXT = 500;
+
+/** The question labels, in this order, of a comment from the game (scripts/lib/feedback.ts uses them as HRA_ORDER). */
+export const HRA_LABELS = { who: 'Kto píše', case: 'Prípad', rating: 'Hodnotenie', comment: 'Pripomienka' } as const;
+
+/** How GitHub issue forms write an empty answer; the exporter turns it into "". */
+const NO_RESPONSE = '_No response_';
+
+export interface Comment {
+  role: Role;
+  case: string;
+  /** 1 to 5, or null when not rated (the rating is optional). */
+  rating: number | null;
+  text: string;
+}
+
+/**
+ * The comment in issue-form shape. Text is trimmed and cut to MAX_TEXT; a line of the comment that starts with "#"
+ * gets a leading space, so it can never look like a "### Label" header to the exporter.
+ */
+export function commentBody(c: Comment): string {
+  const text = c.text.replace(/\r\n?/g, '\n').trim().slice(0, MAX_TEXT).trim().split('\n').map((l) => (l.startsWith('#') ? ` ${l}` : l)).join('\n');
+  const rating = c.rating !== null && Number.isInteger(c.rating) && c.rating >= 1 && c.rating <= 5 ? String(c.rating) : NO_RESPONSE;
+  const kase = c.case === WHOLE_GAME || (CASE_OPTIONS as readonly string[]).includes(c.case) ? c.case : WHOLE_GAME;
+  return [
+    [HRA_LABELS.who, c.role],
+    [HRA_LABELS.case, kase],
+    [HRA_LABELS.rating, rating],
+    [HRA_LABELS.comment, text || NO_RESPONSE],
+  ].map(([label, value]) => `### ${label}\n\n${value}`).join('\n\n');
+}
+
+/** The e-mail subject. */
+export function commentSubject(version: string): string {
+  return `Pripomienka k hre ${version}`;
+}
+
+/** Every word the box shows. Kept here so the red-line rules (gender, exclamation marks) are unit-tested on them. */
+export const TEXTS = {
+  heading: 'Napísať pripomienku',
+  intro: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať a poslať ďalej.',
+  introEmail: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať alebo poslať zo svojho e-mailu.',
+  warning: 'Nepíšte sem mená, školu ani kontakty.',
+  role: 'Kto píše',
+  case: 'Ku ktorému prípadu',
+  rating: 'Hodnotenie hry (nepovinné)',
+  ratingHint: '1 je najmenej, 5 je najviac.',
+  noRating: 'Bez hodnotenia',
+  text: 'Pripomienka',
+  counter: (n: number) => `${n} z ${MAX_TEXT} znakov`,
+  mailNote: 'Otvorí sa vaša e-mailová aplikácia. Hra sama nič neodošle.',
+  mail: 'Poslať e-mailom',
+  copy: 'Kopírovať text',
+  needRole: 'Vyberte, prosím, kto píše.',
+  needText: 'Najprv napíšte pripomienku.',
+  copied: 'Text je skopírovaný. Môžete ho vložiť do e-mailu alebo do formulára.',
+  copyFailed: 'Kopírovanie sa nepodarilo. Text je v poli nižšie, môžete ho označiť a skopírovať.',
+  copyField: 'Text na skopírovanie',
+  mailOpened: 'Ak sa e-mailová aplikácia neotvorila, použite tlačidlo „Kopírovať text“.',
+} as const;
+
+/** The box's buttons: „Poslať e-mailom“ only with a build-time address, „Kopírovať text“ always. */
+export function commentActions(email: string | null): ('mail' | 'copy')[] {
+  return email ? ['mail', 'copy'] : ['copy'];
+}

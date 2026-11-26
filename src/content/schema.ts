@@ -344,6 +344,11 @@ export const AboutSectionSchema = z.strictObject({
   address: text.optional(),
   /** A calm note under the address, e.g. that the forms there are public. */
   address_note: text.optional(),
+  /**
+   * Show the comment box for adults (src/ui/CommentBox.tsx) at the end of this section: it copies the comment, or
+   * opens the adult's own mail app. The game sends nothing. At most one section (validator).
+   */
+  comment_box: z.boolean().optional(),
 });
 
 /** „O hre“: what the game is, privacy, feedback for adults, help line. Real names allowed here (Red Line 1 exemption). */

@@ -1,11 +1,11 @@
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { loadContent } from './scripts/lib/content.ts';
 import { serviceWorkerSource } from './scripts/lib/sw.ts';
-import { withNoindex } from './src/config.ts';
+import { feedbackEmail, withNoindex } from './src/config.ts';
 
 const pkg = JSON.parse(readFileSync(resolve(import.meta.dirname, 'package.json'), 'utf8')) as { version: string };
 
@@ -110,10 +110,15 @@ function noindexPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  base: './',
-  /** The version from package.json, shown in the pilot label (src/vite-env.d.ts). */
-  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
-  plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin(), noindexPlugin()],
-  build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0 },
+export default defineConfig(({ mode }) => {
+  // VITE_FEEDBACK_EMAIL (optional) is the address of the comment box's „Poslať e-mailom“ link; a malformed value fails
+  // the build here. It adds no network access: the CSP stays the same with or without it.
+  feedbackEmail(loadEnv(mode, import.meta.dirname, 'VITE_').VITE_FEEDBACK_EMAIL);
+  return {
+    base: './',
+    /** The version from package.json, shown in the pilot label (src/vite-env.d.ts). */
+    define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+    plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin(), noindexPlugin()],
+    build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0 },
+  };
 });

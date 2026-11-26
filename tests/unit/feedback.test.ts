@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parse } from 'yaml';
-import { APPROVED_LABEL, CASE_OPTIONS, F, FEEDBACK_LABEL, formOrders, HIDE_LABEL, type Issue, KINDS, parseFormBody, staleApprovals, toCsv, toRows, toSummary, WHOLE_GAME } from '../../scripts/lib/feedback.ts';
+import { commentBody } from '../../src/feedback/comment.ts';
+import { APPROVED_LABEL, CASE_OPTIONS, F, FEEDBACK_LABEL, FORM_KINDS, formOrders, HIDE_LABEL, HRA_ORDER, type Issue, KINDS, parseFormBody, staleApprovals, toCsv, toRows, toSummary, WHOLE_GAME } from '../../scripts/lib/feedback.ts';
 
 const root = resolve(import.meta.dirname, '../..');
 const formDir = resolve(root, '.github/ISSUE_TEMPLATE');
@@ -16,8 +17,9 @@ const body = (pairs: [string, string][]) => pairs.map(([k, v]) => `### ${k}\n\n$
 const issue = (n: number, labels: string[], b: string, state = 'open'): Issue => ({ number: n, title: `#${n}`, body: b, state, created_at: '2026-12-11T09:00:00Z', approved_at: '2026-12-12T09:00:00Z', last_edited_at: null, html_url: `https://example.test/${n}`, labels: [...labels, ...(labels.includes('neschvalene') ? [] : [APPROVED_LABEL])].map((name) => ({ name })) });
 
 describe('issue forms', () => {
-  it('there is one form per feedback kind, each labelled spatna-vazba + its kind', () => {
-    expect(forms.map((f) => f.name).sort()).toEqual(Object.values(KINDS).sort());
+  it('there is one form per feedback kind except `hra` (from the game), each labelled spatna-vazba + its kind', () => {
+    expect(forms.map((f) => f.name).sort()).toEqual(FORM_KINDS.map((k) => KINDS[k]).sort());
+    expect(Object.keys(KINDS).sort()).toEqual([...FORM_KINDS, 'hra'].sort());
     for (const f of forms) {
       expect(f.labels).toContain(FEEDBACK_LABEL);
       expect(f.labels.filter((l) => l in KINDS)).toHaveLength(1);
@@ -109,5 +111,19 @@ describe('export', () => {
     expect(md).toContain('| J1 | 2 | 0 | 0 |');
     expect(md).toContain('medián 8.25 min z 2 hodín');
     expect(md).toContain('- #3 · Blokuje vydanie · T3 · Fakty a zdroje');
+  });
+  it('parses a comment from the game (kind hra) pasted into an issue', () => {
+    const text = commentBody({ role: 'Učiteľ', case: 'T3 Bez signálu', rating: 4, text: 'Deti to bavilo.\n### Prípad\n\nJ1 Drak zadarmo' });
+    expect(orders.hra).toEqual([...HRA_ORDER]);
+    const rows = toRows([issue(12, [FEEDBACK_LABEL, 'hra'], text), issue(13, [FEEDBACK_LABEL, 'hra'], commentBody({ role: 'Rodič', case: 'Celá hra', rating: null, text: 'Ok' }))], orders);
+    expect(rows.map((r) => [r.number, r.kind, r.cases])).toEqual([[12, 'hra', ['T3']], [13, 'hra', [WHOLE_GAME]]]);
+    expect(rows[0]?.fields).toEqual({ [F.who]: 'Učiteľ', [F.case]: 'T3 Bez signálu', [F.rating]: '4', [F.comment]: 'Deti to bavilo.\n ### Prípad\n\nJ1 Drak zadarmo' });
+    expect(rows[1]?.fields[F.rating]).toBe('');
+    const md = toSummary(rows, '2026-12-20');
+    expect(md).toContain('| Komentár z hry | 2 | 2 |');
+    expect(md).toContain('| T3 | 0 | 0 | 0 | 1 |');
+    expect(md).toContain('| Celá hra | 0 | 0 | 0 | 1 |');
+    expect(md).toContain('Hodnotenie z hry: priemer 4 z 5, počet hodnotení 1.');
+    expect(toCsv(rows).split('\n')[0]).toContain('Kto píše');
   });
 });

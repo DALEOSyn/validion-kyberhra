@@ -16,6 +16,7 @@ sections:
     heading: Tvoje súkromie
     text:
       - Hra nič nikam neodosiela.
+      - Dospelý môže poslať pripomienku k hre zo svojho vlastného e-mailu. Hra ju sama neodošle.
       - Nepýta sa ťa na meno ani na nič iné o tebe.
       - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
       - Postup vymažeš tlačidlom „Vymazať postup“ dole na stránke trasy. Zmažú sa hviezdy na oboch trasách aj nastavenie zvuku.
@@ -27,4 +28,5 @@ sections:
       - Bez účtu GitHub môže učiteľ poslať pripomienku koordinátorovi pilotu od VALIDION.
     address: github.com/DALEOSyn/validion-kyberhra/issues
     address_note: Formuláre tam sú verejné. Nepíšte do nich mená detí ani iné osobné údaje.
+    comment_box: true
 help_line: Ak ťa niečo trápi, povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.

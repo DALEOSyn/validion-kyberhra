@@ -2,7 +2,12 @@
  * Pilot feedback captured as GitHub issues (issue forms in .github/ISSUE_TEMPLATE/), exported into the repository
  * as docs/feedback/feedback.csv and docs/feedback/SUMMARY.md by scripts/feedback-export.ts. See docs/FEEDBACK.md.
  * Pure functions, unit-tested in tests/unit/feedback.test.ts. The game itself sends nothing (Red Line 7).
+ * Kind `hra`: a comment from the game's comment box (src/feedback/comment.ts), which an adult copied or e-mailed and
+ * a maintainer pasted into an issue labelled `spatna-vazba` + `hra`. It has no issue form; its field order is HRA_ORDER.
  */
+import { CASE_OPTIONS, HRA_LABELS, WHOLE_GAME } from '../../src/feedback/comment.ts';
+
+export { CASE_OPTIONS, WHOLE_GAME };
 
 /** Every feedback issue carries this label; the form label says which kind it is. */
 export const FEEDBACK_LABEL = 'spatna-vazba';
@@ -15,6 +20,7 @@ export const KINDS = {
   lekcia: 'Pilotná hodina (učiteľ)',
   recenzia: 'Odborná recenzia',
   pripomienka: 'Pripomienka alebo chyba',
+  hra: 'Komentár z hry',
 } as const;
 export type Kind = keyof typeof KINDS;
 
@@ -40,21 +46,18 @@ export const F = {
   suggestion: 'Návrh zmeny',
   type: 'Typ',
   device: 'Zariadenie a prehliadač',
+  who: HRA_LABELS.who,
+  rating: HRA_LABELS.rating,
   privacy: 'Ochrana súkromia',
 } as const;
 
-/** Case titles as offered in the forms' dropdowns (content/cases/<track>/<id>.yaml). */
-export const CASE_OPTIONS = [
-  'J1 Drak zadarmo',
-  'J2 Kód pre kamaráta',
-  'J3 Zámok na účte',
-  'J4 Kričiaca obrazovka',
-  'T1 Ľahká brigáda',
-  'T2 Cheat zadarmo',
-  'T3 Bez signálu',
-  'T4 Nové číslo',
-] as const;
-export const WHOLE_GAME = 'Celá hra';
+/** Kinds that have an issue form in .github/ISSUE_TEMPLATE/ (`hra` comes from the game's comment box instead). */
+export const FORM_KINDS = ['lekcia', 'recenzia', 'pripomienka'] as const satisfies readonly Kind[];
+
+/** Field order of a `hra` comment, fixed by the game (src/feedback/comment.ts commentBody). */
+export const HRA_ORDER = [F.who, F.case, F.rating, F.comment] as const;
+
+/** Case titles as offered in the forms' dropdowns and the game's comment box: CASE_OPTIONS, WHOLE_GAME (imported above). */
 export const AREA_OPTIONS = ['Text a jazyk', 'Vek a náročnosť', 'Tón a emočná bezpečnosť', 'Fakty a zdroje', 'Pomoc a kontakty', 'Ovládanie a prístupnosť'] as const;
 export const SEVERITY_OPTIONS = ['Blokuje vydanie', 'Dôležité', 'Drobnosť'] as const;
 
@@ -112,7 +115,7 @@ export function parseFormBody(body: string, order: readonly string[]): Record<st
 
 /** Question labels in form order, per feedback kind, read from the issue forms (form `labels` name the kind). */
 export function formOrders(forms: { labels?: string[]; body: { type: string; attributes?: { label?: string } }[] }[]): Partial<Record<Kind, string[]>> {
-  const out: Partial<Record<Kind, string[]>> = {};
+  const out: Partial<Record<Kind, string[]>> = { hra: [...HRA_ORDER] };
   for (const f of forms) {
     const kind = kindOf(f.labels ?? []);
     if (kind !== 'ina') out[kind] = f.body.filter((b) => b.type !== 'markdown').map((b) => b.attributes?.label ?? '');
@@ -206,10 +209,15 @@ export function toSummary(rows: Row[], generatedAt: string): string {
   out.push(`Vygenerované ${generatedAt} skriptom \`scripts/feedback-export.ts\` zo schválených issues (\`${FEEDBACK_LABEL}\` + \`${APPROVED_LABEL}\`). Needitujte ručne. Voľný text je iba v \`feedback.csv\`.`, '');
   out.push('| Druh | Spolu | Otvorené |', '| --- | --- | --- |');
   for (const k of Object.keys(KINDS) as Kind[]) out.push(`| ${KINDS[k]} | ${count((r) => r.kind === k)} | ${count((r) => r.kind === k && r.state === 'open')} |`);
-  out.push('', '| Prípad | Hodiny | Recenzie | Pripomienky |', '| --- | --- | --- | --- |');
+  out.push('', '| Prípad | Hodiny | Recenzie | Pripomienky | Z hry |', '| --- | --- | --- | --- | --- |');
   for (const c of [...CASE_OPTIONS.map((o) => o.split(' ')[0] ?? o), WHOLE_GAME]) {
     const n = (k: Kind) => count((r) => r.kind === k && r.cases.includes(c));
-    out.push(`| ${c} | ${n('lekcia')} | ${n('recenzia')} | ${n('pripomienka')} |`);
+    out.push(`| ${c} | ${n('lekcia')} | ${n('recenzia')} | ${n('pripomienka')} | ${n('hra')} |`);
+  }
+  const ratings = rows.filter((r) => r.kind === 'hra').map((r) => Number(onlyOptions(r.fields[F.rating] ?? '', ['1', '2', '3', '4', '5']))).filter((n) => n >= 1);
+  if (ratings.length) {
+    const avg = Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10;
+    out.push('', `Hodnotenie z hry: priemer ${avg} z 5, počet hodnotení ${ratings.length}.`);
   }
   const lessons = rows.filter((r) => r.kind === 'lekcia');
   const mins = lessons.map((r) => Number.parseFloat((r.fields[F.minutes] ?? '').replace(',', '.'))).filter((m) => Number.isFinite(m));

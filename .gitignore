@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-email/
 playwright-report/
 test-results/
 *.log

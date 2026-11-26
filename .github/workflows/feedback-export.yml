@@ -49,6 +49,7 @@ jobs:
           make_label lekcia 1d76db 'Pilot lesson report from a teacher'
           make_label recenzia 5319e7 'Expert review'
           make_label pripomienka fbca04 'Comment or bug from an adult player'
+          make_label hra c5def5 'Comment from the in-game comment box, pasted from e-mail by a maintainer'
           make_label schvalene 0e8a16 'Checked for personal data by a maintainer; only these are exported'
           make_label skryt b60205 'Keep out of the export (personal data, spam)'
 
