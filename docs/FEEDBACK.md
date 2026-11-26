@@ -66,6 +66,11 @@ the pilot. The "Kto píše" answers are "Zo školy", "Z rodiny", "Odborná verej
 - Teachers do not describe an upset child in an issue. The form sends those details privately to the pilot
   coordinator. If an issue still suggests a child is at risk, lock it, add `skryt`, and tell Roman so the school can
   be contacted.
+- **Comments sent from the game (private repo `validion-kyberhra-feedback`).** Roman reads them (Roman,
+  2026-11-26). If one looks like a child wrote it, or it holds anything personal about a child: never publish or
+  approve it, add `skryt`, tell Roman, and delete the issue once it is handled. The sender is anonymous, so nobody
+  can reply; the box already points to Linka detskej istoty 116 111. Click "Watch > All Activity" on that repo to
+  get an e-mail for each new comment.
 - The issue author's login is public. The lesson form suggests a personal account with no school in the profile, or
   sending the report to the coordinator, who files it.
 - The export never copies the author's login or the privacy box. `SUMMARY.md` shows only dropdown answers; free text
