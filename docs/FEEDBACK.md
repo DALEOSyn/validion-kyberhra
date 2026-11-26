@@ -19,21 +19,29 @@ the issue chooser shows Linka detskej istoty 116 111 for any child who lands the
 ## Privacy rules for maintainers
 
 - Every form says it is public and ends with a required "no personal data" check box.
-- Check each new feedback issue within 2 working days. If it holds a name, school, contact or anything that could
-  identify a child: edit the text out, hide the edit history (issue menu > "Delete" on the older revision), and add
-  the label `skryt` if the issue should stay out of the export.
-- If an issue suggests a child is at risk, do not discuss it in the issue: lock it, hide it with `skryt`, and tell
-  Roman so the reporting school can be contacted.
-- The export never copies the author's login or the privacy box.
+- **Nothing is exported until a maintainer approves it.** Check each new feedback issue within 2 working days. If it
+  holds a name, school, contact or anything that could identify a child, edit the text out and delete the older
+  revision from the edit history (issue "edited" menu > the revision > "Delete revision from history"). Then add
+  `schvalene`. Add `skryt` instead if it should never be exported.
+- If personal data ever reaches a commit or branch, closing the PR is not enough: delete the branch, and if it was
+  merged, rewrite the history (Roman decides) and ask GitHub Support to purge cached views.
+- Teachers do not describe an upset child in an issue. The form sends those details privately to the pilot
+  coordinator. If an issue still suggests a child is at risk, lock it, add `skryt`, and tell Roman so the school can
+  be contacted.
+- The issue author's login is public. The lesson form suggests a personal account with no school in the profile, or
+  sending the report to the coordinator, who files it.
+- The export never copies the author's login or the privacy box. `SUMMARY.md` shows only dropdown answers; free text
+  is only in `feedback.csv`.
 
 ## Export
 
 - `npm run feedback:export` (with `GITHUB_TOKEN` set, or `--input issues.json` offline) writes
-  `docs/feedback/feedback.csv` (one row per issue, one column per question, safe to open in a spreadsheet) and
+  `docs/feedback/feedback.csv` (one row per approved issue, one column per question, safe to open in a spreadsheet) and
   `docs/feedback/SUMMARY.md` (counts per kind and case, median minutes per case against the 7–9 minute target, open
   expert items by severity).
 - `.github/workflows/feedback-export.yml` runs it every Monday and on demand, creates the labels if missing and opens
-  a pull request `feedback/export-<date>` when the CSV changed. Run CI on that PR by hand: PRs opened by the workflow
+  a pull request `feedback/export-<date>` when the CSV changed. Only the label and PR steps get the write token; npm
+  runs with `--ignore-scripts` and checkout keeps no credentials on the self-hosted runner. Run CI on that PR by hand: PRs opened by the workflow
   token do not start it.
 
 ## Triage

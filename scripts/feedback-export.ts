@@ -7,9 +7,10 @@
  *
  * Runs locally or in .github/workflows/feedback-export.yml. Never part of the game build.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { FEEDBACK_LABEL, type Issue, toCsv, toRows, toSummary } from './lib/feedback.ts';
+import { parse } from 'yaml';
+import { FEEDBACK_LABEL, formOrders, type Issue, toCsv, toRows, toSummary } from './lib/feedback.ts';
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -36,7 +37,9 @@ const input = arg('input');
 const repo = arg('repo') ?? process.env.GITHUB_REPOSITORY ?? 'daleosyn/cybersec-for-children';
 const outDir = resolve(arg('out') ?? 'docs/feedback');
 const issues = input ? (JSON.parse(readFileSync(input, 'utf8')) as Issue[]) : await fetchIssues(repo, process.env.GITHUB_TOKEN);
-const rows = toRows(issues);
+const formDir = resolve(import.meta.dirname, '../.github/ISSUE_TEMPLATE');
+const forms = readdirSync(formDir).filter((f) => f.endsWith('.yml') && f !== 'config.yml').map((f) => parse(readFileSync(resolve(formDir, f), 'utf8')) as Parameters<typeof formOrders>[0][number]);
+const rows = toRows(issues, formOrders(forms));
 mkdirSync(outDir, { recursive: true });
 writeFileSync(resolve(outDir, 'feedback.csv'), toCsv(rows));
 writeFileSync(resolve(outDir, 'SUMMARY.md'), toSummary(rows, new Date().toISOString().slice(0, 10)));

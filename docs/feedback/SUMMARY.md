@@ -1,6 +1,6 @@
 # Spätná väzba z pilotu
 
-Vygenerované 2026-11-26 skriptom `scripts/feedback-export.ts` z issues s označením `spatna-vazba`. Needitujte ručne.
+Vygenerované 2026-11-26 skriptom `scripts/feedback-export.ts` zo schválených issues (`spatna-vazba` + `schvalene`). Needitujte ručne. Voľný text je iba v `feedback.csv`.
 
 | Druh | Spolu | Otvorené |
 | --- | --- | --- |
