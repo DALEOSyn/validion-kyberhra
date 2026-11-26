@@ -114,6 +114,56 @@ test('help is reachable from every screen and returns to the same place', async 
   await expect(page.getByTestId('clue-count')).toHaveText('1/5');
 });
 
+test('pilot build: the start screen shows the pilot label and the page is noindex', async ({ page, request }) => {
+  await page.goto('./');
+  await expect(page.getByTestId('pilot-label')).toHaveText('Pilotná verzia 0.2.0');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  // the built index.html itself carries the tag (search engines read the HTML, not the running app)
+  const html = await (await request.get('./index.html')).text();
+  expect(html).toContain('<meta name="robots" content="noindex" />');
+  // the label stays on the start screen only
+  await page.locator('[data-track="junior"]').click();
+  await expect(page.getByTestId('pilot-label')).toHaveCount(0);
+});
+
+test('„O hre“ opens from the start screen and closes by keyboard like help', async ({ page }) => {
+  await page.goto('./');
+  const aboutBtn = page.getByRole('button', { name: 'O hre' });
+  await aboutBtn.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: 'O hre', level: 2 })).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Pre dospelých: pripomienky a chyby' })).toBeVisible();
+  await expect(page.getByText('github.com/DALEOSyn/validion-kyberhra/issues')).toBeVisible();
+  await expect(page.getByText('Ak ťa niečo trápi, zavolaj na Linku detskej istoty 116 111.')).toBeVisible();
+  // addresses are plain text: the screen has no links at all
+  await expect(page.locator('main a')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeHidden();
+  await axe(page);
+
+  // Escape closes it and returns focus to the button
+  await page.keyboard.press('Escape');
+  await expect(aboutBtn).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeVisible();
+
+  // "Späť do hry" by keyboard does the same
+  await page.keyboard.press('Enter');
+  const back = page.getByRole('button', { name: 'Späť do hry' });
+  await back.focus();
+  await page.keyboard.press('Enter');
+  await expect(aboutBtn).toBeFocused();
+
+  // help and about never show together
+  await aboutBtn.click();
+  await page.getByRole('button', { name: 'Pomoc' }).click();
+  await expect(page.getByRole('heading', { name: 'Kde nájsť pomoc' })).toBeVisible();
+  await expect(page.locator('[data-screen="about"]')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+
+  // the entry is on the start screen only
+  await page.locator('[data-track="junior"]').click();
+  await expect(page.getByRole('button', { name: 'O hre' })).toHaveCount(0);
+});
+
 test('after a clue tap the hint and the count are on screen without scrolling (QA F1)', async ({ page }) => {
   await page.goto('./');
   for (const [track, caseId] of [['junior', 'j1-drak-zadarmo'], ['teen', 't2-cheat-zadarmo']] as const) {

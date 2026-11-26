@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resolve } from 'node:path';
-import { caseIssues, helpIssues, loadContent, trackIssues } from '../../scripts/lib/content.ts';
-import { CaseSchema, HelpEntrySchema, RecallSchema } from '../../src/content/schema.ts';
+import { aboutIssues, caseIssues, helpIssues, loadContent, trackIssues } from '../../scripts/lib/content.ts';
+import { AboutFileSchema, CaseSchema, HelpEntrySchema, RecallSchema } from '../../src/content/schema.ts';
 
 const CONTENT = resolve(import.meta.dirname, '../../content');
 const res = loadContent(CONTENT);
@@ -166,5 +166,28 @@ describe('optional case fields', () => {
     delete raw['risk'];
     expect(CaseSchema.safeParse(raw).success).toBe(false);
     expect(CaseSchema.safeParse({ ...raw, risk: [] }).success).toBe(true);
+  });
+});
+
+describe('about.yaml („O hre“)', () => {
+  const about = res.content?.about;
+  it('is loaded, names 116 111 and shows the issues address as plain text', () => {
+    if (!about) throw new Error('about missing');
+    expect(aboutIssues(about)).toEqual([]);
+    expect(about.help_line).toMatch(/116 111/);
+    const fb = about.sections.find((s) => s.address);
+    expect(fb?.address).toBe('github.com/DALEOSyn/validion-kyberhra/issues');
+    expect(fb?.address_note).toMatch(/verejné/);
+  });
+  it('rejects unknown keys, a help line without 116 111, duplicate ids and linked addresses', () => {
+    if (!about) throw new Error('about missing');
+    expect(AboutFileSchema.safeParse({ ...about, extra: 1 }).success).toBe(false);
+    expect(AboutFileSchema.safeParse({ ...about, sections: [] }).success).toBe(false);
+    expect(aboutIssues({ ...about, help_line: 'Povedz to dospelému.' }).join('\n')).toMatch(/116 111/);
+    const first = about.sections[0];
+    if (!first) throw new Error('about empty');
+    expect(aboutIssues({ ...about, sections: [first, first] }).join('\n')).toMatch(/unique/);
+    expect(aboutIssues({ ...about, sections: [{ ...first, address: 'https://x.example/' }] }).join('\n')).toMatch(/without a scheme/);
+    expect(aboutIssues({ ...about, sections: [{ ...first, address: undefined, address_note: 'Verejné.' }] }).join('\n')).toMatch(/needs an address/);
   });
 });

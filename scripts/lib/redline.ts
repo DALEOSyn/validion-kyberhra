@@ -4,16 +4,16 @@
  * comments and keys are never checked.
  *
  * 1. domains   Any domain or URL whose top-level domain is not .example, .test or .invalid (Red Lines 1, 3).
- *              Not checked in sources.yaml and help.yaml, where real organisations are named on purpose.
+ *              Not checked in sources.yaml, help.yaml and about.yaml, where real organisations are named on purpose.
  * 2. denylist  Real brand names from scripts/redline-denylist.txt (Red Line 1). Same exemption.
  * 3. gender    Gendered forms about the player (Red Line 9): "(a)" or "/a" endings, "hráč", and second-person
  *              past or adjective forms such as "klikol si", "ak si klikla", "si pripravený". A heuristic:
  *              it catches the common shapes, not every one. Reviewers still read for tone.
  * 4. exclaim   Exclamation marks in teaching text (Red Line 5): hints, decoys, why, consequence, later, calm,
- *              lock-up feedback, recall feedback and the whole debrief.
+ *              lock-up feedback, recall feedback and the whole debrief. All of about.yaml is teaching text too.
  * 5. phone     An unmasked phone-like number: 9 or more digits in one run of digits, spaces, dashes or slashes, with
- *              an optional "+" (Red Line 3). Mask digits with x or • ("0900 xxx xxx"). Not checked in sources.yaml
- *              and help.yaml, where real help lines are listed on purpose.
+ *              an optional "+" (Red Line 3). Mask digits with x or • ("0900 xxx xxx"). Not checked in sources.yaml,
+ *              help.yaml and about.yaml, where real help lines are listed on purpose.
  * 6. iban      An IBAN whose check digits pass mod-97 (Red Line 3: IBANs must fail the checksum). Checked everywhere.
  */
 
@@ -21,6 +21,29 @@ export interface Hit {
   rule: 'domains' | 'denylist' | 'gender' | 'exclaim' | 'phone' | 'iban';
   path: string;
   message: string;
+}
+
+/**
+ * Top-level files of content/ that may name real organisations, domains and help-line numbers (Red Line 1: the help
+ * screen, the sources list and the „O hre“ screen). Every other rule (gender, exclaim, iban) still applies there.
+ */
+export const REAL_NAMES_FILES = ['sources.yaml', 'help.yaml', 'about.yaml'] as const;
+/** Files whose every value is player-facing explanation, so the exclamation-mark rule applies to all of it. */
+export const ALL_TEACHING_FILES = ['about.yaml'] as const;
+
+export interface FileRules {
+  realNamesAllowed: boolean;
+  allTeaching: boolean;
+}
+
+/** Which exemptions apply to a file, given its path relative to the content dir (only top-level files qualify). */
+export function fileRules(relPath: string): FileRules {
+  const p = relPath.split('\\').join('/');
+  const top = !p.includes('/');
+  return {
+    realNamesAllowed: top && (REAL_NAMES_FILES as readonly string[]).includes(p),
+    allTeaching: top && (ALL_TEACHING_FILES as readonly string[]).includes(p),
+  };
 }
 
 export const ALLOWED_TLDS = ['example', 'test', 'invalid'];
@@ -164,8 +187,11 @@ export function* strings(value: unknown, path: (string | number)[] = []): Genera
   else if (value && typeof value === 'object') for (const [k, v] of Object.entries(value)) yield* strings(v, [...path, k]);
 }
 
-/** Lints one parsed content file. `realNamesAllowed` is true for sources.yaml and help.yaml. */
-export function lintValue(value: unknown, matchers: DenyMatcher[], realNamesAllowed: boolean): Hit[] {
+/**
+ * Lints one parsed content file. `realNamesAllowed` is true for the REAL_NAMES_FILES; `allTeaching` (about.yaml)
+ * applies the exclamation-mark rule to every value. See fileRules().
+ */
+export function lintValue(value: unknown, matchers: DenyMatcher[], realNamesAllowed: boolean, allTeaching = false): Hit[] {
   const hits: Hit[] = [];
   for (const [path, text] of strings(value)) {
     const p = path.join('.');
@@ -180,7 +206,7 @@ export function lintValue(value: unknown, matchers: DenyMatcher[], realNamesAllo
     for (const m of ibanIssues(text)) hits.push({ rule: 'iban', path: p, message: m });
     // Source titles are other people's words; everything else speaks to the player.
     if (!(realNamesAllowed && path[0] === 'sources')) for (const m of genderIssues(text)) hits.push({ rule: 'gender', path: p, message: m });
-    if (isTeachingPath(path)) for (const m of exclaimIssues(text)) hits.push({ rule: 'exclaim', path: p, message: m });
+    if (allTeaching || isTeachingPath(path)) for (const m of exclaimIssues(text)) hits.push({ rule: 'exclaim', path: p, message: m });
   }
   return hits;
 }

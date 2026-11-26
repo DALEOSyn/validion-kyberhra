@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { denyMatchers, denylistIssues, domainIssues, exclaimIssues, genderIssues, ibanIssues, ibanValid, lintValue, parseDenylist, phoneIssues } from '../../scripts/lib/redline.ts';
+import { parse } from 'yaml';
+import { denyMatchers, denylistIssues, domainIssues, exclaimIssues, fileRules, genderIssues, ibanIssues, ibanValid, lintValue, parseDenylist, phoneIssues } from '../../scripts/lib/redline.ts';
 
 const matchers = denyMatchers(parseDenylist(readFileSync(resolve(import.meta.dirname, '../../scripts/redline-denylist.txt'), 'utf8')));
 
@@ -53,6 +54,30 @@ describe('lintValue', () => {
     const v = { entries: [{ text: 'Linka detskej istoty, https://www.ldi.sk, aj Google' }] };
     expect(lintValue(v, matchers, true)).toEqual([]);
     expect(lintValue(v, matchers, false).map((h) => h.rule).sort()).toEqual(['denylist', 'domains', 'domains']);
+  });
+});
+
+describe('about.yaml exemption (pilot „O hre“ screen)', () => {
+  it('fileRules exempts only top-level sources.yaml, help.yaml and about.yaml', () => {
+    expect(fileRules('about.yaml')).toEqual({ realNamesAllowed: true, allTeaching: true });
+    expect(fileRules('help.yaml')).toEqual({ realNamesAllowed: true, allTeaching: false });
+    expect(fileRules('sources.yaml')).toEqual({ realNamesAllowed: true, allTeaching: false });
+    expect(fileRules('tracks.yaml')).toEqual({ realNamesAllowed: false, allTeaching: false });
+    expect(fileRules('cases/junior/about.yaml')).toEqual({ realNamesAllowed: false, allTeaching: false });
+    expect(fileRules('cases\\teen\\help.yaml').realNamesAllowed).toBe(false);
+  });
+  it('allows real names, domains and help lines in about.yaml, but keeps gender, exclaim and iban', () => {
+    const { realNamesAllowed, allTeaching } = fileRules('about.yaml');
+    const ok = { sections: [{ text: ['Hra od VALIDION, chyby na github.com/DALEOSyn/validion-kyberhra/issues, aj Google.'] }], help_line: 'Zavolaj na 116 111 alebo 0800 221 021.' };
+    expect(lintValue(ok, matchers, realNamesAllowed, allTeaching)).toEqual([]);
+    expect(lintValue(ok, matchers, false).map((h) => h.rule)).toContain('domains');
+    const bad = { title: 'O hre!', sections: [{ text: ['Ak si klikol na odkaz.', 'SK: GB82WEST12345698765432'] }] };
+    expect(lintValue(bad, matchers, realNamesAllowed, allTeaching).map((h) => h.rule).sort()).toEqual(['exclaim', 'gender', 'iban']);
+  });
+  it('the real content/about.yaml is clean under its rules', () => {
+    const raw: unknown = parse(readFileSync(resolve(import.meta.dirname, '../../content/about.yaml'), 'utf8'));
+    const { realNamesAllowed, allTeaching } = fileRules('about.yaml');
+    expect(lintValue(raw, matchers, realNamesAllowed, allTeaching)).toEqual([]);
   });
 });
 

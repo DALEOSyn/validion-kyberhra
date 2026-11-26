@@ -7,10 +7,12 @@ import { basename, join, relative } from 'node:path';
 import { parse } from 'yaml';
 import type { z } from 'zod';
 import {
+  AboutFileSchema,
   CaseSchema,
   HelpFileSchema,
   SourcesFileSchema,
   TracksFileSchema,
+  type About,
   type Case,
   type GameContent,
   type Help,
@@ -131,6 +133,22 @@ export function helpIssues(help: Help): string[] {
   return out;
 }
 
+/**
+ * about.yaml rules: the closing help line names 116 111 (Red Line 8); section ids are unique; addresses are plain
+ * text, so they carry no scheme (the game opens no links).
+ */
+export function aboutIssues(about: About): string[] {
+  const out: string[] = [];
+  if (!/116\s?111/.test(about.help_line)) out.push('about.yaml: help_line must name Linka detskej istoty 116 111 (Red Line 8)');
+  const ids = about.sections.map((s) => s.id);
+  if (new Set(ids).size !== ids.length) out.push('about.yaml: section ids must be unique');
+  for (const s of about.sections) {
+    if (s.address && /^[a-z][a-z0-9+.-]*:/i.test(s.address)) out.push(`about.yaml: section ${s.id}: write the address without a scheme (plain text, never a link)`);
+    if (s.address_note && !s.address) out.push(`about.yaml: section ${s.id}: address_note needs an address`);
+  }
+  return out;
+}
+
 export function trackIssues(t: Track): string[] {
   const out: string[] = [];
   if (!t.ranks.some((r) => r.min_stars === 0)) out.push(`track ${t.id}: one rank needs min_stars: 0`);
@@ -150,6 +168,8 @@ export function loadContent(root: string): LoadResult {
   const help: Help | null = parseFile(HelpFileSchema, join(root, 'help.yaml'), root, errors, files);
 
   if (help) errors.push(...helpIssues(help));
+  const about: About | null = parseFile(AboutFileSchema, join(root, 'about.yaml'), root, errors, files);
+  if (about) errors.push(...aboutIssues(about));
   const sources = sourcesFile?.sources ?? [];
   const sourceMap = new Map(sources.map((s) => [s.id, s]));
   if (sourceMap.size !== sources.length) errors.push('sources.yaml: source ids must be unique');
@@ -186,6 +206,6 @@ export function loadContent(root: string): LoadResult {
     if (!tracks.some((t) => t.cases.includes(c.id))) errors.push(`case ${c.id}: not listed in tracks.yaml under track ${c.track}`);
   }
 
-  const ok = errors.length === 0 && tracksFile && help;
-  return { content: ok ? { tracks, cases, help } : null, sources, errors, files };
+  const ok = errors.length === 0 && tracksFile && help && about;
+  return { content: ok ? { tracks, cases, help, about } : null, sources, errors, files };
 }

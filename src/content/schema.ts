@@ -330,6 +330,30 @@ export const HelpFileSchema = z.strictObject({
   topics_title: text.default('Keď ide o niečo ťažké'),
 });
 
+// ---------- about.yaml ----------
+
+export const AboutSectionSchema = z.strictObject({
+  id,
+  heading: text,
+  /** Short paragraphs, plain text. */
+  text: z.array(text).min(1),
+  /**
+   * An address shown as plain text only, never as a live link (same rule as help.yaml `url_label`): the game opens
+   * no links. Written without a scheme, e.g. `github.com/owner/repo/issues`.
+   */
+  address: text.optional(),
+  /** A calm note under the address, e.g. that the forms there are public. */
+  address_note: text.optional(),
+});
+
+/** „O hre“: what the game is, privacy, feedback for adults, help line. Real names allowed here (Red Line 1 exemption). */
+export const AboutFileSchema = z.strictObject({
+  title: text,
+  sections: z.array(AboutSectionSchema).min(1),
+  /** The closing line, e.g. the Linka detskej istoty 116 111 (validator: must name 116 111, Red Line 8). */
+  help_line: text,
+});
+
 export type Avatar = z.output<typeof AvatarSchema>;
 export type CastMember = z.output<typeof CastMemberSchema>;
 export type Rank = z.output<typeof RankSchema>;
@@ -354,10 +378,13 @@ export type Case = z.output<typeof CaseSchema>;
 export type Source = z.output<typeof SourceSchema>;
 export type HelpEntry = z.output<typeof HelpEntrySchema>;
 export type Help = z.output<typeof HelpFileSchema>;
+export type AboutSection = z.output<typeof AboutSectionSchema>;
+export type About = z.output<typeof AboutFileSchema>;
 
 /** What the build ships to the browser (virtual:content). */
 export interface GameContent {
   tracks: Track[];
   cases: Record<string, Case>;
   help: Help;
+  about: About;
 }

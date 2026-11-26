@@ -1,0 +1,29 @@
+# The „O hre“ screen (start screen → O hre). Docs: docs/CONTENT_SCHEMA.md §11b.
+# Real organisations (VALIDION, GitHub, Linka detskej istoty) and one real address may be named here, as on the help
+# screen (Red Line 1 exemption in scripts/lib/redline.ts). Gender, exclamation-mark and IBAN rules still apply.
+# Addresses are shown as plain text only, never as links (the game opens no links).
+title: O hre
+sections:
+  - id: hra
+    heading: Čo je táto hra
+    text:
+      - Lipovec · internetové prípady je bezplatná hra od VALIDION pre deti od 11 do 15 rokov.
+      - Učí spoznať podvody na internete a chrániť svoje účty. Je o kybernetickej bezpečnosti.
+      - Má dve trasy. Kancelária STOPA je pre 11 až 12 rokov, Ozvena pre 13 až 15 rokov.
+      - Toto je pilotná verzia. Hru ešte vylepšujeme.
+      - Kód hry má licenciu MIT. Texty a obrázky majú licenciu CC BY-SA 4.0.
+  - id: sukromie
+    heading: Tvoje súkromie
+    text:
+      - Hra nič nikam neodosiela.
+      - Nepýta sa ťa na meno ani na nič iné o tebe.
+      - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
+      - Postup vymažeš tlačidlom „Vymazať postup“ na stránke trasy. Zmažú sa hviezdy na oboch trasách.
+  - id: pripomienky
+    heading: "Pre dospelých: pripomienky a chyby"
+    text:
+      - Pripomienky zbierame cez učiteľov a rodičov, nie priamo od detí.
+      - Učiteľ alebo rodič môže pripomienku alebo chybu zapísať na tejto adrese.
+    address: github.com/DALEOSyn/validion-kyberhra/issues
+    address_note: Formuláre tam sú verejné. Nepíšte do nich mená detí ani iné osobné údaje.
+help_line: Ak ťa niečo trápi, zavolaj na Linku detskej istoty 116 111.

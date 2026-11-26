@@ -5,7 +5,7 @@ import type { Progress } from '../engine/progress.ts';
  * Neutral start screen that frames both tracks equally (PSYCHOLOGY finding 3). Each track card carries its own
  * theme tokens (data-theme), so the teen card looks like Ozvena and not like part of the junior club.
  */
-export function StartScreen({ title, tracks, progress, onPick }: { title: string; tracks: Track[]; progress: Progress; onPick: (id: TrackId) => void }) {
+export function StartScreen({ title, tracks, progress, onPick, pilot = null }: { title: string; tracks: Track[]; progress: Progress; onPick: (id: TrackId) => void; pilot?: string | null }) {
   return (
     <section class="screen">
       {/* An eyebrow line, not a heading: the h1 comes first in the outline (QA F18). */}
@@ -29,6 +29,12 @@ export function StartScreen({ title, tracks, progress, onPick }: { title: string
         })}
       </div>
       <p class="muted small">Hra nič neodosiela. Postup sa ukladá len v tomto prehliadači.</p>
+      {/* A calm pilot label, driven by PILOT in src/config.ts. */}
+      {pilot && (
+        <p class="pilot-label small" data-testid="pilot-label">
+          {pilot}
+        </p>
+      )}
     </section>
   );
 }

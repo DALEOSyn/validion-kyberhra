@@ -1,7 +1,7 @@
 {
   "name": "kancelaria-stopa",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Kancelária STOPA: a free Slovak browser game that teaches children aged 11-15 to spot online scams. Code MIT, content CC BY-SA 4.0.",
   "type": "module",
   "license": "MIT",

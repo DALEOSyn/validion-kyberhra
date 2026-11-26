@@ -3,6 +3,8 @@ import { content } from './content/content.ts';
 import type { TrackId } from './content/schema.ts';
 import { clearProgress, isUnlocked, loadProgress, saveProgress, trackStars, type Progress } from './engine/progress.ts';
 import { rankFor } from './engine/scoring.ts';
+import { pilotLabel } from './config.ts';
+import { AboutScreen } from './ui/About.tsx';
 import { CaseView } from './ui/CaseView.tsx';
 import { HelpScreen } from './ui/Help.tsx';
 import { StartScreen } from './ui/StartScreen.tsx';
@@ -18,7 +20,10 @@ export function App() {
   const [progress, setProgress] = useState<Progress>(() => loadProgress());
   const [screen, setScreen] = useState<Screen>({ name: 'start' });
   const [helpOpen, setHelpOpen] = useState(false);
+  /** „O hre“ (pilot build): opened from the start screen only, closed like help (button, Escape). */
+  const [aboutOpen, setAboutOpen] = useState(false);
   const helpBtn = useRef<HTMLButtonElement>(null);
+  const aboutBtn = useRef<HTMLButtonElement>(null);
   const homeBtn = useRef<HTMLButtonElement>(null);
   const stayBtn = useRef<HTMLButtonElement>(null);
   /** True while a case is mid-play (its stars are saved only at the debrief). CaseView writes it while rendering. */
@@ -62,6 +67,7 @@ export function App() {
         else setScreen(back);
       } else if (cur.name === 'track') {
         setHelpOpen(false);
+        setAboutOpen(false);
         setScreen({ name: 'start' });
       }
     };
@@ -109,9 +115,23 @@ export function App() {
     setHelpOpen(false);
     requestAnimationFrame(() => helpBtn.current?.focus());
   };
+  const openHelp = () => {
+    setAboutOpen(false);
+    setHelpOpen(true);
+  };
+  const closeAbout = () => {
+    setAboutOpen(false);
+    requestAnimationFrame(() => aboutBtn.current?.focus());
+  };
+  const openAbout = () => {
+    setHelpOpen(false);
+    setAboutOpen(true);
+  };
   // Escape closes the help screen (QA F9). Registered once and read through a ref, so it works right after opening.
   const helpOpenRef = useRef(helpOpen);
   helpOpenRef.current = helpOpen;
+  const aboutOpenRef = useRef(aboutOpen);
+  aboutOpenRef.current = aboutOpen;
   // Escape in the leave-case dialog means "Zostať v prípade" (QA F17).
   const leaveOpenRef = useRef(false);
   leaveOpenRef.current = leaveTo !== null;
@@ -122,6 +142,11 @@ export function App() {
         e.preventDefault();
         setLeaveTo(null);
         requestAnimationFrame(() => homeBtn.current?.focus());
+        return;
+      }
+      if (aboutOpenRef.current) {
+        setAboutOpen(false);
+        requestAnimationFrame(() => aboutBtn.current?.focus());
         return;
       }
       if (!helpOpenRef.current) return;
@@ -137,7 +162,7 @@ export function App() {
 
   let view = null;
   if (screen.name === 'start') {
-    view = <StartScreen title={START_TITLE} tracks={content.tracks} progress={progress} onPick={pickTrack} />;
+    view = <StartScreen title={START_TITLE} tracks={content.tracks} progress={progress} onPick={pickTrack} pilot={pilotLabel(__APP_VERSION__)} />;
   } else if (track && screen.name === 'track') {
     view = (
       <TrackScreen
@@ -175,7 +200,7 @@ export function App() {
   // Case and help screens get a page-level h1 for screen-reader navigation (QA F18); the start and track screens
   // show their own visible h1.
   const caseTitle = screen.name === 'case' ? content.cases[screen.caseId]?.title : undefined;
-  const pageH1 = helpOpen ? 'Pomoc' : track && caseTitle ? `${track.title}: ${caseTitle}` : null;
+  const pageH1 = helpOpen ? 'Pomoc' : aboutOpen ? 'O hre' : track && caseTitle ? `${track.title}: ${caseTitle}` : null;
   /** While the leave-case dialog is open, everything else is inert, so the dialog is truly modal (QA F17). */
   const modal = leaveTo !== null;
 
@@ -203,7 +228,12 @@ export function App() {
           <button type="button" aria-pressed={progress.sound} onClick={() => update({ ...progress, sound: !progress.sound })}>
             Zvuk: {progress.sound ? 'zap' : 'vyp'}
           </button>
-          <button type="button" class="help-btn" ref={helpBtn} aria-expanded={helpOpen} onClick={() => (helpOpen ? closeHelp() : setHelpOpen(true))}>
+          {screen.name === 'start' && (
+            <button type="button" class="about-btn" ref={aboutBtn} aria-expanded={aboutOpen} onClick={() => (aboutOpen ? closeAbout() : openAbout())}>
+              O hre
+            </button>
+          )}
+          <button type="button" class="help-btn" ref={helpBtn} aria-expanded={helpOpen} onClick={() => (helpOpen ? closeHelp() : openHelp())}>
             Pomoc
           </button>
         </div>
@@ -229,7 +259,8 @@ export function App() {
         <div inert={modal}>
           {pageH1 && <h1 class="sr-only">{pageH1}</h1>}
           {helpOpen && <HelpScreen help={content.help} onClose={closeHelp} />}
-          <div hidden={helpOpen}>{view}</div>
+          {aboutOpen && !helpOpen && <AboutScreen about={content.about} onClose={closeAbout} />}
+          <div hidden={helpOpen || aboutOpen}>{view}</div>
         </div>
       </main>
       <footer class="foot" inert={modal}>

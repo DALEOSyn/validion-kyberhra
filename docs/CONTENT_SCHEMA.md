@@ -16,7 +16,8 @@ content/
   cases/junior/<id>.yaml       one file per case; file name = id
   cases/teen/<id>.yaml
   sources.yaml                 owned by fraud-researcher; every case cites ids from here
-  help.yaml                    "Kde nájsť pomoc" (the only place real organisations may be named, with sources.yaml)
+  help.yaml                    "Kde nájsť pomoc" (real organisations may be named only here, in sources.yaml and about.yaml)
+  about.yaml                   "O hre": what the game is, privacy, feedback for adults, help line (pilot build)
 ```
 
 To add a case: write `content/cases/<track>/<id>.yaml`, then add the id to `cases:` of that track in `tracks.yaml`
@@ -277,6 +278,39 @@ self-harm).
     contacts: [linka-detskej-istoty, policia]
 ```
 
+## 11b. about.yaml: the „O hre“ screen
+
+Opened from the start screen (the quiet „O hre“ button next to „Pomoc“); it closes with „Späť do hry“ or Escape,
+like the help screen. Fields:
+
+- `title` (shown as the screen heading) and `help_line` (closing note). The validator requires `help_line` to name
+  **116 111** (Red Line 8).
+- `sections`: one or more `{ id, heading, text, address?, address_note? }`. `text` is a list of short paragraphs.
+  `id`s are unique.
+- `address` is shown as **plain text, never a link** (same rule as help addresses). Write it without a scheme
+  (`github.com/owner/repo/issues`, not `https://…`); the validator rejects a scheme. `address_note` (e.g. „the forms
+  there are public, so no names“) needs an `address`.
+
+Like `help.yaml` and `sources.yaml`, `about.yaml` may name real organisations (VALIDION, GitHub, Linka detskej
+istoty) and real addresses: the domains, denylist and phone rules skip it. The gender and IBAN rules still apply, and
+the exclamation-mark rule applies to **every** value in the file (it is all explanation to the player).
+
+```yaml
+title: O hre
+sections:
+  - id: sukromie
+    heading: Tvoje súkromie
+    text:
+      - Hra nič nikam neodosiela.
+  - id: pripomienky
+    heading: "Pre dospelých: pripomienky a chyby"
+    text:
+      - Pripomienky zbierame cez učiteľov a rodičov, nie priamo od detí.
+    address: github.com/DALEOSyn/validion-kyberhra/issues
+    address_note: Formuláre tam sú verejné. Nepíšte do nich mená detí ani iné osobné údaje.
+help_line: Ak ťa niečo trápi, zavolaj na Linku detskej istoty 116 111.
+```
+
 ## 12. Complete example: J1
 
 `content/cases/junior/j1-drak-zadarmo.yaml` is the complete, valid reference for a junior case (one artefact,
@@ -367,11 +401,11 @@ Reads every YAML value in `content/` (comments and keys are ignored). Rules live
 
 | Rule | Where | Catches | Fix |
 |---|---|---|---|
-| domains | all files except `sources.yaml`, `help.yaml` | any domain, e-mail host or URL whose TLD is not `.example`/`.test`/`.invalid` (also `GDD.md`, `@name.desk`) | use a reserved TLD, or write handles with `_` |
+| domains | all files except top-level `sources.yaml`, `help.yaml`, `about.yaml` | any domain, e-mail host or URL whose TLD is not `.example`/`.test`/`.invalid` (also `GDD.md`, `@name.desk`) | use a reserved TLD, or write handles with `_` |
 | denylist | same | real brands in `scripts/redline-denylist.txt`; case-insensitive, diacritics ignored; names of 5+ letters also in Slovak forms (`Robloxe`, `Slovenskej sporiteľne`) | use a fictional brand from the cast/world; add new real names to the denylist |
 | gender | everywhere (not source titles) | `(a)`, `/a` endings; `hráč`; `ak si klikol`, `ak si to už poslal`, `keď si už heslo zadal`, `dobre si to zvládla`, `a klikol si`, `klikla si`, `si pripravený`, `buď opatrný`, `zostaň pokojná` | present tense, imperative, infinitive, noun phrase |
-| exclaim | teaching text: `hint`, `decoy`, `why`, `consequence`, `later`, `calm`, `correct`, `wrong_order_hint`, `feedback`, the whole `debrief` | `!` | a full stop |
-| phone | all files except `sources.yaml`, `help.yaml` | an unmasked phone-like number: 9+ digits in one run of digits, spaces, `-`, `/`, optional `+` | mask digits: `0900 xxx xxx`, `+421 9•• ••• •12` |
+| exclaim | teaching text: `hint`, `decoy`, `why`, `consequence`, `later`, `calm`, `correct`, `wrong_order_hint`, `feedback`, the whole `debrief`, all of `about.yaml` | `!` | a full stop |
+| phone | all files except top-level `sources.yaml`, `help.yaml`, `about.yaml` | an unmasked phone-like number: 9+ digits in one run of digits, spaces, `-`, `/`, optional `+` | mask digits: `0900 xxx xxx`, `+421 9•• ••• •12` |
 | iban | everywhere | an IBAN that passes the mod-97 check | use check digits that fail it, e.g. `SK00 …` |
 
 The gender rule is a heuristic: it misses unusual shapes and may, rarely, flag a third-person sentence. Rephrase rather

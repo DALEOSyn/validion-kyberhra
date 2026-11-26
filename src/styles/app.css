@@ -879,6 +879,24 @@ ol {
   color: var(--accent);
 }
 
+/* „O hre“ screen and the pilot label (pilot build). */
+.about-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.about-address {
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.pilot-label {
+  align-self: flex-start;
+  color: var(--muted);
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
 /* "Leave the case?" confirmation (QA F7). */
 .leave {
   background: var(--surface);

@@ -4,13 +4,12 @@
  * Usage: tsx scripts/redline-lint.ts [content-dir]
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { basename, join, relative, resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { parse } from 'yaml';
-import { denyMatchers, lintValue, parseDenylist } from './lib/redline.ts';
+import { denyMatchers, fileRules, lintValue, parseDenylist } from './lib/redline.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const contentDir = resolve(process.argv[2] ?? join(root, 'content'));
-const REAL_NAMES_ALLOWED = new Set(['sources.yaml', 'help.yaml']);
 
 function yamlFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
@@ -33,8 +32,8 @@ for (const file of files) {
     count++;
     continue;
   }
-  const allowed = REAL_NAMES_ALLOWED.has(basename(file)) && relative(contentDir, file) === basename(file);
-  for (const hit of lintValue(value, matchers, allowed)) {
+  const rules = fileRules(relative(contentDir, file));
+  for (const hit of lintValue(value, matchers, rules.realNamesAllowed, rules.allTeaching)) {
     console.error(`${rel}: ${hit.path}: [${hit.rule}] ${hit.message}`);
     count++;
   }

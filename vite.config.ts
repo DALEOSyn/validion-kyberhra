@@ -5,6 +5,9 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { loadContent } from './scripts/lib/content.ts';
 import { serviceWorkerSource } from './scripts/lib/sw.ts';
+import { withNoindex } from './src/config.ts';
+
+const pkg = JSON.parse(readFileSync(resolve(import.meta.dirname, 'package.json'), 'utf8')) as { version: string };
 
 const CONTENT_DIR = resolve(import.meta.dirname, 'content');
 const VIRTUAL_ID = 'virtual:content';
@@ -96,8 +99,21 @@ function cspPlugin(): Plugin {
   };
 }
 
+/** While PILOT is on (src/config.ts), the built page asks search engines not to index it. */
+function noindexPlugin(): Plugin {
+  return {
+    name: 'stopa-noindex',
+    apply: 'build',
+    transformIndexHtml(html) {
+      return withNoindex(html);
+    },
+  };
+}
+
 export default defineConfig({
   base: './',
-  plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin()],
+  /** The version from package.json, shown in the pilot label (src/vite-env.d.ts). */
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  plugins: [preact(), contentPlugin(), serviceWorkerPlugin(), cspPlugin(), noindexPlugin()],
   build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0 },
 });
