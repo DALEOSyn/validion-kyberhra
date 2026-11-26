@@ -147,7 +147,7 @@ export function casesIn(value: string): string[] {
 /** True when an approved issue was edited after its approval, or the approval time is unknown: it needs a new check. */
 export function needsReapproval(i: Issue): boolean {
   if (!i.approved_at) return true;
-  return !!i.last_edited_at && i.last_edited_at > i.approved_at;
+  return !!i.last_edited_at && i.last_edited_at >= i.approved_at;
 }
 
 /** Issue numbers that carry the approval label but must not be exported until a maintainer checks them again. */
