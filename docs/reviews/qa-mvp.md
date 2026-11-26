@@ -324,3 +324,25 @@ The fix round worked: F1 and F2 are fixed, and so are 11 of the 12 minor finding
 - `pilot-06-about-320.png`
 - `pilot-07-about-zoom200.png`
 - `pilot-07-start-zoom200.png`
+
+## Comment box (branch `comment-box`, 2026-11-26)
+
+**Verdict: FAIL** (one major bug; everything else passes).
+
+Builds tested: default (no address) and `VITE_FEEDBACK_EMAIL=test@example.test`, served by `vite preview`. Full e2e (`npx playwright test --trace off`): 42/42 passed. axe (wcag2a/aa, 21aa, 22aa): 0 violations at 360 px (e-mail build), desktop (default build), copy-failed state and reduced motion. No requests leave the origin; `localStorage` stays empty of comment text; CSP unchanged (`connect-src 'self'`, `form-action 'none'`). A malformed address fails the build.
+
+Checks that passed:
+- Counter and limit: typing, `fill` of 600 characters and pasting 700 all stop at 500; the counter reads „500 z 500 znakov“. Whitespace-only text gives „Najprv napíšte pripomienku.“
+- Copy: with permission the issue-form text is in the clipboard and the `role="status"` region says „Text je skopírovaný…“. Without permission, with a rejecting `writeText` and with no `navigator.clipboard`, it shows „Kopírovanie sa nepodarilo…“ and a read-only „Text na skopírovanie“ field with the full text.
+- mailto: `mailto:test@example.test?subject=Pripomienka%20k%20hre%200.2.0&body=…`. The body decodes to the issue-form text with CRLF line breaks; `&`, `?`, `%`, `#` and Slovak diacritics are encoded correctly; a line starting with `#` gets a leading space. Without a role or text, the link does nothing and asks calmly.
+- Keyboard: tab order is role → case → rating → text → mail → copy → Späť do hry; the focus ring is visible on each and stays in view; arrow keys change radios; Enter on the link works.
+- 320 px, 360 px and 200 % zoom (720 CSS px): no horizontal overflow and 44 px targets (`comment-320.png`, `comment-zoom200.png`).
+
+Findings:
+1. **Major: Escape still loses typed text.** The guard only works while focus is inside the box. „O hre“ opens with focus on the H2, outside the box. Steps: type a comment, then click empty page space (or focus „Späť do hry“) and press Escape. Expected: the screen and the text stay. Actual: „O hre“ closes, and when it reopens the text is empty (`comment-escape-lost.png`). **To PASS:** make the app-level Escape handler in `src/app.tsx` skip closing „O hre“ while the comment has text (or keep the text when the screen closes). Add an e2e test that presses Escape with focus on the body and on „Späť do hry“.
+2. Minor: in the default build, „Tvoje súkromie“ says an adult can send a comment from their own e-mail, but that build has no e-mail button.
+3. Minor (persona: 11-year-old): a child can pick „Iné“ and type their name and class. The warning and the „Pre dospelých“ heading help, but the box heading does not say it is for adults. Consider „Pripomienka (pre dospelých)“.
+4. Minor (screen reader): when copying fails, focus does not move to the fallback field and its text is not selected. The status is announced, so this is not a WCAG failure.
+5. Note: the counter counts UTF-16 units, so an emoji counts as 2. This matches `maxlength`.
+
+Screenshots: `docs/reviews/qa-shots/comment-*.png` (360-email-empty, 360-email-filled, desktop-plain-copied, copy-failed, keyboard-focus, escape-lost, 320, zoom200, desktop-email-child).
