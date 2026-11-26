@@ -33,8 +33,8 @@ Roman chooses one; only one is deployed. Unit tests: `tests/unit/feedback-server
 It **never logs or stores the IP address, the user agent or the comment**. Logs are fixed messages and GitHub status
 codes only. Do not turn on request logging that records client IPs (Azure Application Insights request telemetry,
 Cloudflare Logpush or Workers Logs with headers); `wrangler.toml` keeps observability off, and `host.json` turns off
-request and dependency telemetry by default (`Host.Results` and `Host.Aggregator` at `None`, requests and
-dependencies excluded from Application Insights, no live metrics, no extended HTTP trigger info); only this
+request and dependency telemetry by default (`Host.Results` and `Host.Aggregator` at `None`, which is what keeps request
+telemetry off; no dependency tracking, no live metrics, no extended HTTP trigger info. Do not raise these log levels); only this
 function's own fixed log lines are kept.
 
 ## Environment

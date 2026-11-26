@@ -15,10 +15,6 @@
         "enableHttpTriggerExtendedInfoCollection": false,
         "enableW3CDistributedTracing": false,
         "enableResponseHeaderInjection": false
-      },
-      "samplingSettings": {
-        "isEnabled": true,
-        "excludedTypes": "Request;Dependency"
       }
     }
   },
