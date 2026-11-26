@@ -1,0 +1,6 @@
+# Feedback forms for the pilot (docs/FEEDBACK.md). Blank issues are off so every comment arrives as a structured form.
+blank_issues_enabled: false
+contact_links:
+  - name: Trápi ťa niečo na internete? Linka detskej istoty 116 111
+    url: https://www.ldi.sk/
+    about: Telefón nonstop a zadarmo. Sem nepíš, zavolaj alebo napíš do chatu Linky detskej istoty.

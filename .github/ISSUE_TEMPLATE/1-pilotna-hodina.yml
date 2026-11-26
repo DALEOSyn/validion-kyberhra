@@ -1,0 +1,109 @@
+name: Pilotná hodina (učiteľ)
+description: Záznam z jednej vyučovacej hodiny, v ktorej trieda hrala Kanceláriu STOPA alebo Ozvenu.
+title: "Pilotná hodina: "
+labels: [spatna-vazba, lekcia]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ďakujeme za pilot. **Tento formulár je verejný.** Nepíšte mená detí, názov školy, mesto ani označenie triedy.
+        Deti samy GitHub nepoužívajú. Ich názory zbierate v triede, napríklad hlasovaním rukou, a zapíšete ich sem.
+        Ak niektoré dieťa prezradí, že je v ohrození, postupujte podľa pravidiel vašej školy a dajte mu číslo 116 111.
+  - type: dropdown
+    id: track
+    attributes:
+      label: Trať
+      options:
+        - Kancelária STOPA (11–12 rokov)
+        - Ozvena (13–15 rokov)
+    validations:
+      required: true
+  - type: dropdown
+    id: cases
+    attributes:
+      label: Prípady
+      description: Ktoré prípady trieda hrala.
+      multiple: true
+      options:
+        - J1 Drak zadarmo
+        - J2 Kód pre kamaráta
+        - J3 Zámok na účte
+        - J4 Kričiaca obrazovka
+        - T1 Ľahká brigáda
+        - T2 Cheat zadarmo
+        - T3 Bez signálu
+        - T4 Nové číslo
+    validations:
+      required: true
+  - type: input
+    id: children
+    attributes:
+      label: Počet detí v hodine
+      placeholder: "24"
+    validations:
+      required: true
+  - type: input
+    id: finished
+    attributes:
+      label: Koľko detí dokončilo aspoň jeden prípad
+      placeholder: "22"
+  - type: input
+    id: minutes
+    attributes:
+      label: Koľko minút trval jeden prípad (zvyčajne)
+      description: Iba číslo. Pomôže nám rozhodnúť, či prípady skrátiť.
+      placeholder: "8"
+    validations:
+      required: true
+  - type: textarea
+    id: fun
+    attributes:
+      label: Bavilo vás to? (počet hlasov)
+      value: |
+        Áno, veľmi:
+        Trochu:
+        Nie:
+  - type: textarea
+    id: clear
+    attributes:
+      label: Bolo to zrozumiteľné? (počet hlasov)
+      value: |
+        Áno:
+        Niekde nie:
+        Nie:
+  - type: textarea
+    id: stuck
+    attributes:
+      label: Kde sa deti zasekli
+      description: Obrazovka, otázka alebo slovo, ktoré nepoznali.
+  - type: textarea
+    id: quotes
+    attributes:
+      label: Čo povedali deti (bez mien)
+  - type: dropdown
+    id: upset
+    attributes:
+      label: Bol niekto rozrušený
+      options:
+        - Nie
+        - Áno, opíšem nižšie bez mien
+  - type: dropdown
+    id: again
+    attributes:
+      label: Použili by ste hru znova
+      options:
+        - Áno
+        - Možno, po úpravách
+        - Nie
+  - type: textarea
+    id: comment
+    attributes:
+      label: Pripomienka
+      description: Čokoľvek ďalšie, aj opis rozrušenia, ak nastalo.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Ochrana súkromia
+      options:
+        - label: Formulár neobsahuje mená detí, školy, mesta ani iné osobné údaje.
+          required: true

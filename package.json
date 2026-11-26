@@ -16,6 +16,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "redline": "tsx scripts/redline-lint.ts",
+    "feedback:export": "tsx scripts/feedback-export.ts",
     "validate": "tsx scripts/validate-content.ts",
     "e2e": "playwright test --trace off",
     "check": "npm run typecheck && npm run lint && npm test && npm run redline && npm run build"

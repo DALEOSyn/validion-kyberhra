@@ -1,0 +1,82 @@
+name: Odborná recenzia
+description: Pripomienka odborníka k jednému prípadu alebo k celej hre (psychológia, slovenčina, pedagogika, bezpečnosť).
+title: "Recenzia: "
+labels: [spatna-vazba, recenzia]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Jedna pripomienka = jeden formulár, aby sa dala samostatne vyriešiť a uzavrieť. **Formulár je verejný**, nepíšte doň osobné údaje.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Odbornosť
+      options:
+        - Psychológia
+        - Slovenský jazyk
+        - Pedagogika
+        - Kybernetická bezpečnosť
+        - Iné
+    validations:
+      required: true
+  - type: dropdown
+    id: case
+    attributes:
+      label: Prípad
+      options:
+        - Celá hra
+        - J1 Drak zadarmo
+        - J2 Kód pre kamaráta
+        - J3 Zámok na účte
+        - J4 Kričiaca obrazovka
+        - T1 Ľahká brigáda
+        - T2 Cheat zadarmo
+        - T3 Bez signálu
+        - T4 Nové číslo
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Oblasť
+      multiple: true
+      options:
+        - Text a jazyk
+        - Vek a náročnosť
+        - Tón a emočná bezpečnosť
+        - Fakty a zdroje
+        - Pomoc a kontakty
+        - Ovládanie a prístupnosť
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Závažnosť
+      options:
+        - Blokuje vydanie
+        - Dôležité
+        - Drobnosť
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Kde presne (citát alebo obrazovka)
+  - type: textarea
+    id: comment
+    attributes:
+      label: Pripomienka
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Návrh zmeny
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Ochrana súkromia
+      options:
+        - label: Formulár neobsahuje osobné údaje.
+          required: true

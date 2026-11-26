@@ -1,0 +1,53 @@
+name: Pripomienka alebo chyba
+description: Pre rodičov, učiteľov a ďalších dospelých, ktorí hru vyskúšali mimo pilotu.
+title: "Pripomienka: "
+labels: [spatna-vazba, pripomienka]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Formulár je verejný.** Nepíšte doň mená, kontakty ani iné osobné údaje. Ak ste dieťa, povedzte svoj názor
+        učiteľovi alebo rodičovi, ktorý ho sem zapíše.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Typ
+      options:
+        - Chyba (niečo nefunguje)
+        - Text alebo jazyk
+        - Návrh
+        - Iné
+    validations:
+      required: true
+  - type: dropdown
+    id: case
+    attributes:
+      label: Prípad
+      options:
+        - Celá hra
+        - J1 Drak zadarmo
+        - J2 Kód pre kamaráta
+        - J3 Zámok na účte
+        - J4 Kričiaca obrazovka
+        - T1 Ľahká brigáda
+        - T2 Cheat zadarmo
+        - T3 Bez signálu
+        - T4 Nové číslo
+  - type: input
+    id: device
+    attributes:
+      label: Zariadenie a prehliadač
+      placeholder: napríklad Android telefón, Chrome
+  - type: textarea
+    id: comment
+    attributes:
+      label: Pripomienka
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Ochrana súkromia
+      options:
+        - label: Formulár neobsahuje osobné údaje.
+          required: true
