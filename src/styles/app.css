@@ -912,6 +912,10 @@ ol {
 .comment-warning {
   font-weight: 800;
 }
+.comment-child {
+  border-left: 4px solid var(--accent);
+  padding-left: 10px;
+}
 .comment-box fieldset {
   border: 0;
   margin: 0;

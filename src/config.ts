@@ -32,6 +32,6 @@ export function withNoindex(html: string, pilot: boolean = PILOT): string {
 export function feedbackEmail(raw: string | undefined): string | null {
   const v = (raw ?? '').trim();
   if (!v) return null;
-  if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(v)) throw new Error(`VITE_FEEDBACK_EMAIL is not one plain e-mail address: "${v}"`);
+  if (!/^[A-Za-z0-9._+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(v)) throw new Error(`VITE_FEEDBACK_EMAIL is not one plain e-mail address: "${v}"`);
   return v;
 }

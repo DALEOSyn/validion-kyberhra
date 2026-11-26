@@ -338,8 +338,8 @@ export const AboutSectionSchema = z.strictObject({
   /** Short paragraphs, plain text. */
   text: z.array(text).min(1),
   /**
-   * An address shown as plain text only, never as a live link (same rule as help.yaml `url_label`): the game opens
-   * no links. Written without a scheme, e.g. `github.com/owner/repo/issues`.
+   * An address shown as plain text only, never as a live link (same rule as help.yaml `url_label`): no links except
+   * the comment box's mailto:. Written without a scheme, e.g. `github.com/owner/repo/issues`.
    */
   address: text.optional(),
   /** A calm note under the address, e.g. that the forms there are public. */

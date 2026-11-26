@@ -6,8 +6,8 @@
  * Pure functions and constants, unit-tested in tests/unit/comment.test.ts.
  */
 
-/** Who is writing. Same values as scripts/lib/feedback.ts expects for the `hra` kind. */
-export const ROLE_OPTIONS = ['Učiteľ', 'Rodič', 'Odborník', 'Iné'] as const;
+/** Who is writing: shown in the box and written as-is into the `### Kto píše` field the exporter reads. Gender-neutral. */
+export const ROLE_OPTIONS = ['Zo školy', 'Z rodiny', 'Odborná verejnosť', 'Iné'] as const;
 export type Role = (typeof ROLE_OPTIONS)[number];
 
 /** Case titles, the same list as the issue forms (scripts/lib/feedback.ts re-exports it; a test checks the titles). */
@@ -63,13 +63,14 @@ export function commentSubject(version: string): string {
 
 /** Every word the box shows. Kept here so the red-line rules (gender, exclamation marks) are unit-tested on them. */
 export const TEXTS = {
-  heading: 'Napísať pripomienku',
+  heading: 'Pripomienka pre dospelých',
   intro: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať a poslať ďalej.',
   introEmail: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať alebo poslať zo svojho e-mailu.',
-  warning: 'Nepíšte sem mená, školu ani kontakty.',
+  warning: 'Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch. Ak vám dieťa zverilo niečo vážne, postupujte podľa školského postupu ochrany detí.',
+  childNote: 'Si dieťa a niečo ťa trápi? Nepíš to sem. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.',
   role: 'Kto píše',
   case: 'Ku ktorému prípadu',
-  rating: 'Hodnotenie hry (nepovinné)',
+  rating: 'Hodnotenie (nepovinné)',
   ratingHint: '1 je najmenej, 5 je najviac.',
   noRating: 'Bez hodnotenia',
   text: 'Pripomienka',
@@ -89,3 +90,15 @@ export const TEXTS = {
 export function commentActions(email: string | null): ('mail' | 'copy')[] {
   return email ? ['mail', 'copy'] : ['copy'];
 }
+
+/**
+ * What is typed into the box. App keeps it in memory (never in storage), so closing „O hre“ by Escape, „Späť do hry“
+ * or „Pomoc“ keeps the text until the page is closed (QA, comment-box review).
+ */
+export interface Draft {
+  role: Role | null;
+  case: string;
+  rating: number | null;
+  text: string;
+}
+export const EMPTY_DRAFT: Draft = { role: null, case: WHOLE_GAME, rating: null, text: '' };

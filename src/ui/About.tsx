@@ -1,13 +1,14 @@
 import type { About } from '../content/schema.ts';
+import type { Draft } from '../feedback/comment.ts';
 import { StageHeading } from './Heading.tsx';
 import { CommentBox } from './CommentBox.tsx';
 
 /**
  * „O hre“, rendered from content/about.yaml: what the game is, privacy, feedback for adults, the help line.
  * The section with `comment_box: true` also shows the comment box (CommentBox.tsx; it sends nothing itself).
- * Addresses are plain text: the game opens no links (same rule as the help screen).
+ * Addresses are plain text: no links except the comment box's mailto: (same rule as the help screen).
  */
-export function AboutScreen({ about, onClose }: { about: About; onClose: () => void }) {
+export function AboutScreen({ about, onClose, draft, onDraft }: { about: About; onClose: () => void; draft: Draft; onDraft: (d: Draft) => void }) {
   return (
     <section class="screen" aria-label={about.title} data-screen="about">
       <StageHeading>{about.title}</StageHeading>
@@ -24,7 +25,7 @@ export function AboutScreen({ about, onClose }: { about: About; onClose: () => v
             </p>
           )}
           {s.address_note && <p class="small">{s.address_note}</p>}
-          {s.comment_box && <CommentBox version={__APP_VERSION__} />}
+          {s.comment_box && <CommentBox version={__APP_VERSION__} draft={draft} onDraft={onDraft} />}
         </section>
       ))}
       <p class="note">{about.help_line}</p>

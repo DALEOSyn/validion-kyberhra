@@ -49,9 +49,20 @@ export default tseslint.config(
   },
   {
     // The one exception (Roman, 2026-11-26): the comment box's „Poslať e-mailom“ is a plain mailto: link that opens
-    // the adult's own mail app. Only this file may render <a> and write "mailto:"; every other rule still applies.
+    // the adult's own mail app. Only this file may write "mailto:", and it may render only an <a> whose href is
+    // `mailtoUrl(...)` and that spreads no props; every other rule still applies.
     files: ['src/ui/CommentBox.tsx'],
-    rules: { 'no-restricted-syntax': ['error', ...SRC_SYNTAX.filter((r) => r !== NO_MAILTO_LITERAL && r !== NO_MAILTO_TEMPLATE)] },
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "JSXOpeningElement[name.name='a']:not(:has(JSXAttribute[name.name='href'] > JSXExpressionContainer > CallExpression[callee.name='mailtoUrl']))",
+          message: 'The only link is the comment box mailto: its href must be mailtoUrl(...).',
+        },
+        { selector: "JSXOpeningElement[name.name='a']:has(JSXSpreadAttribute)", message: 'No spread props on the mailto: link.' },
+        ...SRC_SYNTAX.filter((r) => r !== NO_MAILTO_LITERAL && r !== NO_MAILTO_TEMPLATE),
+      ],
+    },
   },
   {
     // The schema is build-time only (vite content plugin, tests); it is the one file under src/ that may use Zod.

@@ -1,7 +1,7 @@
 # The „O hre“ screen (start screen → O hre). Docs: docs/CONTENT_SCHEMA.md §11b.
 # Real organisations (VALIDION, GitHub, Linka detskej istoty) and one real address may be named here, as on the help
 # screen (Red Line 1 exemption in scripts/lib/redline.ts). Gender, exclamation-mark and IBAN rules still apply.
-# Addresses are shown as plain text only, never as links (the game opens no links).
+# Addresses are shown as plain text only, never as links (no links except the comment box's mailto:).
 title: O hre
 sections:
   - id: hra
@@ -16,7 +16,7 @@ sections:
     heading: Tvoje súkromie
     text:
       - Hra nič nikam neodosiela.
-      - Dospelý môže poslať pripomienku k hre zo svojho vlastného e-mailu. Hra ju sama neodošle.
+      - Dospelý môže pripomienku skopírovať alebo poslať zo svojho vlastného e-mailu. Hra ju sama neodošle.
       - Nepýta sa ťa na meno ani na nič iné o tebe.
       - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
       - Postup vymažeš tlačidlom „Vymazať postup“ dole na stránke trasy. Zmažú sa hviezdy na oboch trasách aj nastavenie zvuku.

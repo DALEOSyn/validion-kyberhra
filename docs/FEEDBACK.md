@@ -1,8 +1,8 @@
 # Pilot feedback in the repository
 
 Comments about the game are captured as **GitHub issues** in this repository, through three issue forms, and exported
-weekly into `docs/feedback/` so they are versioned next to the code they change. The game itself sends nothing and
-opens no links (Red Line 7). Release plan: the "Plán: verejné vydanie pilotu a zber pripomienok" doc.
+weekly into `docs/feedback/` so they are versioned next to the code they change. The game itself sends nothing; its
+only link is the optional mailto: in the comment box, which opens the adult's own mail app (Red Line 7). Release plan: the "Plán: verejné vydanie pilotu a zber pripomienok" doc.
 
 ## Who writes what
 
@@ -26,6 +26,11 @@ issue labelled `spatna-vazba` + `hra`, removes any personal data first, never pa
 approves it as usual. A Power Automate flow in VALIDION's Microsoft 365 may do the paste later. The address is the
 repository variable `FEEDBACK_EMAIL` (Settings > Secrets and variables > Actions > Variables); without it the game shows
 only "Kopírovať text".
+
+Check the four fields before approving; anyone can edit the e-mail before sending. The e-mail (with the sender's
+address) goes to VALIDION's feedback mailbox and is read by the VALIDION pilot team; after a check, the comment is
+copied without the address into this repository, and the e-mail is deleted once filed, at the latest 12 months after
+the pilot. The "Kto píše" answers are "Zo školy", "Z rodiny", "Odborná verejnosť" or "Iné".
 
 ## Privacy rules for maintainers
 

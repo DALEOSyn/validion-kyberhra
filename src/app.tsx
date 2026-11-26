@@ -4,6 +4,7 @@ import type { TrackId } from './content/schema.ts';
 import { clearProgress, isUnlocked, loadProgress, saveProgress, trackStars, type Progress } from './engine/progress.ts';
 import { rankFor } from './engine/scoring.ts';
 import { pilotLabel } from './config.ts';
+import { type Draft, EMPTY_DRAFT } from './feedback/comment.ts';
 import { AboutScreen } from './ui/About.tsx';
 import { CaseView } from './ui/CaseView.tsx';
 import { HelpScreen } from './ui/Help.tsx';
@@ -22,6 +23,8 @@ export function App() {
   const [helpOpen, setHelpOpen] = useState(false);
   /** „O hre“ (pilot build): opened from the start screen only, closed like help (button, Escape). */
   const [aboutOpen, setAboutOpen] = useState(false);
+  /** The comment box draft: in memory only (never stored), kept when „O hre“ closes so no typed text is lost. */
+  const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
   const helpBtn = useRef<HTMLButtonElement>(null);
   const aboutBtn = useRef<HTMLButtonElement>(null);
   const homeBtn = useRef<HTMLButtonElement>(null);
@@ -259,7 +262,7 @@ export function App() {
         <div inert={modal}>
           {pageH1 && <h1 class="sr-only">{pageH1}</h1>}
           {helpOpen && <HelpScreen help={content.help} onClose={closeHelp} />}
-          {aboutOpen && !helpOpen && <AboutScreen about={content.about} onClose={closeAbout} />}
+          {aboutOpen && !helpOpen && <AboutScreen about={content.about} onClose={closeAbout} draft={draft} onDraft={setDraft} />}
           <div hidden={helpOpen || aboutOpen}>{view}</div>
         </div>
       </main>

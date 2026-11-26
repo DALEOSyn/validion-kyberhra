@@ -33,17 +33,20 @@ test.afterEach(async ({ page }) => {
   expect(stored).not.toContain('pochopili');
 });
 
-const EXPECTED = '### Kto píše\n\nUčiteľ\n\n### Prípad\n\nT1 Ľahká brigáda\n\n### Hodnotenie\n\n4\n\n### Pripomienka\n\nDeti pochopili pravidlo.';
+const EXPECTED = '### Kto píše\n\nZo školy\n\n### Prípad\n\nT1 Ľahká brigáda\n\n### Hodnotenie\n\n4\n\n### Pripomienka\n\nDeti pochopili pravidlo.';
 
 async function openAndFill(page: Page) {
   await page.getByRole('button', { name: 'O hre' }).click();
   const box = page.locator('[data-comment-box]');
   await expect(box).toBeVisible();
-  await expect(box.getByText('Nepíšte sem mená, školu ani kontakty.')).toBeVisible();
+  await expect(box.getByRole('heading', { name: 'Pripomienka pre dospelých' })).toBeVisible();
+  await expect(box.getByText('Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch.', { exact: false })).toBeVisible();
+  await expect(box.getByText('Si dieťa a niečo ťa trápi? Nepíš to sem.', { exact: false })).toContainText('116 111');
+  await expect(box.getByRole('group', { name: 'Hodnotenie (nepovinné)' })).toBeVisible();
   // asks for the role and the text first, calmly
   await box.getByRole('button', { name: 'Kopírovať text' }).click();
   await expect(box.getByRole('status')).toHaveText('Vyberte, prosím, kto píše.');
-  await box.getByRole('radio', { name: 'Učiteľ' }).check();
+  await box.getByRole('radio', { name: 'Zo školy' }).check();
   await box.getByRole('button', { name: 'Kopírovať text' }).click();
   await expect(box.getByRole('status')).toHaveText('Najprv napíšte pripomienku.');
   await box.getByLabel('Ku ktorému prípadu').selectOption('T1 Ľahká brigáda');
@@ -72,6 +75,40 @@ test.describe('default build (no e-mail address)', () => {
     await expect(box.getByText('500 z 500 znakov')).toBeVisible();
     await axe(page);
   });
+});
+
+test('the typed comment survives Escape and closing „O hre“ (QA review)', async ({ page }) => {
+  await page.goto('./');
+  const box = await openAndFill(page);
+  const area = () => page.locator('[data-comment-box]').getByRole('textbox', { name: 'Pripomienka' });
+  // focus on the page body, then Escape
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'O hre' }).click();
+  await expect(area()).toHaveValue('Deti pochopili pravidlo.');
+  // focus on „Späť do hry“, then Escape
+  await page.getByRole('button', { name: 'Späť do hry' }).focus();
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'O hre' }).click();
+  await expect(area()).toHaveValue('Deti pochopili pravidlo.');
+  // the other choices are kept too
+  await expect(page.locator('[data-comment-box]').getByRole('radio', { name: 'Zo školy' })).toBeChecked();
+  await expect(box).toBeVisible();
+});
+
+test('when copying fails, the text waits selected in a field (QA review)', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.reject(new Error('denied')) } });
+  });
+  await page.goto('./');
+  const box = await openAndFill(page);
+  await box.getByRole('button', { name: 'Kopírovať text' }).click();
+  await expect(box.getByRole('status')).toHaveText('Kopírovanie sa nepodarilo. Text je v poli nižšie, môžete ho označiť a skopírovať.');
+  const field = box.getByRole('textbox', { name: 'Text na skopírovanie' });
+  await expect(field).toBeFocused();
+  await expect(field).toHaveValue(EXPECTED);
+  expect(await field.evaluate((t: HTMLTextAreaElement) => t.value.slice(t.selectionStart, t.selectionEnd))).toBe(EXPECTED);
+  await axe(page);
 });
 
 test.describe('build with VITE_FEEDBACK_EMAIL', () => {

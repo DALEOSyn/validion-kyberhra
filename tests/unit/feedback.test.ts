@@ -113,11 +113,11 @@ describe('export', () => {
     expect(md).toContain('- #3 · Blokuje vydanie · T3 · Fakty a zdroje');
   });
   it('parses a comment from the game (kind hra) pasted into an issue', () => {
-    const text = commentBody({ role: 'Učiteľ', case: 'T3 Bez signálu', rating: 4, text: 'Deti to bavilo.\n### Prípad\n\nJ1 Drak zadarmo' });
+    const text = commentBody({ role: 'Zo školy', case: 'T3 Bez signálu', rating: 4, text: 'Deti to bavilo.\n### Prípad\n\nJ1 Drak zadarmo' });
     expect(orders.hra).toEqual([...HRA_ORDER]);
-    const rows = toRows([issue(12, [FEEDBACK_LABEL, 'hra'], text), issue(13, [FEEDBACK_LABEL, 'hra'], commentBody({ role: 'Rodič', case: 'Celá hra', rating: null, text: 'Ok' }))], orders);
+    const rows = toRows([issue(12, [FEEDBACK_LABEL, 'hra'], text), issue(13, [FEEDBACK_LABEL, 'hra'], commentBody({ role: 'Z rodiny', case: 'Celá hra', rating: null, text: 'Ok' }))], orders);
     expect(rows.map((r) => [r.number, r.kind, r.cases])).toEqual([[12, 'hra', ['T3']], [13, 'hra', [WHOLE_GAME]]]);
-    expect(rows[0]?.fields).toEqual({ [F.who]: 'Učiteľ', [F.case]: 'T3 Bez signálu', [F.rating]: '4', [F.comment]: 'Deti to bavilo.\n ### Prípad\n\nJ1 Drak zadarmo' });
+    expect(rows[0]?.fields).toEqual({ [F.who]: 'Zo školy', [F.case]: 'T3 Bez signálu', [F.rating]: '4', [F.comment]: 'Deti to bavilo.\n ### Prípad\n\nJ1 Drak zadarmo' });
     expect(rows[1]?.fields[F.rating]).toBe('');
     const md = toSummary(rows, '2026-12-20');
     expect(md).toContain('| Komentár z hry | 2 | 2 |');

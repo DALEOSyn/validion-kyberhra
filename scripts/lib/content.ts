@@ -135,7 +135,7 @@ export function helpIssues(help: Help): string[] {
 
 /**
  * about.yaml rules: the closing help line names 116 111 (Red Line 8); section ids are unique; addresses are plain
- * text, so they carry no scheme (the game opens no links).
+ * text, so they carry no scheme (no links except the comment box's mailto:).
  */
 export function aboutIssues(about: About): string[] {
   const out: string[] = [];

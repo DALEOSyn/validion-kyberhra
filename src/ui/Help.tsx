@@ -1,7 +1,7 @@
 import type { HelpEntry, Help as HelpData } from '../content/schema.ts';
 import { StageHeading } from './Heading.tsx';
 
-/** "Kde nájsť pomoc", rendered from content/help.yaml. Web addresses are plain text: the game opens no links. */
+/** "Kde nájsť pomoc", rendered from content/help.yaml. Web addresses are plain text: no links except the comment box's mailto:. */
 function ContactCard({ e }: { e: HelpEntry }) {
   return (
     <li class="help-entry" data-help={e.id}>
