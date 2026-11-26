@@ -73,7 +73,9 @@ jobs:
           git add docs/feedback
           git commit -m "Feedback export $(date -u +%Y-%m-%d)"
           auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
-          git -c http.extraheader="AUTHORIZATION: basic $auth" push --force origin "$branch"
+          # Token through the environment, not the command line (visible to other processes on the runner).
+          GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=http.extraheader GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth" \
+            git push --force origin "$branch"
           curl -fsS -X POST -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
             "https://api.github.com/repos/$REPO/pulls" \
             -d "{\"title\":\"Feedback export $(date -u +%Y-%m-%d)\",\"head\":\"$branch\",\"base\":\"$BASE\",\"body\":\"Automatic export of approved feedback issues (spatna-vazba + schvalene). See docs/FEEDBACK.md.\"}" \

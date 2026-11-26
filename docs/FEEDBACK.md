@@ -23,6 +23,8 @@ the issue chooser shows Linka detskej istoty 116 111 for any child who lands the
   holds a name, school, contact or anything that could identify a child, edit the text out and delete the older
   revision from the edit history (issue "edited" menu > the revision > "Delete revision from history"). Then add
   `schvalene`. Add `skryt` instead if it should never be exported.
+- **An edit after approval needs a new approval.** The export skips any issue edited after `schvalene` was added and
+  lists it in the run log. Check it again, then remove and re-add `schvalene`.
 - If personal data ever reaches a commit or branch, closing the PR is not enough: delete the branch, and if it was
   merged, rewrite the history (Roman decides) and ask GitHub Support to purge cached views.
 - Teachers do not describe an upset child in an issue. The form sends those details privately to the pilot
@@ -35,7 +37,7 @@ the issue chooser shows Linka detskej istoty 116 111 for any child who lands the
 
 ## Export
 
-- `npm run feedback:export` (with `GITHUB_TOKEN` set, or `--input issues.json` offline) writes
+- `npm run feedback:export` (with `GITHUB_TOKEN` set, as it uses the GraphQL API; or `--input issues.json` offline) writes
   `docs/feedback/feedback.csv` (one row per approved issue, one column per question, safe to open in a spreadsheet) and
   `docs/feedback/SUMMARY.md` (counts per kind and case, median minutes per case against the 7–9 minute target, open
   expert items by severity).
@@ -54,6 +56,7 @@ the issue chooser shows Linka detskej istoty 116 111 for any child who lands the
 ## One-time setup when the repository exists
 
 - Push `main`; the forms appear under Issues > New issue.
-- Run "Feedback export" once by hand to create the labels.
+- Run "Feedback export" once by hand to create the labels, and check it passes on the self-hosted runner (it installs
+  with `npm ci --ignore-scripts`; this has not run on the runner yet).
 - Settings > Actions > General: "Read and write permissions" and "Allow GitHub Actions to create and approve pull
   requests", so the export can open its PR.

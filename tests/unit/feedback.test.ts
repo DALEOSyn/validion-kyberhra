@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parse } from 'yaml';
-import { APPROVED_LABEL, CASE_OPTIONS, F, FEEDBACK_LABEL, formOrders, HIDE_LABEL, type Issue, KINDS, parseFormBody, toCsv, toRows, toSummary, WHOLE_GAME } from '../../scripts/lib/feedback.ts';
+import { APPROVED_LABEL, CASE_OPTIONS, F, FEEDBACK_LABEL, formOrders, HIDE_LABEL, type Issue, KINDS, parseFormBody, staleApprovals, toCsv, toRows, toSummary, WHOLE_GAME } from '../../scripts/lib/feedback.ts';
 
 const root = resolve(import.meta.dirname, '../..');
 const formDir = resolve(root, '.github/ISSUE_TEMPLATE');
@@ -13,7 +13,7 @@ const forms: Form[] = readdirSync(formDir).filter((f) => f !== 'config.yml' && f
 
 const orders = formOrders(forms);
 const body = (pairs: [string, string][]) => pairs.map(([k, v]) => `### ${k}\n\n${v}`).join('\n\n');
-const issue = (n: number, labels: string[], b: string, state = 'open'): Issue => ({ number: n, title: `#${n}`, body: b, state, created_at: '2026-12-11T09:00:00Z', html_url: `https://example.test/${n}`, labels: [...labels, ...(labels.includes('neschvalene') ? [] : [APPROVED_LABEL])].map((name) => ({ name })) });
+const issue = (n: number, labels: string[], b: string, state = 'open'): Issue => ({ number: n, title: `#${n}`, body: b, state, created_at: '2026-12-11T09:00:00Z', approved_at: '2026-12-12T09:00:00Z', last_edited_at: null, html_url: `https://example.test/${n}`, labels: [...labels, ...(labels.includes('neschvalene') ? [] : [APPROVED_LABEL])].map((name) => ({ name })) });
 
 describe('issue forms', () => {
   it('there is one form per feedback kind, each labelled spatna-vazba + its kind', () => {
@@ -71,6 +71,13 @@ describe('export', () => {
     ], orders);
     expect(rows.map((r) => [r.number, r.kind, r.cases])).toEqual([[2, 'recenzia', [WHOLE_GAME]], [3, 'lekcia', ['J1', 'J2']]]);
     expect(rows[1]?.fields[F.privacy]).toBeUndefined();
+  });
+  it('an issue edited after approval is not exported until approved again', () => {
+    const edited = { ...issue(8, [FEEDBACK_LABEL, 'lekcia'], body([[F.minutes, '8']])), last_edited_at: '2026-12-13T10:00:00Z' };
+    const unknown = { ...issue(10, [FEEDBACK_LABEL, 'lekcia'], body([[F.minutes, '8']])), approved_at: null };
+    const editedBefore = { ...issue(11, [FEEDBACK_LABEL, 'lekcia'], body([[F.minutes, '8']])), last_edited_at: '2026-12-11T10:00:00Z' };
+    expect(toRows([edited, unknown, editedBefore], orders).map((r) => r.number)).toEqual([11]);
+    expect(staleApprovals([edited, unknown, editedBefore])).toEqual([8, 10]);
   });
   it('a "### " line typed inside an answer cannot fake another field', () => {
     const fake = 'Citát:\n### Závažnosť\n\nBlokuje vydanie\n### Návrh zmeny\n\nfalošný';

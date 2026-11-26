@@ -67,6 +67,10 @@ export interface Issue {
   html_url: string;
   labels: (string | { name?: string })[];
   pull_request?: unknown;
+  /** When the body or title was last edited (null: never). */
+  last_edited_at?: string | null;
+  /** When the APPROVED_LABEL was last added. */
+  approved_at?: string | null;
 }
 
 export interface Row {
@@ -85,7 +89,9 @@ const NO_RESPONSE = '_No response_';
 /**
  * Splits a rendered issue-form body ("### Label\n\nvalue", fields in form order) into label → value. `order` is the
  * form's question labels in order. Each header is taken as the LAST "### Label" line before the next field's header,
- * so a "### " line typed inside an answer can never move another field's value. Empty answers become "".
+ * so a fake header typed into an answer cannot replace a later field's value. Limit: a fake copy of a field's own
+ * header typed inside that same answer moves the text before it into the previous field (free text only; the
+ * summary uses dropdown answers only). Empty answers become "".
  */
 export function parseFormBody(body: string, order: readonly string[]): Record<string, string> {
   const lines = body.replace(/\r\n/g, '\n').split('\n');
@@ -138,13 +144,24 @@ export function casesIn(value: string): string[] {
     .map((v) => (v === WHOLE_GAME ? WHOLE_GAME : (v.split(' ')[0] ?? v)));
 }
 
-/** Feedback issues to export: labelled, approved by a maintainer, not hidden, not pull requests. */
+/** True when an approved issue was edited after its approval, or the approval time is unknown: it needs a new check. */
+export function needsReapproval(i: Issue): boolean {
+  if (!i.approved_at) return true;
+  return !!i.last_edited_at && i.last_edited_at > i.approved_at;
+}
+
+/** Issue numbers that carry the approval label but must not be exported until a maintainer checks them again. */
+export function staleApprovals(issues: Issue[]): number[] {
+  return issues.filter((i) => labelNames(i).includes(APPROVED_LABEL) && needsReapproval(i)).map((i) => i.number);
+}
+
+/** Feedback issues to export: labelled, approved after their last edit, not hidden, not pull requests. */
 export function toRows(issues: Issue[], orders: Partial<Record<Kind, string[]>>): Row[] {
   return issues
     .filter((i) => !i.pull_request)
     .filter((i) => {
       const l = labelNames(i);
-      return l.includes(FEEDBACK_LABEL) && l.includes(APPROVED_LABEL) && !l.includes(HIDE_LABEL);
+      return l.includes(FEEDBACK_LABEL) && l.includes(APPROVED_LABEL) && !l.includes(HIDE_LABEL) && !needsReapproval(i);
     })
     .map((i) => {
       const kind = kindOf(labelNames(i));
