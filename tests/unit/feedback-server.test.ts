@@ -270,3 +270,17 @@ describe('server/feedback lists match the game', () => {
     expect(res.status).toBe(403);
   });
 });
+
+describe('Cloudflare startup rule', () => {
+  it('no random values at module load or construction (Workers refuse them in global scope, error 10021)', async () => {
+    const { vi } = await import('vitest');
+    vi.resetModules();
+    const spy = vi.spyOn(crypto, 'getRandomValues');
+    const mod = await import('../../server/feedback/src/core.ts');
+    const l = new mod.Limiter();
+    expect(spy).not.toHaveBeenCalled();
+    await l.check('192.0.2.9', Date.now(), 10);
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+  });
+});

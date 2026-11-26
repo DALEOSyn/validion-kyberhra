@@ -134,12 +134,13 @@ async function sha256(s: string): Promise<string> {
  * RATE_LIMIT comments per RATE_WINDOW_MS per salted IP hash, and a daily cap per UTC day. Keys are hashes only.
  */
 export class Limiter {
-  private readonly salt: string;
+  // Created on first use: Cloudflare Workers forbid random values at startup (global scope).
+  private salt: string | null;
   private readonly hits = new Map<string, number[]>();
   private day = '';
   private count = 0;
-  constructor(salt: string = randomSalt()) {
-    this.salt = salt;
+  constructor(salt?: string) {
+    this.salt = salt ?? null;
   }
   async check(ip: string | null | undefined, now: number, cap: number): Promise<'ok' | 'rate' | 'cap'> {
     const day = new Date(now).toISOString().slice(0, 10);
@@ -149,6 +150,7 @@ export class Limiter {
     }
     if (this.count >= cap) return 'cap';
     if (ip) {
+      this.salt ??= randomSalt();
       const key = await sha256(`${this.salt}\0${ip}`);
       const recent = (this.hits.get(key) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
       if (recent.length >= RATE_LIMIT) {
@@ -168,7 +170,7 @@ export class Limiter {
   }
 }
 
-const sharedLimiter = new Limiter();
+let sharedLimiter: Limiter | null = null;
 
 export interface Deps {
   /** The client IP from the platform (used only for the in-memory rate limit, never logged). */
@@ -259,7 +261,7 @@ export async function handleFeedback(request: Request, env: FeedbackEnv, deps: D
 
   const capRaw = Number.parseInt(env.DAILY_CAP ?? '', 10);
   const cap = Number.isFinite(capRaw) && capRaw >= 0 ? capRaw : DEFAULT_DAILY_CAP;
-  const limit = await (deps.limiter ?? sharedLimiter).check(deps.ip, (deps.now ?? Date.now)(), cap);
+  const limit = await (deps.limiter ?? (sharedLimiter ??= new Limiter())).check(deps.ip, (deps.now ?? Date.now)(), cap);
   if (limit !== 'ok') {
     log(limit === 'cap' ? 'daily cap reached' : 'rate limited');
     return json(429, { ok: false, error: limit }, { ...cors, 'Retry-After': limit === 'cap' ? '3600' : '600' });
