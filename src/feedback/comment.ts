@@ -69,7 +69,7 @@ export const TEXTS = {
   intro: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať a poslať ďalej.',
   introEmail: 'Hra pripomienku nikam neodošle. Pripraví z nej text, ktorý môžete skopírovať alebo poslať zo svojho e-mailu.',
   introSend: 'Pripomienku môžete odoslať tlačidlom „Odoslať“. Odošle sa len to, čo vyplníte tu, a verzia hry. Nič iné sa neodošle.',
-  sendNote: 'Odoslaná pripomienka sa uloží ako neverejný záznam (issue) na GitHube, čo je služba z USA. Číta ju tím pilotu VALIDION. Po kontrole a bez osobných údajov ju môžeme zverejniť na stránke hry na GitHube.',
+  sendNote: 'Odoslaná pripomienka prejde cez službu Cloudflare a uloží sa ako neverejný záznam (issue) na GitHube. Obe služby sú z USA. Číta ju tím pilotu VALIDION. Po kontrole a bez osobných údajov ju môžeme zverejniť na stránke hry na GitHube.',
   warning: 'Nepíšte sem mená, školu, kontakty ani nič osobné o deťoch. Ak vám dieťa zverilo niečo vážne, postupujte podľa školského postupu ochrany detí.',
   openForm: 'Formulár pre dospelých',
   childNote: 'Si dieťa a niečo ťa trápi? Nepíš to sem. Povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.',
