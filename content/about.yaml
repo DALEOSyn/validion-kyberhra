@@ -11,19 +11,20 @@ sections:
       - Učí spoznať podvody na internete a chrániť svoje účty. Je o kybernetickej bezpečnosti.
       - Má dve trasy. Kancelária STOPA je pre 11 až 12 rokov, Ozvena pre 13 až 15 rokov.
       - Toto je pilotná verzia. Hru ešte vylepšujeme.
-      - Kód hry má licenciu MIT. Texty a obrázky majú licenciu CC BY-SA 4.0.
+      - Kód hry má licenciu MIT. Texty hry majú licenciu CC BY-SA 4.0.
   - id: sukromie
     heading: Tvoje súkromie
     text:
       - Hra nič nikam neodosiela.
       - Nepýta sa ťa na meno ani na nič iné o tebe.
       - Postup sa ukladá len v tomto prehliadači na tomto zariadení.
-      - Postup vymažeš tlačidlom „Vymazať postup“ na stránke trasy. Zmažú sa hviezdy na oboch trasách.
+      - Postup vymažeš tlačidlom „Vymazať postup“ dole na stránke trasy. Zmažú sa hviezdy na oboch trasách aj nastavenie zvuku.
   - id: pripomienky
     heading: "Pre dospelých: pripomienky a chyby"
     text:
       - Pripomienky zbierame cez učiteľov a rodičov, nie priamo od detí.
       - Učiteľ alebo rodič môže pripomienku alebo chybu zapísať na tejto adrese.
+      - Bez účtu GitHub môže učiteľ poslať pripomienku koordinátorovi pilotu od VALIDION.
     address: github.com/DALEOSyn/validion-kyberhra/issues
     address_note: Formuláre tam sú verejné. Nepíšte do nich mená detí ani iné osobné údaje.
-help_line: Ak ťa niečo trápi, zavolaj na Linku detskej istoty 116 111.
+help_line: Ak ťa niečo trápi, povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.

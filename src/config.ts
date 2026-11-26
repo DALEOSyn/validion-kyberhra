@@ -19,5 +19,7 @@ export const NOINDEX_META = '<meta name="robots" content="noindex" />';
 /** Adds the noindex meta right after the charset meta when `pilot` is on. Pure, so it is unit-tested. */
 export function withNoindex(html: string, pilot: boolean = PILOT): string {
   if (!pilot || html.includes('name="robots"')) return html;
-  return html.replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    ${NOINDEX_META}`);
+  const out = html.replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    ${NOINDEX_META}`);
+  if (!out.includes('name="robots"')) throw new Error('withNoindex: no <meta charset="UTF-8" /> in index.html, cannot add noindex');
+  return out;
 }

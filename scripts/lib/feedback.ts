@@ -20,7 +20,7 @@ export type Kind = keyof typeof KINDS;
 
 /** The question labels used in the issue forms. Tests check the forms use exactly these. */
 export const F = {
-  track: 'Trať',
+  track: 'Trasa',
   cases: 'Prípady',
   case: 'Prípad',
   children: 'Počet detí na hodine',

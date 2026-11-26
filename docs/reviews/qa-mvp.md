@@ -279,3 +279,48 @@ The fix round worked: F1 and F2 are fixed, and so are 11 of the 12 minor finding
 
 - The recall screen and the paged debrief make the end of a case feel lighter than the old single page.
 - Teen scans with 2–3 pieces of evidence are still a long scroll on a phone, so attention drops there (psych 20 evidence tabs, deferred).
+
+## Pilot build (branch `pilot-build`, 2026-11-26)
+
+**Verdict: PASS** (no blockers, no majors; three minor findings).
+
+**Scope:** the „Pilotná verzia 0.2.0“ label, the new „O hre“ screen (`content/about.yaml`, `src/ui/About.tsx`), the noindex meta, and regressions. Tested on the built site (`npm run build && npm run preview`) at 1440×900, 375×812, 360×740, 320×568 and 720×450 (= 200 % zoom), with Playwright/Chromium (`--trace off`).
+
+### What passed
+- **Label:** a small muted pill under the privacy line. It is calm and not alarming. axe finds no contrast issue. „O hre“ explains it: „Toto je pilotná verzia. Hru ešte vylepšujeme.“
+- **O hre, mouse:** opens, `aria-expanded` follows it, and focus moves to the h2. „Späť do hry“ and a second press of the header button close it, and focus goes back to „O hre“. Opening „Pomoc“ closes „O hre“, and the other way round. The button shows only on the start screen.
+- **O hre, keyboard:** Tab order is Zvuk, O hre, Pomoc, then the track cards. Enter and Space open the screen. Escape closes it, and focus returns to „O hre“. The focus ring is a visible 3 px outline.
+- **Screen reader (axe, WCAG 2.0/2.1/2.2 A and AA plus best-practice):** 0 violations on the start screen and on „O hre“ at 1440 and 360. There is a hidden page h1 „O hre“, the sections are labelled, and the address has a hidden „Adresa:“ prefix.
+- **Reflow:** no horizontal scroll at 320, 360, 375 or 200 % zoom. The long address wraps.
+- **Reduced motion:** no animations run on „O hre“.
+- **Privacy:** the text matches what the game does:
+  - no requests leave the origin
+  - no console errors
+  - the only storage is the `localStorage` key
+  - there are 0 links on „O hre“
+  - the built `index.html` has `<meta name="robots" content="noindex" />`
+- **Regression:** the full e2e suite passes, 36 of 36 (desktop and phone-360). It covers the start screen, help, reset, offline play, and every junior and teen case.
+
+### Findings
+1. **Minor (teacher/parent persona): the in-game feedback route assumes a GitHub account.**
+   - The screen gives no form name and no other route.
+   - `docs/pilot/UCITEL.md` names the form „Pilotná hodina (učiteľ)“ and offers the pilot coordinator as an alternative. A teacher who only sees the game does not learn either.
+   - Suggestion: add a line such as „Bez účtu GitHub: pošlite pripomienku koordinátorovi pilotu.“
+2. **Minor: „Vymazať postup“ is hard to find.**
+   - The button is findable on the track page, but it sits below the fold: y≈991 at 1440×900, and further down on phones.
+   - `clearProgress` removes the whole storage key, so it also resets „Zvuk“. The text only says the stars are deleted.
+   - Suggestion: say „…na stránke trasy, dole“.
+3. **Minor (11-year-old): the version number means nothing to a child.** The label is fine as it is; „Pilotná verzia“ alone would be enough on the start screen. This is optional.
+
+### Screenshots
+`qa-shots/`:
+- `pilot-01-start-1440.png`
+- `pilot-02-about-1440.png`
+- `pilot-03-about-kbd-focus-1440.png`
+- `pilot-04-start-360.png`
+- `pilot-04-about-360.png`
+- `pilot-05-track-reset-1440.png`
+- `pilot-06-start-320.png`
+- `pilot-06-about-320.png`
+- `pilot-07-about-zoom200.png`
+- `pilot-07-start-zoom200.png`

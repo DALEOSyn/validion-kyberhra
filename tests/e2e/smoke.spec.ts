@@ -134,7 +134,7 @@ test('„O hre“ opens from the start screen and closes by keyboard like help',
   await expect(page.getByRole('heading', { name: 'O hre', level: 2 })).toBeFocused();
   await expect(page.getByRole('heading', { name: 'Pre dospelých: pripomienky a chyby' })).toBeVisible();
   await expect(page.getByText('github.com/DALEOSyn/validion-kyberhra/issues')).toBeVisible();
-  await expect(page.getByText('Ak ťa niečo trápi, zavolaj na Linku detskej istoty 116 111.')).toBeVisible();
+  await expect(page.getByText('Ak ťa niečo trápi, povedz to dospelému, ktorému dôveruješ, alebo zavolaj na Linku detskej istoty 116 111.')).toBeVisible();
   // addresses are plain text: the screen has no links at all
   await expect(page.locator('main a')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Vyber si trasu' })).toBeHidden();
